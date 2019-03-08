@@ -2,6 +2,9 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View,Text } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import Login from './login.js';
+import Meni from './classList';
+import { Header } from 'react-native-elements';
+
 
 export default class App extends React.Component {
   state = {
@@ -10,10 +13,14 @@ export default class App extends React.Component {
 
   render() {
     return(
-    <View>
-      <Text>fdgd</Text>
-      <Login />
-    </View>
+      <View>
+      <Header
+      leftComponent={{ icon: 'menu', color: '#fff' }}
+      centerComponent={{ text: 'Minfulness4U', style: { color: '#fff' } }}
+      rightComponent={{ icon: 'home', color: '#fff' }}
+    />
+     <Meni />
+     </View>
     );
   }
 
