@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   
   ]
 
-class Meni extends React.Component{
+class Classlist extends React.Component{
 
     render () {
         return (
@@ -69,4 +69,4 @@ class Meni extends React.Component{
 
 
 
-export default Meni
+export default Classlist
