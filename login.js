@@ -4,43 +4,41 @@ import { Alert, Button, TextInput, View, StyleSheet } from 'react-native';
 class Login extends React.Component {
   constructor(props) {
     super(props);
-    
+    this.checkAuthentic= this.checkAuthentic.bind(this);
     this.state = {
       username: '',
       password: '',
-      personFromDB:[]
+      personFromDB:''
     };
   }
-  
+  checkAuthentic(){
+    debugger
+        if(this.state.password==this.state.personFromDB.Password && this.state.username==this.state.personFromDB.UserName){
+      alert("success");
+      
+    }
+      }
+
   onLogin() {
     url = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch?username=";
     url+= this.state.username;
+    debugger
     return fetch(url)
     .then(response => response.json())
-    .then((response)=>{
-      debugger
-      console.log(response);
-    })
+    .then((response => this.setState({  
+      personFromDB:response
+  })))
+  .then(()=>{
+    this.checkAuthentic();
+  })
+      
     .catch((error)=>{
       console.log(error);
     })
     const { username, password } = this.state;
   }
-  
-  // componentDidMount(){
-  //   url = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch?username=gavri1411";
- 
-  //   return fetch("http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch?username=geeeveeer")
-  //   .then((response) => response.json())
-    
-  //   .then((response)=>{
-  //     debugger
-  //     console.log(response);
-  //   })
-  //   .catch((error)=>{
-  //     console.log(error);
-  //   })
-  // }
+
+
 
   render() {
     return (
