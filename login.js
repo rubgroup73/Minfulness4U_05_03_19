@@ -8,14 +8,39 @@ class Login extends React.Component {
     this.state = {
       username: '',
       password: '',
+      personFromDB:[]
     };
   }
   
   onLogin() {
+    url = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch?username=";
+    url+= this.state.username;
+    return fetch(url)
+    .then(response => response.json())
+    .then((response)=>{
+      debugger
+      console.log(response);
+    })
+    .catch((error)=>{
+      console.log(error);
+    })
     const { username, password } = this.state;
-
-    Alert.alert('Credentials', `${username} + ${password}`);
   }
+  
+  // componentDidMount(){
+  //   url = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch?username=gavri1411";
+ 
+  //   return fetch("http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch?username=geeeveeer")
+  //   .then((response) => response.json())
+    
+  //   .then((response)=>{
+  //     debugger
+  //     console.log(response);
+  //   })
+  //   .catch((error)=>{
+  //     console.log(error);
+  //   })
+  // }
 
   render() {
     return (

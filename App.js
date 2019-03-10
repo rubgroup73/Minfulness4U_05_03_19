@@ -13,15 +13,25 @@ export default class App extends React.Component {
 
   render() {
     return(
-      <View>
-      <Header
+      
+      /* <Header
       leftComponent={{ icon: 'menu', color: '#fff' }}
       centerComponent={{ text: 'Minfulness4U', style: { color: '#fff' } }}
       rightComponent={{ icon: 'home', color: '#fff' }}
-    />
-     <Meni />
-     </View>
+    /> */
+     <Login  />
+     
     );
   }
 
 }
+
+const styles = StyleSheet.create({
+  logPage: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ecf0f1',
+    marginTop:'90',
+  },
+});
