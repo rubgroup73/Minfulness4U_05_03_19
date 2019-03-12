@@ -1,7 +1,7 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Input,ListItem } from 'react-native-elements';
-import { Platform, StatusBar, StyleSheet, View,Text } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View,Text,AsyncStorage } from 'react-native';
 
 
 const styles = StyleSheet.create({
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   
   ]
 
-class Classlist extends React.Component{
+  export default class Classlist extends React.Component{
 
     render () {
         return (
@@ -69,4 +69,3 @@ class Classlist extends React.Component{
 
 
 
-export default Classlist

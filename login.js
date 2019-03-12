@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Alert, Button, TextInput, View, StyleSheet } from 'react-native';
+import { Alert, Button, TextInput, View, StyleSheet,AsyncStorage } from 'react-native';
+import ActionButton from 'react-native-action-button';
 
 class Login extends React.Component {
   constructor(props) {
@@ -11,18 +12,40 @@ class Login extends React.Component {
       personFromDB:''
     };
   }
+   /*************************************************/
+  /*Check if the User credentials are True or False*/
+  /*************************************************/
   checkAuthentic(){
-    debugger
-        if(this.state.password==this.state.personFromDB.Password && this.state.username==this.state.personFromDB.UserName){
-      alert("success");
-      
-    }
+        if(this.state.personFromDB.Credentials1 == true){
+        
+      AsyncStorage.setItem("username",JSON.stringify(this.state.personFromDB.UserName));
+      AsyncStorage.setItem("password",JSON.stringify(this.state.personFromDB.Password));
+      AsyncStorage.setItem("login",JSON.stringify(this.state.personFromDB.Credentials1));
+      alert("ברוך הבא");  
+      this.props.navigation.navigate('classlist');
       }
+    else{alert("השם משתמש או הסיסמא אינם נכונים");}
+      }
+  testfunc = async () =>{
+   
+    try{
+    let user = await AsyncStorage.getItem("login");
+    alert(user);
+    }
+    catch(error){
+      alert("Not Success");
+    }
+  
+  }
+      /*************************************************/
+      /*Fetch request to DB - return True or False*/
+      /*************************************************/
 
   onLogin() {
     url = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch?username=";
     url+= this.state.username;
-    debugger
+    url+= "&password=";
+    url+=this.state.password;
     return fetch(url)
     .then(response => response.json())
     .then((response => this.setState({  
@@ -37,8 +60,7 @@ class Login extends React.Component {
     })
     const { username, password } = this.state;
   }
-
-
+  /*************************************************/
 
   render() {
     return (

@@ -1,43 +1,13 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View,Text } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View,Text,AsyncStorage } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
-import Login from './login.js';
-import Classlist from './classList';
+import Login from './Login.js';
+import Classlist from './ClassList';
 import { Header } from 'react-native-elements';
-import {createStackNavigator, createAppContainer} from 'react-navigation';
+import {createStackNavigator, createAppContainer,StackNavigator} from 'react-navigation';
 
+var firstPage = 'loginPage';
 
-// export default class App extends React.Component {
-//   state = {
-//     isLoadingComplete: false,
-//   };
-
-//   render() {
-//     return(
-      
-//       /* <Header
-//       leftComponent={{ icon: 'menu', color: '#fff' }}
-//       centerComponent={{ text: 'Minfulness4U', style: { color: '#fff' } }}
-//       rightComponent={{ icon: 'home', color: '#fff' }}
-//     /> */
-    
-//      <AppNavigator/>
-      
-     
-     
-//     );
-
-//   }
-  
-//}
- 
-const AppNavigator = createStackNavigator({
-  
-  Classlist: {screen: Classlist},
-  Login: {screen: Login},
-});
-
-const App = createAppContainer(AppNavigator);
 const styles = StyleSheet.create({
   logPage: {
     flex: 1,
@@ -48,4 +18,31 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App
+const AppNavigator = createStackNavigator
+(
+  { 
+    loginPage:{screen:Login,},
+    classlist:{screen:Classlist,}
+  },
+  {
+    initialRouteName: firstPage,
+   
+  }
+) 
+
+const AppContainer = createAppContainer(AppNavigator);
+
+
+export default class App extends React.Component {
+
+  constructor(props){
+    super(props);
+  }
+
+  render() 
+  {
+    return <AppContainer />;
+  }
+}
+
+
