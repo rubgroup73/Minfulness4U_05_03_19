@@ -1,12 +1,10 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View,Text,AsyncStorage } from 'react-native';
-import { AppLoading, Asset, Font, Icon } from 'expo';
+import {StyleSheet, View,Text,AsyncStorage,Button } from 'react-native';
 import Login from './Login.js';
 import Classlist from './ClassList';
-import { Header } from 'react-native-elements';
-import {createStackNavigator, createAppContainer,StackNavigator} from 'react-navigation';
+import ClassPreview from './ClassPreview';
+import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
-var firstPage = 'loginPage';
 
 const styles = StyleSheet.create({
   logPage: {
@@ -18,15 +16,42 @@ const styles = StyleSheet.create({
   },
 });
 
+
+
 const AppNavigator = createStackNavigator
 (
   { 
-    loginPage:{screen:Login,},
-    classlist:{screen:Classlist,}
+    loginPage:
+    {
+      screen:Login,
+      navigationOptions:
+      {
+        title:"מסך כניסה",
+        headerLeft:null
+      }
+    },
+    classlist:
+    {
+      screen:Classlist,
+      navigationOptions:
+      {
+        title:"מסך ראשי",
+        headerLeft:null
+      }
+    },
+      classpreview:
+    {
+      screen:ClassPreview,
+      navigationOptions:
+      {
+        title:"שיעור",
+        headerLeft:null
+      }
+    }
   },
+
   {
-    initialRouteName: firstPage,
-   
+    initialRouteName:"loginPage",  
   }
 ) 
 
@@ -37,11 +62,12 @@ export default class App extends React.Component {
 
   constructor(props){
     super(props);
+     
   }
-
+ 
   render() 
   {
-    return <AppContainer />;
+   return <AppContainer />;
   }
 }
 

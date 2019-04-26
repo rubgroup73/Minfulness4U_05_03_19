@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Alert, Button, TextInput, View, StyleSheet,AsyncStorage } from 'react-native';
 import ActionButton from 'react-native-action-button';
 
+var firstPage = '';
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -54,13 +56,30 @@ class Login extends React.Component {
   .then(()=>{
     this.checkAuthentic();
   })
+
       
     .catch((error)=>{
       console.log(error);
     })
+
     const { username, password } = this.state;
   }
+  testFunc = async ()=>{
+    try{
+      let test = await AsyncStorage.getItem("login");
+      alert(test)
+    }
+    catch(error){
+      alert("dfdfdf");
+    }
+  }
   /*************************************************/
+  componentWillMount = async () => {
+    firstPage = await AsyncStorage.getItem("login");
+    if(firstPage=='true')
+    this.props.navigation.navigate('classlist');
+  }
+
 
   render() {
     return (
@@ -83,6 +102,11 @@ class Login extends React.Component {
           title={'Login'}
           style={styles.input}
           onPress={this.onLogin.bind(this)}
+        />
+          <Button
+          title='test buton'
+          
+          onPress={this.testFunc}
         />
       </View>
     );
