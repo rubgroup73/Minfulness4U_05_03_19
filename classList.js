@@ -10,10 +10,10 @@ const ClassList2 = [
      content: 'שיעור הרמת גבה',
      image:'https://media.giphy.com/media/AZ1PPDF8uO9MI/giphy.gif'
   },
- { name: 'שיעור מספר 2',
+ /*{ name: 'שיעור מספר 2',
  content: 'שיעור חיוך לרוחב',
 image:'https://i.gifer.com/5nc.gif'
-},{ name: 'שיעור מספר 2',
+},*/{ name: 'שיעור מספר 2',
 content: 'שיעור חיוך לרוחב',
 image:'https://i.gifer.com/5nc.gif'
 }

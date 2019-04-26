@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View,Text,AsyncStorage,Button } from 'react-native';
+import {StyleSheet, View,Text,AsyncStorage,Button ,ScrollView} from 'react-native';
 import Login from './Login.js';
 import Classlist from './ClassList';
 import ClassPreview from './ClassPreview';
@@ -44,7 +44,7 @@ const AppNavigator = createStackNavigator
       screen:ClassPreview,
       navigationOptions:
       {
-        title:"שיעור",
+       
         headerLeft:null
       }
     }
@@ -67,6 +67,7 @@ export default class App extends React.Component {
  
   render() 
   {
+
    return <AppContainer />;
   }
 }

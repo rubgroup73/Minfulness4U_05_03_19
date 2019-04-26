@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View , Image} from 'react-native';
+import { StyleSheet, Text, View , Image,ScrollView} from 'react-native';
 import { Card, Button} from 'react-native-elements';
 
 
@@ -18,7 +18,9 @@ export default class ClassPreview extends React.Component {
     render(props) {
         return (
  
-      <View>
+
+            
+      <ScrollView>
 {
 this.state.classesFromDB.map((l, i) => (
   <Card 
@@ -41,7 +43,7 @@ this.state.classesFromDB.map((l, i) => (
   </Card>
 ))
 }
-  </View>
+  </ScrollView>
  
 
       );
