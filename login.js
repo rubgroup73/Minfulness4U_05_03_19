@@ -23,8 +23,16 @@ class Login extends React.Component {
       AsyncStorage.setItem("username",JSON.stringify(this.state.personFromDB.UserName));
       AsyncStorage.setItem("password",JSON.stringify(this.state.personFromDB.Password));
       AsyncStorage.setItem("login",JSON.stringify(this.state.personFromDB.Credentials1));
+      AsyncStorage.setItem("userid",JSON.stringify(this.state.personFromDB.Id));
+      AsyncStorage.setItem("fullname",JSON.stringify(this.state.personFromDB.FulName));
+      AsyncStorage.setItem("groupId",JSON.stringify(this.state.personFromDB.Group_Id));
+      AsyncStorage.setItem("groupVersion",JSON.stringify(this.state.personFromDB.Group_Version));
+
       alert("ברוך הבא");  
-      this.props.navigation.navigate('classlist');
+      this.props.navigation.navigate(
+        'classlist',
+        username= AsyncStorage.getItem("username")
+        );
       }
     else{alert("השם משתמש או הסיסמא אינם נכונים");}
       }
@@ -75,6 +83,9 @@ class Login extends React.Component {
   }
   /*************************************************/
   componentWillMount = async () => {
+    // await AsyncStorage.removeItem("username")
+    // await AsyncStorage.removeItem("password")
+    // await AsyncStorage.removeItem("login")
     firstPage = await AsyncStorage.getItem("login");
     if(firstPage=='true')
     this.props.navigation.navigate('classlist');
