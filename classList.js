@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { StyleSheet, View, FlatList,Image,AsyncStorage} from 'react-native';
+import { StyleSheet, View, FlatList,Image,AsyncStorage,Text} from 'react-native';
 import { ListItem , List} from 'react-native-elements';
 import ClassPreview from './ClassPreview';
 
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
       name: 'פורום קבוצתי',
       avatar_url:
         'https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg',
+        page:'classpreview'
     },
     // {
     //   name: 'Melissa Jones',
@@ -96,68 +97,21 @@ constructor(props){
     classVersion:-1,
     userId:-1,
     userName:"",
-    classesArr:[],
+    classesArr:[],//all classes and section with the relevant version for a specific user 
     nextLesson :null,
-    changed:false,
     groupId:null,
     groupVersion:null,
-    nextClasseArr:[]
+    nextClasseArr:[],//Saving all user classes - the last one in the array is the next lesson
+    nextClass:null,//Saving in a var the specific next lesson
+    nextClassSection:null,//will save the next section that will play  
+    changed:false,
 
 
   }
 }
 
-componentDidMount = async () => {
-  debugger;
-  let id = await AsyncStorage.getItem("userid");
-  let fullname = await AsyncStorage.getItem("fullname");
- let username = await AsyncStorage.getItem("username");
- let groupId = await AsyncStorage.getItem("groupId");
- let groupVersion = await AsyncStorage.getItem("groupVersion");
-
-this.setState({
-  userId: id,
-  fullName: fullname,
-  userName:username,
-  groupId:groupId,
-  groupVersion:groupVersion
-  });
-  
- // let allUserclasses = await AsyncStorage.getItem("allUserclasses");
- 
-urlClasses="http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetClassVersionReact?userId=";
-urlClasses += id;
-urlNextClass = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInClassReact?userId=";
-urlNextClass += id;
-
- fetch(urlClasses)
-    .then(response => response.json())
-    .then((response => this.setState({  
-      classesArr:response
-  })))
-  .then(()=>{
-    this.crateClassList();
-  })  
-    .catch((error)=>{
-      console.log(error);
-    })
-
-    
-     fetch(urlNextClass)
-    .then(response => response.json())
-    .then((response => this.setState({  
-      nextClasseArr:response
-
-  })))
- 
-    .catch((error)=>{
-      console.log(error);
-    })
-
-}
-
-crateClassList = () =>{
-  this.state.classesArr.map((c) => {
+crateClassList = (classArr) =>{
+  classArr.map((c) => {
     console.log(c);
     LIST.push(new listOfClass(c.Description,c.Title,c.Position,c.Score));
   })
@@ -170,7 +124,79 @@ crateClassList = () =>{
 
         );
     }
+    updateStates = (id,fullname,username,groupId,groupVersion,classesArr,nextclassarr,changed) =>{
+     this.setState({
+  userId: id,
+  fullName: fullname,
+  userName:username,
+  groupId:groupId,
+  groupVersion:groupVersion,
+  classesArr:classesArr,
+  nextClasseArr:nextclassarr,
+  changed:changed
+  });
+  console.log(id);
+  console.log(fullname);
+  console.log(username);
+  console.log(groupId);
+  console.log(groupVersion);
+  console.log(classesArr);
+  console.log(nextclassarr);
+  console.log(changed);
+  console.log(LIST);
   
+    }
+componentDidMount = async () => {
+  debugger;
+  let id = await AsyncStorage.getItem("userid");
+ var fullname = await AsyncStorage.getItem("fullname");
+ let username = await AsyncStorage.getItem("username");
+ let groupId = await AsyncStorage.getItem("groupId");
+ let groupVersion = await AsyncStorage.getItem("groupVersion");
+ let classesArr;
+ let nextclassarr;
+  let changed;
+  
+
+  
+ // let allUserclasses = await AsyncStorage.getItem("allUserclasses");
+
+urlClasses="http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetClassVersionReact?userId=";
+urlClasses += id;
+
+urlNextClass = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInClassReact?userId=";
+urlNextClass += id;
+
+  fetch(urlClasses)
+    .then(response => response.json())
+    .then(response=>{
+      classesArr = response;
+    })
+ 
+  .then(()=>{
+    console.log(classesArr);
+    this.crateClassList(classesArr);
+  }) 
+  .then(()=>{
+    fetch(urlNextClass)
+    .then(response => response.json())
+    .then(response=>{
+      nextclassarr = response;
+      changed = true;
+    })
+    .catch((error)=>{
+      console.log(error);
+    });
+  })
+  .then(()=>{
+    this.updateStates(id,fullname,username,groupId,groupVersion,classesArr,nextclassarr,changed)
+  }) 
+    .catch((error)=>{
+      console.log(error);
+    });
+ //*************************************************************************/
+
+}
     render () {
       if(this.state.changed == false){
         return(
@@ -179,11 +205,12 @@ crateClassList = () =>{
                 <Image source={require('./assets/images/Loading_2.gif')} />
          </View> 
 );
-
       }
       else{
         return (
+
             <View style = {styles.listStyle}>
+            <Text style={{textAlign:'center'}}>{this.state.fullName}</Text>
             {
               list.map((l, i) => (
                 <ListItem 
@@ -217,3 +244,23 @@ crateClassList = () =>{
 
 
 
+//*************************************************************************/
+// Promise.all([
+//   fetch(urlClasses),
+//   fetch(urlNextClass)
+// ])
+// .then(([Classes,NextClass])=>Promise.all([Classes.json,NextClass.json]))
+// .then(([Classes,NextClass]) => this.setState({
+//   classesArr:Classes,
+//   nextClasseArr:NextClass,
+//   nextClass:this.state.nextClasseArr.pop(),
+//   changed:true
+// }))
+// .then(()=>{
+//   console.log(this.state.classesArr);
+//   console.log(this.state.nextClasseArr);
+//   console.log(this.state.nextClasseArr);
+// })
+// .catch((error=>{
+//   console.log(error);
+// }))

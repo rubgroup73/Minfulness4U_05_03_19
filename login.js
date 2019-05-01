@@ -24,7 +24,7 @@ class Login extends React.Component {
       AsyncStorage.setItem("password",JSON.stringify(this.state.personFromDB.Password));
       AsyncStorage.setItem("login",JSON.stringify(this.state.personFromDB.Credentials1));
       AsyncStorage.setItem("userid",JSON.stringify(this.state.personFromDB.Id));
-      AsyncStorage.setItem("fullname",JSON.stringify(this.state.personFromDB.FulName));
+      AsyncStorage.setItem("fullname",JSON.stringify(this.state.personFromDB.FullName));
       AsyncStorage.setItem("groupId",JSON.stringify(this.state.personFromDB.Group_Id));
       AsyncStorage.setItem("groupVersion",JSON.stringify(this.state.personFromDB.Group_Version));
 
