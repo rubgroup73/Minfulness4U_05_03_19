@@ -82,14 +82,14 @@ class Login extends React.Component {
     }
   }
   /*************************************************/
-  componentWillMount = async () => {
-    // await AsyncStorage.removeItem("username")
-    // await AsyncStorage.removeItem("password")
-    // await AsyncStorage.removeItem("login")
-    firstPage = await AsyncStorage.getItem("login");
-    if(firstPage=='true')
-    this.props.navigation.navigate('classlist');
-  }
+  // componentWillMount = async () => {
+  //   // await AsyncStorage.removeItem("username")
+  //   // await AsyncStorage.removeItem("password")
+  //   // await AsyncStorage.removeItem("login")
+  //   firstPage = await AsyncStorage.getItem("login");
+  //   if(firstPage=='true')
+  //   this.props.navigation.navigate('classlist');
+  // }
 
 
   render() {
