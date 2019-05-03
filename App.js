@@ -3,6 +3,7 @@ import {StyleSheet, View,Text,AsyncStorage,Button ,ScrollView} from 'react-nativ
 import Login from './Login.js';
 import Classlist from './ClassList';
 import ClassPreview from './ClassPreview';
+import NextClass from './NextClass';
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
 
@@ -47,7 +48,16 @@ const AppNavigator = createStackNavigator
        
         headerLeft:null
       }
-    }
+    },
+    nextclass:
+    {
+      screen:NextClass,
+      navigationOptions:
+      {  
+        headerLeft:null
+      }
+    },
+    
   },
 
   {

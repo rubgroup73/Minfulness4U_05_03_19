@@ -48,46 +48,41 @@ const styles = StyleSheet.create({
     {
       name:
         'השיעור הבא',
+        description:null,
       avatar_url:
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUpIFGtQf4Fmkg-i6zmCmTrg5lRnBYYFVcZ2FDyEPTR6FW9oANWg',
-      page:'classpreview'
+      page:'nextclass'
     },
     {
       name: 'שיעורים שביצעתי',
+      description:"כמה הספקתי?",
       avatar_url:
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUpIFGtQf4Fmkg-i6zmCmTrg5lRnBYYFVcZ2FDyEPTR6FW9oANWg',   
       page:'classpreview'
     },
     {
       name: 'שיעורי בית',
+      description:"חזרה על על השיעור",
       avatar_url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUpIFGtQf4Fmkg-i6zmCmTrg5lRnBYYFVcZ2FDyEPTR6FW9oANWg',
       page:'classpreview'
     },
     {
       name: 'פורום קבוצתי',
+      description:"מה אני חושב",
       avatar_url:
         'https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg',
         page:'classpreview'
-    },
-    // {
-    //   name: 'Melissa Jones',
-    //   avatar_url:
-    //     'https://s3.amazonaws.com/uifaces/faces/twitter/nuraika/128.jpg',
-    //   subtitle: 'CTO'
-    // }
+    }
   
   ]
 
-  class listOfClass {
-    constructor(Description,Title,Position,Score){
-      this.Description = Description;
-      this.Title=Title;
-      this.Position=Position;
-      this.Score=Score;
-    }
-  }
+  
+  var userInClassArr =[];
+  var allUserclasses =[];
+  var nextclass ;
+  var oldClasses=[];
 
-  const LIST = [];
+
 
   export default class Classlist extends React.Component{
 constructor(props){
@@ -101,39 +96,34 @@ constructor(props){
     nextLesson :null,
     groupId:null,
     groupVersion:null,
-    nextClasseArr:[],//Saving all user classes - the last one in the array is the next lesson
-    nextClass:null,//Saving in a var the specific next lesson
-    nextClassSection:null,//will save the next section that will play  
     changed:false,
+    oldClasses:null
 
 
   }
 }
 
-crateClassList = (classArr) =>{
-  classArr.map((c) => {
-    console.log(c);
-    LIST.push(new listOfClass(c.Description,c.Title,c.Position,c.Score));
-  })
-}
-   
-    loadClassesFromDB = (page,userInfo) =>{      
+    loadClassesFromDB = (page,userInfo,allclasses) =>{   
+      debugger;   
       this.props.navigation.navigate(
         page,
-        {userInfo:userInfo}
-
+        {userInfo:userInfo,
+         allclasses:allclasses
+        }
+        
         );
     }
-    updateStates = (id,fullname,username,groupId,groupVersion,classesArr,nextclassarr,changed) =>{
-     this.setState({
+    updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses) =>{
+   this.setState({
   userId: id,
   fullName: fullname,
   userName:username,
   groupId:groupId,
   groupVersion:groupVersion,
   classesArr:classesArr,
-  nextClasseArr:nextclassarr,
-  changed:changed
+  nextLesson:nextlesson,
+  changed:true,
+  oldClasses:oldClasses
   });
   console.log(id);
   console.log(fullname);
@@ -141,76 +131,68 @@ crateClassList = (classArr) =>{
   console.log(groupId);
   console.log(groupVersion);
   console.log(classesArr);
-  console.log(nextclassarr);
-  console.log(changed);
-  console.log(LIST);
+  console.log(nextLesson);
   
     }
+
+    setAllClasses = (userInClassArr) =>{
+      
+      for (var i=0; i<userInClassArr.length;i++){
+        allUserclasses.push(userInClassArr[i].AppClass);
+        if(userInClassArr[i].NextLessonInReact!=0){
+          debugger;
+          nextclass=userInClassArr[i].AppClass;
+
+        }
+      }
+    }
+
+    SetOldClasses=(userInClass)=>{
+      for(var i=0; i<userInClass.length;i++){
+        if(userInClass[i].IsFinished==true){
+          oldClasses.push(userInClass[i].AppClass);
+        }
+      }
+    }
+
 componentDidMount = async () => {
-  debugger;
-  let id = await AsyncStorage.getItem("userid");
- var fullname = await AsyncStorage.getItem("fullname");
+  
+ let id = await AsyncStorage.getItem("userid");
+ let fullname = await AsyncStorage.getItem("fullname");
  let username = await AsyncStorage.getItem("username");
  let groupId = await AsyncStorage.getItem("groupId");
  let groupVersion = await AsyncStorage.getItem("groupVersion");
- let classesArr;
- let nextclassarr;
-  let changed;
-  
 
-  
- // let allUserclasses = await AsyncStorage.getItem("allUserclasses");
+urluserInClass = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInClassReact?userId=";
+urluserInClass += id;
 
-urlClasses="http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetClassVersionReact?userId=";
-urlClasses += id;
+fetch(urluserInClass)
+.then(response => response.json())
+.then((response) => {
+  userInClassArr = response;
+  this.setAllClasses(userInClassArr);
+  this.SetOldClasses(userInClassArr);
+  this.updateStates(id,fullname,username,groupId,groupVersion,allUserclasses,nextclass,oldClasses);
+})
 
-urlNextClass = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInClassReact?userId=";
-urlNextClass += id;
-
-  fetch(urlClasses)
-    .then(response => response.json())
-    .then(response=>{
-      classesArr = response;
-    })
- 
-  .then(()=>{
-    console.log(classesArr);
-    this.crateClassList(classesArr);
-  }) 
-  .then(()=>{
-    fetch(urlNextClass)
-    .then(response => response.json())
-    .then(response=>{
-      nextclassarr = response;
-      changed = true;
-    })
-    .catch((error)=>{
-      console.log(error);
-    });
-  })
-  .then(()=>{
-    this.updateStates(id,fullname,username,groupId,groupVersion,classesArr,nextclassarr,changed)
-  }) 
-    .catch((error)=>{
-      console.log(error);
-    });
- //*************************************************************************/
+.catch((error=>{
+  console.log(error);
+}))
 
 }
     render () {
       if(this.state.changed == false){
         return(
-          <View style={{ flexDirection: 'column', justifyContent: 'center',alignItems: 'center',}}>
-          
+          <View style={{ flexDirection: 'column', justifyContent: 'center',alignItems: 'center',}}>       
                 <Image source={require('./assets/images/Loading_2.gif')} />
          </View> 
 );
       }
       else{
         return (
-
+   
             <View style = {styles.listStyle}>
-            <Text style={{textAlign:'center'}}>{this.state.fullName}</Text>
+            <Text style={{textAlign:'center'}}>שלום {this.state.fullName}</Text>
             {
               list.map((l, i) => (
                 <ListItem 
@@ -229,7 +211,12 @@ urlNextClass += id;
                  
                   titleNumberOfLines={1}
                   // pageInfo={l.page}
-                  onPress= {() => this.loadClassesFromDB(l.page,ClassList2)}
+                  onPress= {() => {
+                    if(l.page == 'classpreview')
+                    this.loadClassesFromDB(l.page,this.state,allUserclasses);
+                    else if(l.page=='nextclass')
+                    this.loadClassesFromDB(l.page,this.state,this.state.nextLesson);
+                  }}
                 
                   
                 />
@@ -242,7 +229,19 @@ urlNextClass += id;
       }
 }
 
+ // let allUserclasses = await AsyncStorage.getItem("allUserclasses");
 
+// urlClasses="http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetClassVersionReact?userId=";
+// urlClasses += id;
+
+// crateClassList = (classArr) =>{
+//   classArr.map((c) => {
+//     console.log(c);
+//     LIST.push(new listOfClass(c.Description,c.Title,c.Position,c.Score,this.state.nextClasseArr[this.state.nextClasseArr.length-1],"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUpIFGtQf4Fmkg-i6zmCmTrg5lRnBYYFVcZ2FDyEPTR6FW9oANWg"));
+//   });
+//   console.log(this.state.nextClasseArr);
+//   console.log(LIST);
+// }
 
 //*************************************************************************/
 // Promise.all([
@@ -264,3 +263,32 @@ urlNextClass += id;
 // .catch((error=>{
 //   console.log(error);
 // }))
+
+// fetch(urlClasses)
+  //   .then(response => response.json())
+  //   .then(response=>{
+  //     classesArr = response;
+  //   })
+ 
+  // .then(()=>{
+  //   console.log(classesArr);
+    
+  // }) 
+  // .then(()=>{
+  //   fetch(urlNextClass)
+  //   .then(response => response.json())
+  //   .then(response=>{
+  //     nextclassarr = response;
+  //     changed = true;
+  //     this.updateStates(id,fullname,username,groupId,groupVersion,classesArr,nextclassarr,changed);
+  //   })
+
+  //   .catch((error)=>{
+  //     console.log(error);
+  //   });
+  // })
+  
+  //   .catch((error)=>{
+  //     console.log(error);
+  //   });
+ //*************************************************************************/
