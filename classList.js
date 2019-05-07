@@ -2,24 +2,8 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { StyleSheet, View, FlatList,Image,AsyncStorage,Text} from 'react-native';
 import { ListItem , List} from 'react-native-elements';
-import ClassPreview from './ClassPreview';
 
-const ClassList2 = [
-  {
-     name: 'שיעור מספר 1',
-     content: 'שיעור הרמת גבה',
-     image:'https://media.giphy.com/media/AZ1PPDF8uO9MI/giphy.gif'
-  },
- { name: 'שיעור מספר 2',
- content: 'שיעור חיוך לרוחב',
-image:'https://i.gifer.com/5nc.gif'
-},
-{ name: 'שיעור מספר 2',
-content: 'שיעור חיוך לרוחב',
-image:'https://i.gifer.com/5nc.gif'
-}
-  
- ];
+
 
 const styles = StyleSheet.create({
     subtitleView: {
@@ -76,11 +60,12 @@ const styles = StyleSheet.create({
   
   ]
 
-  
-  var userInClassArr =[];
-  var allUserclasses =[];
-  var nextclass ;
-  var oldClasses=[];
+  const stateofmind = 'stateofmind';
+  var userInClassArr =[];//All userInClass array for all classes
+  var allUserclasses =[];//All classes array with the user's version  
+  var nextclass ;//Next class for the user-(*)
+  var userInThisClass; //The userInclass instance for this (*) class
+  var oldClasses=[];//Previous classes-The user has already done these classes.
 
 
 
@@ -97,23 +82,56 @@ constructor(props){
     groupId:null,
     groupVersion:null,
     changed:false,
-    oldClasses:null
+    oldClasses:null,
+    userInThisClass:null,
+    userFeedback:null
 
 
   }
 }
+loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{   
 
-    loadClassesFromDB = (page,userInfo,allclasses) =>{   
-      debugger;   
+  this.props.navigation.navigate(
+    page,
+    {userInfo:userInfo,
+     allclasses:allclasses
+    }
+    
+    );
+}
+//** 
+//Next time need to start from this point!
+//** 
+    loadClassesFromDB = (page,userInfo,nextclass) =>{   
+     debugger;
+      if(nextclass != null){
       this.props.navigation.navigate(
         page,
         {userInfo:userInfo,
-         allclasses:allclasses
-        }
+         nextClass:nextclass
+        });
+      }
+      else if(nextclass == null){
+       
+        if(this.state.userFeedback == 'false'){
         
-        );
+         this.props.navigation.navigate(
+           stateofmind
+         );
+       }
+       else{
+         alert("סיימת את הקורס! כל הכבוד!")
+       }
+
+      }
     }
-    updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses) =>{
+
+    
+      
+     
+    
+//********************************* 
+    updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses,userinclass,userFeedback) =>{
    this.setState({
   userId: id,
   fullName: fullname,
@@ -123,27 +141,26 @@ constructor(props){
   classesArr:classesArr,
   nextLesson:nextlesson,
   changed:true,
-  oldClasses:oldClasses
+  oldClasses:oldClasses,
+  userInThisClass:userinclass,
+  userFeedback:userFeedback
   });
-  console.log(id);
-  console.log(fullname);
-  console.log(username);
-  console.log(groupId);
-  console.log(groupVersion);
-  console.log(classesArr);
-  console.log(nextLesson);
-  
     }
 
     setAllClasses = (userInClassArr) =>{
-      
+      let counter = 0;//Indicates if all classess has finished
       for (var i=0; i<userInClassArr.length;i++){
         allUserclasses.push(userInClassArr[i].AppClass);
-        if(userInClassArr[i].NextLessonInReact!=0){
-          debugger;
+        if(userInClassArr[i].IsFinished != true){
+         debugger;
+         counter++;
           nextclass=userInClassArr[i].AppClass;
+          userInThisClass=userInClassArr[i];
 
         }
+      }
+      if(counter == 0){
+        nextclass = null;
       }
     }
 
@@ -162,6 +179,7 @@ componentDidMount = async () => {
  let username = await AsyncStorage.getItem("username");
  let groupId = await AsyncStorage.getItem("groupId");
  let groupVersion = await AsyncStorage.getItem("groupVersion");
+ let userFeedback = await await AsyncStorage.getItem("sendfeedback");
 
 urluserInClass = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInClassReact?userId=";
 urluserInClass += id;
@@ -172,7 +190,7 @@ fetch(urluserInClass)
   userInClassArr = response;
   this.setAllClasses(userInClassArr);
   this.SetOldClasses(userInClassArr);
-  this.updateStates(id,fullname,username,groupId,groupVersion,allUserclasses,nextclass,oldClasses);
+  this.updateStates(id,fullname,username,groupId,groupVersion,allUserclasses,nextclass,oldClasses,userInThisClass,userFeedback);
 })
 
 .catch((error=>{
@@ -213,7 +231,7 @@ fetch(urluserInClass)
                   // pageInfo={l.page}
                   onPress= {() => {
                     if(l.page == 'classpreview')
-                    this.loadClassesFromDB(l.page,this.state,allUserclasses);
+                    this.loadPreviousClassesFromDB(l.page,this.state,allUserclasses);
                     else if(l.page=='nextclass')
                     this.loadClassesFromDB(l.page,this.state,this.state.nextLesson);
                   }}

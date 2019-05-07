@@ -13,15 +13,7 @@ export default class ClassPreview extends React.Component {
 
           };
       }
-     /*
-     "Id": 206,
-            "Description": "שיעור גמישות אורכית",
-            "Title": "שיעור גמישות אורכית",
-            "Status": 4,
-            "Position": 0,
-            "Score": 50,
-            "Version": 25,
-     */ 
+  
     render(props) {
       console.log(this.props.navigation.state.params.userInfo);
         return (        

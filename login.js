@@ -11,7 +11,8 @@ class Login extends React.Component {
     this.state = {
       username: '',
       password: '',
-      personFromDB:''
+      personFromDB:'',
+      feedback:false
     };
   }
    /*************************************************/
@@ -27,7 +28,7 @@ class Login extends React.Component {
       AsyncStorage.setItem("fullname",JSON.stringify(this.state.personFromDB.FullName));
       AsyncStorage.setItem("groupId",JSON.stringify(this.state.personFromDB.Group_Id));
       AsyncStorage.setItem("groupVersion",JSON.stringify(this.state.personFromDB.Group_Version));
-
+      AsyncStorage.setItem("sendfeedback",JSON.stringify(this.state.feedback));
       alert("ברוך הבא");  
       this.props.navigation.navigate(
         'classlist',

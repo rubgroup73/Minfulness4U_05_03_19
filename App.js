@@ -1,9 +1,11 @@
 import React from 'react';
 import {StyleSheet,AsyncStorage,View,Image} from 'react-native';
-import Login from './Login.js';
-import Classlist from './ClassList';
+import Login from './login';
+import Classlist from './classList';
 import ClassPreview from './ClassPreview';
 import NextClass from './NextClass';
+import MediaPlayer from './MediaPlayer';
+import StateOfMind from './StateOfMind';
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
 const AppNavigator = createStackNavigator
@@ -30,19 +32,20 @@ const AppNavigator = createStackNavigator
       classpreview:
     {
       screen:ClassPreview,
-      navigationOptions:
-      {   
-        headerLeft:null
-      }
+      
     },
     nextclass:
     {
       screen:NextClass,
-      navigationOptions:
-      {  
-        headerLeft:null
-      }
     }, 
+    mediaplayer:
+    {
+      screen:MediaPlayer, 
+    },
+    stateofmind:
+    {
+      screen:StateOfMind, 
+    },
   },
   {
     initialRouteName:"loginPage",  
@@ -73,18 +76,20 @@ const AppNavigatorLogged = createStackNavigator
       classpreview:
     {
       screen:ClassPreview,
-      navigationOptions:
-      {   
-        headerLeft:null
-      }
+     
     },
     nextclass:
     {
       screen:NextClass,
-      navigationOptions:
-      {  
-        headerLeft:null
-      }
+    }, 
+    mediaplayer:
+    {
+      screen:MediaPlayer,
+     
+    },
+    stateofmind:
+    {
+      screen:StateOfMind, 
     }, 
   },
   {
@@ -106,7 +111,11 @@ export default class App extends React.Component {
   } 
 
   componentDidMount = async ()=>{
-    debugger;
+    
+    //  await AsyncStorage.removeItem("username")
+    // await AsyncStorage.removeItem("password")
+    // await AsyncStorage.removeItem("login")
+    // await AsyncStorage.removeItem("sendfeedback")
    let temp = await AsyncStorage.getItem("login");
    if(temp != null){
     if(temp == "true")
