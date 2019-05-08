@@ -2,7 +2,26 @@ import React, { Component } from 'react';
 import { Alert, Button, TextInput, View, StyleSheet,AsyncStorage } from 'react-native';
 import ActionButton from 'react-native-action-button';
 
-var firstPage = '';
+const nextPage = 'classlist';
+const wrongPassword = "השם משתמש או הסיסמא אינם נכונים";
+const loginUrl = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch?username=";
+const welcome = "ברוך הבא";
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ecf0f1',
+  },
+  input: {
+    width: 200,
+    height: 44,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+    marginBottom: 10,
+  },
+});
 
 class Login extends React.Component {
   constructor(props) {
@@ -29,13 +48,13 @@ class Login extends React.Component {
       AsyncStorage.setItem("groupId",JSON.stringify(this.state.personFromDB.Group_Id));
       AsyncStorage.setItem("groupVersion",JSON.stringify(this.state.personFromDB.Group_Version));
       AsyncStorage.setItem("sendfeedback",JSON.stringify(this.state.feedback));
-      alert("ברוך הבא");  
+      alert(welcome);  
       this.props.navigation.navigate(
-        'classlist',
+        nextPage,
         username= AsyncStorage.getItem("username")
         );
       }
-    else{alert("השם משתמש או הסיסמא אינם נכונים");}
+    else{alert(wrongPassword);}
       }
   testfunc = async () =>{
    
@@ -44,7 +63,7 @@ class Login extends React.Component {
     alert(user);
     }
     catch(error){
-      alert("Not Success");
+     console.log(error);
     }
   
   }
@@ -53,7 +72,7 @@ class Login extends React.Component {
       /*************************************************/
 
   onLogin() {
-    url = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch?username=";
+    url = loginUrl;
     url+= this.state.username;
     url+= "&password=";
     url+=this.state.password;
@@ -64,14 +83,10 @@ class Login extends React.Component {
   })))
   .then(()=>{
     this.checkAuthentic();
-  })
-
-      
+  })    
     .catch((error)=>{
       console.log(error);
     })
-
-    const { username, password } = this.state;
   }
   testFunc = async ()=>{
     try{
@@ -79,19 +94,9 @@ class Login extends React.Component {
       alert(test)
     }
     catch(error){
-      alert("dfdfdf");
+      console.log(error);
     }
   }
-  /*************************************************/
-  // componentWillMount = async () => {
-  //   // await AsyncStorage.removeItem("username")
-  //   // await AsyncStorage.removeItem("password")
-  //   // await AsyncStorage.removeItem("login")
-  //   firstPage = await AsyncStorage.getItem("login");
-  //   if(firstPage=='true')
-  //   this.props.navigation.navigate('classlist');
-  // }
-
 
   render() {
     return (
@@ -115,31 +120,11 @@ class Login extends React.Component {
           style={styles.input}
           onPress={this.onLogin.bind(this)}
         />
-          <Button
-          title='test buton'
-          
-          onPress={this.testFunc}
-        />
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#ecf0f1',
-  },
-  input: {
-    width: 200,
-    height: 44,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    marginBottom: 10,
-  },
-});
+
 
 export default Login;

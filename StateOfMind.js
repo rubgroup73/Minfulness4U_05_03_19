@@ -48,6 +48,9 @@ export default class StateOfMind extends React.Component {
     });
   }
 
+  //** 
+  //Need to do a fetch (post) to our's server and then to activate the alert component.
+  //** 
   updatePan(toValue,lable) {
     Animated.spring(this._pan, { toValue, friction: 7 }).start();
     this.setState({stateOfMind:lable})

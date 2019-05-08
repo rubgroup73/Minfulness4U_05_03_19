@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View , Image,ScrollView} from 'react-native';
 import { Card, Button} from 'react-native-elements';
 
+const gifUri = 'https://media.giphy.com/media/AZ1PPDF8uO9MI/giphy.gif';
 
 export default class ClassPreview extends React.Component {
     constructor(props) {
@@ -26,7 +27,7 @@ this.state.classesFromDB.map((l, i) => (
     title={l.Title}
     >
     <Image
-    source={{ uri: 'https://media.giphy.com/media/AZ1PPDF8uO9MI/giphy.gif'}}
+    source={{ uri:gifUri}}
     style={{ width: '100%', height: 200 }}/>
     <Text style={{marginBottom: 10,fontSize:20,textAlign:"center",fontWeight:"700" }}>
       {l.Description}
@@ -35,7 +36,8 @@ this.state.classesFromDB.map((l, i) => (
      style={{fontSize:50}}
       backgroundColor='#03A9F4'
       buttonStyle={{borderRadius:5, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-      title='היכנס לשיעור' />
+      title={<Text>היכנס לשיעור </Text>}
+      />
        
   </Card>
 ))
