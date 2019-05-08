@@ -2,6 +2,7 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { StyleSheet, View, FlatList,Image,AsyncStorage,Text} from 'react-native';
 import { ListItem , List} from 'react-native-elements';
+import AlertComponent from './alerts/AlertComponent';
 
 
 
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
   var nextclass ;//Next class for the user-(*)
   var userInThisClass; //The userInclass instance for this (*) class
   var oldClasses=[];//Previous classes-The user has already done these classes.
-
+  var userFinishAllClasses = false;
 
 
   export default class Classlist extends React.Component{
@@ -84,7 +85,7 @@ constructor(props){
     changed:false,
     oldClasses:null,
     userInThisClass:null,
-    userFeedback:null
+  
 
 
   }
@@ -111,20 +112,12 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
          nextClass:nextclass
         });
       }
-      else if(nextclass == null){
-       
-        if(this.state.userFeedback == 'false'){
-        
-         this.props.navigation.navigate(
-           stateofmind
-         );
-       }
        else{
-         alert("סיימת את הקורס! כל הכבוד!")
+        userFinishAllClasses = true;
        }
 
       }
-    }
+    
 
     
       
@@ -233,7 +226,15 @@ fetch(urluserInClass)
                     if(l.page == 'classpreview')
                     this.loadPreviousClassesFromDB(l.page,this.state,allUserclasses);
                     else if(l.page=='nextclass')
-                    this.loadClassesFromDB(l.page,this.state,this.state.nextLesson);
+                    {
+                    this.loadClassesFromDB(l.page,this.state,this.state.nextLesson);  
+                    if(userFinishAllClasses == true)
+                    {
+                      this.props.navigation.navigate(
+                        'alertComponent'     
+                      )
+                    }     
+                    }      
                   }}
                 
                   
@@ -247,66 +248,3 @@ fetch(urluserInClass)
       }
 }
 
- // let allUserclasses = await AsyncStorage.getItem("allUserclasses");
-
-// urlClasses="http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetClassVersionReact?userId=";
-// urlClasses += id;
-
-// crateClassList = (classArr) =>{
-//   classArr.map((c) => {
-//     console.log(c);
-//     LIST.push(new listOfClass(c.Description,c.Title,c.Position,c.Score,this.state.nextClasseArr[this.state.nextClasseArr.length-1],"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUpIFGtQf4Fmkg-i6zmCmTrg5lRnBYYFVcZ2FDyEPTR6FW9oANWg"));
-//   });
-//   console.log(this.state.nextClasseArr);
-//   console.log(LIST);
-// }
-
-//*************************************************************************/
-// Promise.all([
-//   fetch(urlClasses),
-//   fetch(urlNextClass)
-// ])
-// .then(([Classes,NextClass])=>Promise.all([Classes.json,NextClass.json]))
-// .then(([Classes,NextClass]) => this.setState({
-//   classesArr:Classes,
-//   nextClasseArr:NextClass,
-//   nextClass:this.state.nextClasseArr.pop(),
-//   changed:true
-// }))
-// .then(()=>{
-//   console.log(this.state.classesArr);
-//   console.log(this.state.nextClasseArr);
-//   console.log(this.state.nextClasseArr);
-// })
-// .catch((error=>{
-//   console.log(error);
-// }))
-
-// fetch(urlClasses)
-  //   .then(response => response.json())
-  //   .then(response=>{
-  //     classesArr = response;
-  //   })
- 
-  // .then(()=>{
-  //   console.log(classesArr);
-    
-  // }) 
-  // .then(()=>{
-  //   fetch(urlNextClass)
-  //   .then(response => response.json())
-  //   .then(response=>{
-  //     nextclassarr = response;
-  //     changed = true;
-  //     this.updateStates(id,fullname,username,groupId,groupVersion,classesArr,nextclassarr,changed);
-  //   })
-
-  //   .catch((error)=>{
-  //     console.log(error);
-  //   });
-  // })
-  
-  //   .catch((error)=>{
-  //     console.log(error);
-  //   });
- //*************************************************************************/

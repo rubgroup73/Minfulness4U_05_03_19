@@ -6,6 +6,7 @@ import ClassPreview from './ClassPreview';
 import NextClass from './NextClass';
 import MediaPlayer from './MediaPlayer';
 import StateOfMind from './StateOfMind';
+import AlertComponent from './alerts/AlertComponent';
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
 const AppNavigator = createStackNavigator
@@ -46,6 +47,10 @@ const AppNavigator = createStackNavigator
     {
       screen:StateOfMind, 
     },
+    alertComponent:{
+      screen:AlertComponent
+    }
+    
   },
   {
     initialRouteName:"loginPage",  
@@ -91,6 +96,11 @@ const AppNavigatorLogged = createStackNavigator
     {
       screen:StateOfMind, 
     }, 
+    alertComponent:{
+      screen:AlertComponent,
+      navigationOptions:
+      {headerLeft:null}
+    }
   },
   {
     initialRouteName:"classlist",  
