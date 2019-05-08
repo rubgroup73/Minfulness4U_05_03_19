@@ -12,6 +12,47 @@ const widthPic = 100;
 const loadIcon = require('./assets/images/Loading_2.gif');
 const userInClassFetch = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInClassReact?userId=";
 
+
+const styles = StyleSheet.create({
+  subtitleView: {
+    flexDirection: 'row',paddingLeft: 10,paddingTop: 5
+  },
+  ratingImage: {
+    height: 19.21,width: 200
+  },
+  ratingText: {
+    paddingLeft: 10,color: 'grey',alignItems: 'center',textAlign: 'center',
+  },
+  listStyle:{
+      textAlign:'right',
+  },
+  rightto:{
+    textAlign:'right'
+  },
+  listItemStyle:{
+    borderBottomColor:'#e3e4e5',borderBottomWidth : 1.25
+  },
+  subtitleFont:{
+    fontSize:13,paddingTop:10
+  },
+  userNameHead:{
+    textAlign:'center',fontSize:20,borderWidth:2
+  },
+  loadIconStyle:{
+    flexDirection: 'column', justifyContent: 'center',alignItems: 'center',
+  }
+});
+
+const appPages = 
+[
+    'classlist',
+    'classpreview',
+    'nextclass',
+    'mediaplayer',
+    'stateofmind',
+    'alertComponent'
+]
+const status = -100;
 var userInClassArr =[];//All userInClass array for all classes
 var allUserclasses =[];//All classes array with the user's version  
 var nextclass ;//Next class for the user-(*)
@@ -19,50 +60,10 @@ var userInThisClass; //The userInclass instance for this (*) class
 var oldClasses=[];//Previous classes-The user has already done these classes.
 var userFinishAllClasses=false;
 var currentClass = null;
+var classId = status; //if we found in the server that the classId is equal to -100 it's mean that all classes has finished
+var classVersion = status // the same reason like classId
 
-const styles = StyleSheet.create({
-    subtitleView: {
-      flexDirection: 'row',paddingLeft: 10,paddingTop: 5
-    },
-    ratingImage: {
-      height: 19.21,width: 200
-    },
-    ratingText: {
-      paddingLeft: 10,color: 'grey',alignItems: 'center',textAlign: 'center',
-    },
-    listStyle:{
-        textAlign:'right',
-    },
-    rightto:{
-      textAlign:'right'
-    },
-    listItemStyle:{
-      borderBottomColor:'#e3e4e5',borderBottomWidth : 1.25
-    },
-    subtitleFont:{
-      fontSize:13,paddingTop:10
-    },
-    userNameHead:{
-      textAlign:'center',fontSize:20,borderWidth:2
-    },
-    loadIconStyle:{
-      flexDirection: 'column', justifyContent: 'center',alignItems: 'center',
-    }
-  });
-
-  const appPages = 
-  [
-      'classlist',
-      'classpreview',
-      'nextclass',
-      'mediaplayer',
-      'stateofmind',
-      'alertComponent'
-  ]
-
-
-
-  export default class Classlist extends React.Component{
+export default class Classlist extends React.Component{
 constructor(props){
   super(props);
   this.state = {
@@ -78,6 +79,8 @@ constructor(props){
     oldClasses:null,
     userInThisClass:null,
     currentClass:"כל השיעורים בוצעו",//the name(string) of the next class
+    classVersion:status,
+    classId:status
   
   }
 }
@@ -104,7 +107,7 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
       }
     
 //********************************* 
-    updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses,userinclass,userFeedback,currentClass) =>{
+    updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses,userinclass,userFeedback,currentClass,classId,classVersion) =>{
    this.setState({
   userId: id,
   fullName: fullname,
@@ -117,7 +120,10 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
   oldClasses:oldClasses,
   userInThisClass:userinclass,
   userFeedback:userFeedback,
-  currentClass:currentClass
+  currentClass:currentClass,
+  classVersion:classVersion,
+  classId:classId,
+
   });
     }
     setAllClasses = (userInClassArr) =>{
@@ -129,7 +135,9 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
          counter++;
           nextclass=userInClassArr[i].AppClass;
           userInThisClass=userInClassArr[i];
-          currentClass =  nextclass=userInClassArr[i].AppClass.Title;
+          currentClass=userInClassArr[i].AppClass.Title;
+          classId = userInClassArr[i].AppClass.Id;
+          classVersion = userInClassArr[i].AppClass.Version;
           break;
         }
       }
@@ -162,7 +170,7 @@ fetch(urluserInClass)
   userInClassArr = response;
   this.setAllClasses(userInClassArr);
   this.SetOldClasses(userInClassArr);
-  this.updateStates(id,fullname,username,groupId,groupVersion,allUserclasses,nextclass,oldClasses,userInThisClass,userFeedback,currentClass);
+  this.updateStates(id,fullname,username,groupId,groupVersion,allUserclasses,nextclass,oldClasses,userInThisClass,userFeedback,currentClass,classId,classVersion);
 })
 
 .catch((error=>{
@@ -217,7 +225,12 @@ fetch(urluserInClass)
                leftAvatar = {{source:homeWorkPic,height:heightPic,width:widthPic}}
              />    
               <ListItem
-              onPress = {()=>{this.props.navigation.navigate(appPages[4])}}
+              onPress = {()=>{
+                this.props.navigation.navigate(
+                  appPages[4],
+                  {userId:this.state.userId,classId:this.state.classId,classVersion:this.state.classVersion,
+                    userFullName:JSON.parse(this.state.fullName)}
+                  )}}
               style = {styles.listItemStyle}
                title = {<Text>איך אני מרגיש</Text>}
                subtitle =  {<Text style={styles.subtitleFont} >שתף אותנו</Text>}

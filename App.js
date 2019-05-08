@@ -7,6 +7,7 @@ import NextClass from './NextClass';
 import MediaPlayer from './MediaPlayer';
 import StateOfMind from './StateOfMind';
 import AlertComponent from './alerts/AlertComponent';
+import AlertComponentStateOfMind from './alerts/AlertComponentStateOfMind'
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
 const AppNavigator = createStackNavigator
@@ -48,8 +49,15 @@ const AppNavigator = createStackNavigator
       screen:StateOfMind, 
     },
     alertComponent:{
-      screen:AlertComponent
-    }
+      screen:AlertComponent,
+      navigationOptions:
+      {headerLeft:null}
+    },
+    alertComponentStateOfMind:{
+      screen:AlertComponentStateOfMind,
+      navigationOptions:
+      {headerLeft:null}
+    },
     
   },
   {
@@ -100,7 +108,12 @@ const AppNavigatorLogged = createStackNavigator
       screen:AlertComponent,
       navigationOptions:
       {headerLeft:null}
-    }
+    },
+    alertComponentStateOfMind:{
+      screen:AlertComponentStateOfMind,
+      navigationOptions:
+      {headerLeft:null}
+    },
   },
   {
     initialRouteName:"classlist",  

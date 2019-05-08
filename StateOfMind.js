@@ -3,6 +3,9 @@ import { PixelRatio, StyleSheet, Text, View, PanResponder, Animated, TouchableOp
 import AwesomeButton from "react-native-really-awesome-button";
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick';
 
+
+  
+
 const REACTIONS = [
   { label: "מודאג", src: require('./assets/images/worried.png'), bigSrc: require('./assets/images/worried_big.png') },
   { label: "עצוב", src: require('./assets/images/sad.png'), bigSrc: require('./assets/images/sad_big.png') },
@@ -13,6 +16,13 @@ const REACTIONS = [
 const WIDTH = 320;
 const DISTANCE =  WIDTH / REACTIONS.length;
 const END = WIDTH - DISTANCE;
+const ServerStatus = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UserFeelingsReact";
+const navigatePage = "alertComponentStateOfMind";
+
+var userId;
+var classId;
+var classVersion;
+var userFullName
 
 export default class StateOfMind extends React.Component {
   constructor(props) {
@@ -25,6 +35,14 @@ export default class StateOfMind extends React.Component {
   }
 
   componentWillMount() {
+    userId = this.props.navigation.state.params.userId;
+    classId = this.props.navigation.state.params.classId;
+    classVersion = this.props.navigation.state.params.classVersion;
+    userFullName = this.props.navigation.state.params.userFullName;
+    console.log(userId);
+    console.log(classId);
+    console.log(classVersion);
+
     this._panResponder = PanResponder.create({
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
@@ -52,13 +70,40 @@ export default class StateOfMind extends React.Component {
   //Need to do a fetch (post) to our's server and then to activate the alert component.
   //** 
   updatePan(toValue,lable) {
-    Animated.spring(this._pan, { toValue, friction: 7 }).start();
-    this.setState({stateOfMind:lable})
-  }
 
-  UpdateStateOfMind = () =>{
-    AsyncStorage.setItem('sendfeedback',JSON.stringify(true));
-  }
+    Animated.spring(this._pan, { toValue, friction: 7 }).start();
+    this.setState({stateOfMind:lable});
+   
+    }
+
+    UpdateStateOfMind = (userId,classId,classVersion,stateOfMind) => {
+      this.props.navigation.navigate(navigatePage,{userFullName:userFullName});
+      // let data = {
+      //   method: 'POST',
+      //   credentials: 'same-origin',
+      //   mode: 'same-origin',
+      //   body: JSON.stringify({
+      //     UserId:userId,
+      //     Class_Id:classId,
+      //     Class_Version:classVersion,
+      //     User_Feeling:lable
+      //   }),
+      //   headers: {
+      //     'Accept':'application/json',
+      //     'Content-Type':'application/json',
+      //   }
+      // }
+      // return fetch(ServerStatus, data)
+      //         .then(response => response.json())  // promise
+      //         .then((json) =>{ 
+      //           dispatch(receiveAppos(json));
+      //           this.props.navigation.navigate(navigatePage);
+      //         })
+      //         .catch((error=>{
+      //           console.log(error);
+      //         }))
+    }
+
 
   render() {
     return (
@@ -166,13 +211,13 @@ export default class StateOfMind extends React.Component {
             </Animated.View>
           </View>
         </View>
-        <AwesomeButtonRick onPress={this.UpdateStateOfMind} type="primary">שליחה           </AwesomeButtonRick>
+        <AwesomeButtonRick onPress={() => {this.UpdateStateOfMind(userId,classId,classVersion,this.state.stateOfMind)}} type="primary">שליחה           </AwesomeButtonRick>
       </View>
     );
+            
   }
 }
-
-const size = 42;
+ const size = 42;
 
 const styles = StyleSheet.create({
   container: {
@@ -242,3 +287,7 @@ const styles = StyleSheet.create({
     top: DISTANCE/2 + (2 / PixelRatio.get()),
   }
 });
+          
+
+  
+

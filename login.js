@@ -5,7 +5,9 @@ import ActionButton from 'react-native-action-button';
 const nextPage = 'classlist';
 const wrongPassword = "השם משתמש או הסיסמא אינם נכונים";
 const loginUrl = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch?username=";
+const userPassword = "&password";
 const welcome = "ברוך הבא";
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -70,11 +72,10 @@ class Login extends React.Component {
       /*************************************************/
       /*Fetch request to DB - return True or False*/
       /*************************************************/
-
   onLogin() {
     url = loginUrl;
     url+= this.state.username;
-    url+= "&password=";
+    url+= userPassword;
     url+=this.state.password;
     return fetch(url)
     .then(response => response.json())
@@ -124,7 +125,5 @@ class Login extends React.Component {
     );
   }
 }
-
-
 
 export default Login;
