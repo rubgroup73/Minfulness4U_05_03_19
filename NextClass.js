@@ -6,8 +6,10 @@ const ServeregetUserInSection = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/ap
 const ServerclassVersion = "&classVersion=";
 const ServerclassId = "&classId=";
 const gifUri = 'https://media.giphy.com/media/AZ1PPDF8uO9MI/giphy.gif';
-const pageToNavigate =  'mediaplayer'
+const pageToNavigate =  'mediaplayer';
 var userInThisSectionObj = null;
+
+
 
 export default class NextClass extends React.Component {
     constructor(props) {
@@ -21,6 +23,7 @@ export default class NextClass extends React.Component {
       }  
       NavigateToUserClass = (userInThisSectionObj) =>{
         debugger;
+      
       this.props.navigation.navigate(
         pageToNavigate, 
         {

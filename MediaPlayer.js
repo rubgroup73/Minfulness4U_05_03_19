@@ -83,6 +83,7 @@ const BUFFERING_STRING = '...buffering...';
 const RATE_SCALE = 3.0;
 const VIDEO_CONTAINER_HEIGHT = DEVICE_HEIGHT * 2.0 / 5.0 - FONT_SIZE * 2;
 
+
 export default class MediaPlayer extends React.Component {
   constructor(props) {
     super(props);
@@ -90,6 +91,11 @@ export default class MediaPlayer extends React.Component {
     this.isSeeking = false;
     this.shouldPlayAtEndOfSeek = false;
     this.playbackInstance = null;
+    this.theUserSectionsDataArr;
+    this.theUserSectionData;
+    this.sectionClass;
+    this.userInThisClass;
+    
     this.state = {
       showVideo: false,
       playbackInstanceName: LOADING_STRING,
@@ -116,6 +122,12 @@ export default class MediaPlayer extends React.Component {
   }
 
   componentDidMount() {
+    theUserSectionsDataArr= this.props.navigation.state.params.userInThisSectionObj;
+    theUserSectionData = thePlayingSectionsArr[this.index];
+    sectionClass =this.props.navigation.state.params.nextClass;
+    userInThisClass = this.props.navigation.state.params.userInThisClass;
+    
+
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
       interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
