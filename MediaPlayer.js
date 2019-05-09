@@ -111,6 +111,7 @@ export default class MediaPlayer extends React.Component {
       useNativeControls: false,
       fullscreen: false,
       throughEarpiece: false,
+      shouldRender:false,
     };
   }
 
@@ -137,9 +138,6 @@ export default class MediaPlayer extends React.Component {
 
   }
 
-  componentWillUnmount() {
-    
-  }
 
   async _loadNewPlaybackInstance(playing) {
     if (this.playbackInstance != null) {
@@ -448,13 +446,17 @@ export default class MediaPlayer extends React.Component {
         })
     );
   };
-
+//** 
+//render the component
+//** 
   render() {
     
-    return !this.state.fontLoaded ? (
-     
-      <View style={styles.emptyContainer} />
-    ) : (
+     if((this.state.fontLoaded==false) ||( this.state.shouldRender==false) )
+     {
+     return <View style={styles.emptyContainer} />
+     }
+     else{
+       return(
       <View style={styles.container}>
         <View />
         <View style={styles.nameContainer}>
@@ -603,9 +605,10 @@ export default class MediaPlayer extends React.Component {
           </View>
         ) : null}
       </View>
-    );
+       );
+      }
+    }
   }
-}
 
 const styles = StyleSheet.create({
   emptyContainer: {

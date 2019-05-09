@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { Alert, Button, TextInput, View, StyleSheet,AsyncStorage } from 'react-native';
 import ActionButton from 'react-native-action-button';
+import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick'; 
 
-const nextPage = 'classlist';
+const nextPage = 'alertComponentLogin';
 const wrongPassword = "השם משתמש או הסיסמא אינם נכונים";
 const loginUrl = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch?username=";
-const userPassword = "&password";
+const userPassword = "&password=";
 const welcome = "ברוך הבא";
 
 const styles = StyleSheet.create({
@@ -25,35 +26,37 @@ const styles = StyleSheet.create({
   },
 });
 
+var personFromDBObj;
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.checkAuthentic= this.checkAuthentic.bind(this);
     this.state = {
-      username: '',
-      password: '',
-      personFromDB:'',
-      feedback:false
+      username: null,
+      password: null,
+      personFromDB:null,
+     
     };
   }
    /*************************************************/
   /*Check if the User credentials are True or False*/
   /*************************************************/
   checkAuthentic(){
-        if(this.state.personFromDB.Credentials1 == true){
+    debugger;
+        if(personFromDBObj.Credentials1 == true){
         
-      AsyncStorage.setItem("username",JSON.stringify(this.state.personFromDB.UserName));
-      AsyncStorage.setItem("password",JSON.stringify(this.state.personFromDB.Password));
-      AsyncStorage.setItem("login",JSON.stringify(this.state.personFromDB.Credentials1));
-      AsyncStorage.setItem("userid",JSON.stringify(this.state.personFromDB.Id));
-      AsyncStorage.setItem("fullname",JSON.stringify(this.state.personFromDB.FullName));
-      AsyncStorage.setItem("groupId",JSON.stringify(this.state.personFromDB.Group_Id));
-      AsyncStorage.setItem("groupVersion",JSON.stringify(this.state.personFromDB.Group_Version));
-      AsyncStorage.setItem("sendfeedback",JSON.stringify(this.state.feedback));
-      alert(welcome);  
+      AsyncStorage.setItem("username",JSON.stringify(personFromDBObj.UserName));
+      AsyncStorage.setItem("password",JSON.stringify(personFromDBObj.Password));
+      AsyncStorage.setItem("login",JSON.stringify(personFromDBObj.Credentials1));
+      AsyncStorage.setItem("userid",JSON.stringify(personFromDBObj.Id));
+      AsyncStorage.setItem("fullname",JSON.stringify(personFromDBObj.FullName));
+      AsyncStorage.setItem("groupId",JSON.stringify(personFromDBObj.Group_Id));
+      AsyncStorage.setItem("groupVersion",JSON.stringify(personFromDBObj.Group_Version));
+     
       this.props.navigation.navigate(
         nextPage,
-        username= AsyncStorage.getItem("username")
+        {userFullName: personFromDBObj.FullName}
         );
       }
     else{alert(wrongPassword);}
@@ -72,18 +75,21 @@ class Login extends React.Component {
       /*************************************************/
       /*Fetch request to DB - return True or False*/
       /*************************************************/
-  onLogin() {
+  onLogin = () => {
     url = loginUrl;
     url+= this.state.username;
     url+= userPassword;
     url+=this.state.password;
+    debugger;
     return fetch(url)
     .then(response => response.json())
-    .then((response => this.setState({  
-      personFromDB:response
-  })))
-  .then(()=>{
-    this.checkAuthentic();
+    .then((response)=>{
+      debugger;
+      personFromDBObj = response;
+      this.checkAuthentic();
+    })
+  .then((response)=>{
+    console.log(response);
   })    
     .catch((error)=>{
       console.log(error);
@@ -115,12 +121,12 @@ class Login extends React.Component {
           secureTextEntry={true}
           style={styles.input}
         />
-        
-        <Button
+        <AwesomeButtonRick onPress={() =>{this.onLogin(this)}} type="primary">Login           </AwesomeButtonRick>
+        {/* <Button
           title={'Login'}
           style={styles.input}
           onPress={this.onLogin.bind(this)}
-        />
+        /> */}
       </View>
     );
   }

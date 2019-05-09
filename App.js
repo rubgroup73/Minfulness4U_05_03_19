@@ -7,7 +7,8 @@ import NextClass from './NextClass';
 import MediaPlayer from './MediaPlayer';
 import StateOfMind from './StateOfMind';
 import AlertComponent from './alerts/AlertComponent';
-import AlertComponentStateOfMind from './alerts/AlertComponentStateOfMind'
+import AlertComponentStateOfMind from './alerts/AlertComponentStateOfMind';
+import AlertComponentLogin from './alerts/AlertComponentLogin';
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
 const AppNavigator = createStackNavigator
@@ -57,6 +58,11 @@ const AppNavigator = createStackNavigator
     },
     alertComponentStateOfMind:{
       screen:AlertComponentStateOfMind,
+      navigationOptions:
+      {headerLeft:null}
+    },
+    alertComponentLogin:{
+      screen:AlertComponentLogin,
       navigationOptions:
       {headerLeft:null}
     },
@@ -118,6 +124,11 @@ const AppNavigatorLogged = createStackNavigator
       navigationOptions:
       {headerLeft:null}
     },
+    alertComponentLogin:{
+      screen:AlertComponentLogin,
+      navigationOptions:
+      {headerLeft:null}
+    },
   },
   {
     initialRouteName:"classlist",  
@@ -139,10 +150,10 @@ export default class App extends React.Component {
 
   componentDidMount = async ()=>{
     
-    //  await AsyncStorage.removeItem("username")
-    // await AsyncStorage.removeItem("password")
-    // await AsyncStorage.removeItem("login")
-    // await AsyncStorage.removeItem("sendfeedback")
+     await AsyncStorage.removeItem("username")
+    await AsyncStorage.removeItem("password")
+    await AsyncStorage.removeItem("login")
+    await AsyncStorage.removeItem("sendfeedback")
    let temp = await AsyncStorage.getItem("login");
    if(temp != null){
     if(temp == "true")
