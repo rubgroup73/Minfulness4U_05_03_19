@@ -47,6 +47,8 @@ const AppNavigator = createStackNavigator
     stateofmind:
     {
       screen:StateOfMind, 
+      navigationOptions:
+      {headerLeft:null}
     },
     alertComponent:{
       screen:AlertComponent,
@@ -103,6 +105,8 @@ const AppNavigatorLogged = createStackNavigator
     stateofmind:
     {
       screen:StateOfMind, 
+      navigationOptions:
+      {headerLeft:null}
     }, 
     alertComponent:{
       screen:AlertComponent,

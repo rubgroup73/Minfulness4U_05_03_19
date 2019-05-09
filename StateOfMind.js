@@ -1,10 +1,7 @@
 import React from 'react';
 import { PixelRatio, StyleSheet, Text, View, PanResponder, Animated, TouchableOpacity,AsyncStorage } from 'react-native';
 import AwesomeButton from "react-native-really-awesome-button";
-import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick';
-
-
-  
+import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick'; 
 
 const REACTIONS = [
   { label: "מודאג", src: require('./assets/images/worried.png'), bigSrc: require('./assets/images/worried_big.png') },
@@ -22,7 +19,8 @@ const navigatePage = "alertComponentStateOfMind";
 var userId;
 var classId;
 var classVersion;
-var userFullName
+var userFullName;
+var UserInClassObj;
 
 export default class StateOfMind extends React.Component {
   constructor(props) {
@@ -39,6 +37,7 @@ export default class StateOfMind extends React.Component {
     classId = this.props.navigation.state.params.classId;
     classVersion = this.props.navigation.state.params.classVersion;
     userFullName = this.props.navigation.state.params.userFullName;
+    
     console.log(userId);
     console.log(classId);
     console.log(classVersion);
@@ -76,32 +75,34 @@ export default class StateOfMind extends React.Component {
    
     }
 
-    UpdateStateOfMind = (userId,classId,classVersion,stateOfMind) => {
-      this.props.navigation.navigate(navigatePage,{userFullName:userFullName});
-      // let data = {
-      //   method: 'POST',
-      //   credentials: 'same-origin',
-      //   mode: 'same-origin',
-      //   body: JSON.stringify({
-      //     UserId:userId,
-      //     Class_Id:classId,
-      //     Class_Version:classVersion,
-      //     User_Feeling:lable
-      //   }),
-      //   headers: {
-      //     'Accept':'application/json',
-      //     'Content-Type':'application/json',
-      //   }
-      // }
-      // return fetch(ServerStatus, data)
-      //         .then(response => response.json())  // promise
-      //         .then((json) =>{ 
-      //           dispatch(receiveAppos(json));
-      //           this.props.navigation.navigate(navigatePage);
-      //         })
-      //         .catch((error=>{
-      //           console.log(error);
-      //         }))
+    UpdateStateOfMind = (UserId,ClassId,ClassVersion,User_Feeling) => {
+      // this.props.navigation.navigate(navigatePage,{userFullName:userFullName});
+      UserId = JSON.parse(UserId);
+      UserInClassObj = {
+        UserId:UserId,
+        ClassId:ClassId,
+        ClassVersion:ClassVersion,
+        User_Feeling:User_Feeling
+      }
+      debugger;
+      console.log(UserInClassObj)
+      let data = {
+        method: 'PUT',
+        headers: {
+          'Accept':'application/json',
+          'Content-Type':'application/json',
+        },
+        body: data=JSON.stringify(UserInClassObj)
+      }
+      return fetch(ServerStatus, data)
+              .then(response => response.json())  // promise
+              .then((response) =>{    
+                console.log(response);         
+                this.props.navigation.navigate(navigatePage,{userFullName:userFullName});
+              })
+              .catch((error=>{
+                console.log(error);
+              }))
     }
 
 
