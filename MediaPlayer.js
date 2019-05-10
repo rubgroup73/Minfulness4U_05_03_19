@@ -141,10 +141,6 @@ export default class MediaPlayer extends React.Component {
       
     })();
   }
-  _setUserDetails = () =>{
-
-  }
-
 
   async _loadNewPlaybackInstance(playing) {
     if (this.playbackInstance != null) {
@@ -457,13 +453,20 @@ export default class MediaPlayer extends React.Component {
 //render the component
 //** 
   render() {
-    
-    return !this.state.fontLoaded ? (
-     
-      <View style={styles.emptyContainer} />
-    ) : (
-      <View style={styles.container}>
-        <View />
+    if(!this.state.fontLoaded){
+      return ( <View style={styles.emptyContainer} />)
+    }
+    else if(this.state.fontLoaded==true){
+      return(
+        <View style={styles.loadIconStyle}>       
+              <Image source={require('./assets/images/Loading_2.gif')} />
+       </View> 
+       );
+    }
+    else if((this.state.fontLoaded==true)&&(this.state.shouldRender==true)){
+      return(  
+        
+      <View style={styles.container}> <View />
         <View style={styles.nameContainer}>
           <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
             {this.state.playbackInstanceName}
@@ -607,14 +610,15 @@ export default class MediaPlayer extends React.Component {
               </TouchableHighlight>
               <View />
             </View>
-          </View>
-        ) : null}
-      </View>
-       );
-      
+        </View>
+        ):null}
+         </View>
+        )
+      }
     }
-  }
+  }    
 
+       
 const styles = StyleSheet.create({
   emptyContainer: {
     alignSelf: 'stretch',
