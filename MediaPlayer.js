@@ -101,7 +101,9 @@ export default class MediaPlayer extends React.Component {
     this.theUserSectionData;
     this.nextClass;
     this.userInThisClass;
+    this.shouldRender=false;
     
+
     this.state = {
       showVideo: false,
       playbackInstanceName: LOADING_STRING,
@@ -123,7 +125,7 @@ export default class MediaPlayer extends React.Component {
       useNativeControls: false,
       fullscreen: false,
       throughEarpiece: false,
-      shouldRender:false,
+      
     };
   }
 
@@ -137,16 +139,19 @@ export default class MediaPlayer extends React.Component {
       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
       playThroughEarpieceAndroid: false,
     });
+    
     (async () => {
       await Font.loadAsync({
         ...MaterialIcons.font,
         'cutive-mono-regular': require('./assets/fonts/CutiveMono-Regular.ttf'),
       });
-      this._setUserDetails();
+      
+      debugger;
+      this.updateUserDetails();
       // this.setState({ fontLoaded: true });
       
     })();
-    this.updateUserDetails();
+    
   }
   //************************************************************************************************************************ */
   //*work here please
@@ -160,11 +165,9 @@ export default class MediaPlayer extends React.Component {
 
     this.theUserSectionsDataArr.map((m)=>{
     PLAYLIST.push(new PlaylistItem(m.Section_Title,m.File_Path,false,m.Class_Id,m.Section_Id));
-  
     })
-    this.setState({
-      shouldRender:true
-    })
+    this.shouldRender = true;
+    this.setState({ fontLoaded: true });
   }
 
   async _loadNewPlaybackInstance(playing) {
@@ -333,19 +336,19 @@ export default class MediaPlayer extends React.Component {
     }
   };
 
-  // _onForwardPressed = () => {
-  //   if (this.playbackInstance != null) {
-  //     this._advanceIndex(true);
-  //     this._updatePlaybackInstanceForIndex(this.state.shouldPlay);
-  //   }
-  // };
+  _onForwardPressed = () => {
+    if (this.playbackInstance != null) {
+      this._advanceIndex(true);
+      this._updatePlaybackInstanceForIndex(this.state.shouldPlay);
+    }
+  };
 
-  // _onBackPressed = () => {
-  //   if (this.playbackInstance != null) {
-  //     this._advanceIndex(false);
-  //     this._updatePlaybackInstanceForIndex(this.state.shouldPlay);
-  //   }
-  // };
+  _onBackPressed = () => {
+    if (this.playbackInstance != null) {
+      this._advanceIndex(false);
+      this._updatePlaybackInstanceForIndex(this.state.shouldPlay);
+    }
+  };
 
   _onMutePressed = () => {
     if (this.playbackInstance != null) {
@@ -481,13 +484,13 @@ export default class MediaPlayer extends React.Component {
    
   {
     debugger;
-    if(!this.state.fontLoaded){
+    if(!this.shouldRender){
       return ( <View style={styles.emptyContainer} />)
     }
-    else if((this.state.fontLoaded==true)&&(this.state.shouldRender==true)){
+    else if((this.state.fontLoaded==true)&&(this.shouldRender==true)){
       return(  
-        
-      <View style={styles.container}> <View />
+        <View style={styles.container}>
+        <View />
         <View style={styles.nameContainer}>
           <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
             {this.state.playbackInstanceName}
@@ -514,7 +517,6 @@ export default class MediaPlayer extends React.Component {
             onFullscreenUpdate={this._onFullscreenUpdate}
             onReadyForDisplay={this._onReadyForDisplay}
             useNativeControls={this.state.useNativeControls}
-           
           />
         </View>
         <View
@@ -525,7 +527,15 @@ export default class MediaPlayer extends React.Component {
             },
           ]}
           >
-        
+          <Slider
+            style={styles.playbackSlider}
+            trackImage={ICON_TRACK_1.module}
+            thumbImage={ICON_THUMB_1.module}
+            value={this._getSeekSliderPosition()}//Show the video progress each second.
+            onValueChange={this._onSeekSliderValueChange}
+            onSlidingComplete={this._onSeekSliderSlidingComplete}
+            disabled={this.state.isLoading}
+          />
           <View style={styles.timestampRow}>
             <Text style={[styles.text, styles.buffering, { fontFamily: 'cutive-mono-regular' }]}>
               {this.state.isBuffering ? BUFFERING_STRING : ''}
@@ -543,7 +553,13 @@ export default class MediaPlayer extends React.Component {
               opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
             },
           ]}>
-         
+          <TouchableHighlight
+            underlayColor={BACKGROUND_COLOR}
+            style={styles.wrapper}
+            onPress={this._onBackPressed}
+            disabled={this.state.isLoading}>
+            <Image style={styles.button} source={ICON_BACK_BUTTON.module} />
+          </TouchableHighlight>
           <TouchableHighlight
             underlayColor={BACKGROUND_COLOR}
             style={styles.wrapper}
@@ -561,7 +577,13 @@ export default class MediaPlayer extends React.Component {
             disabled={this.state.isLoading}>
             <Image style={styles.button} source={ICON_STOP_BUTTON.module} />
           </TouchableHighlight>
-      
+          <TouchableHighlight
+            underlayColor={BACKGROUND_COLOR}
+            style={styles.wrapper}
+            onPress={this._onForwardPressed}
+            disabled={this.state.isLoading}>
+            <Image style={styles.button} source={ICON_FORWARD_BUTTON.module} />
+          </TouchableHighlight>
         </View>
         <View style={[styles.buttonsContainerBase, styles.buttonsContainerMiddleRow]}>
           <View style={styles.volumeContainer}>
@@ -575,7 +597,6 @@ export default class MediaPlayer extends React.Component {
               />
             </TouchableHighlight>
             <Slider
-           
               style={styles.volumeSlider}
               trackImage={ICON_TRACK_1.module}
               thumbImage={ICON_THUMB_2.module}
@@ -583,10 +604,49 @@ export default class MediaPlayer extends React.Component {
               onValueChange={this._onVolumeSliderValueChange}
             />
           </View>
-         
+          <TouchableHighlight
+            underlayColor={BACKGROUND_COLOR}
+            style={styles.wrapper}
+            onPress={this._onLoopPressed}>
+            <Image
+              style={styles.button}
+              source={LOOPING_TYPE_ICONS[this.state.loopingType].module}
+            />
+          </TouchableHighlight>
         </View>
         <View style={[styles.buttonsContainerBase, styles.buttonsContainerBottomRow]}>
-        
+          <TouchableHighlight
+            underlayColor={BACKGROUND_COLOR}
+            style={styles.wrapper}
+            onPress={() => this._trySetRate(1.0, this.state.shouldCorrectPitch)}>
+            <View style={styles.button}>
+              <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>Rate:</Text>
+            </View>
+          </TouchableHighlight>
+          <Slider
+            style={styles.rateSlider}
+            trackImage={ICON_TRACK_1.module}
+            thumbImage={ICON_THUMB_1.module}
+            value={this.state.rate / RATE_SCALE}
+            onSlidingComplete={this._onRateSliderSlidingComplete}
+          />
+          <TouchableHighlight
+            underlayColor={BACKGROUND_COLOR}
+            style={styles.wrapper}
+            onPress={this._onPitchCorrectionPressed}>
+            <View style={styles.button}>
+              <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
+                PC: {this.state.shouldCorrectPitch ? 'yes' : 'no'}
+              </Text>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this._onSpeakerPressed} underlayColor={BACKGROUND_COLOR}>
+            <MaterialIcons
+              name={this.state.throughEarpiece ? ICON_THROUGH_EARPIECE : ICON_THROUGH_SPEAKER}
+              size={32}
+              color="black"
+            />
+          </TouchableHighlight>
         </View>
         <View />
         {this.state.showVideo ? (
@@ -631,7 +691,7 @@ export default class MediaPlayer extends React.Component {
               </TouchableHighlight>
               <View />
             </View>
-        </View>
+          </View>
         ):null}
          </View>
         )
