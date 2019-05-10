@@ -29,25 +29,31 @@ class Icon {
 //Creat a class for Items to play
 //*******************************/
 class PlaylistItem {
-  constructor(name, uri, isVideo) {
+  constructor(name, uri, isVideo,Class_Id,Section_Id) {
     this.name = name;
     this.uri = uri;
     this.isVideo = isVideo;
+    this.Class_Id=Class_Id;
+    this.Section_Id= Section_Id;
   }
 }
 //Const var to store all our's PlaylistiItem
 //*******************************/
+
+
+
+
 const PLAYLIST = [
-    new PlaylistItem(
-        'Big Buck Bunny 2',
-        'http://proj.ruppin.ac.il/bgroup73/test1/tar4/mediaFiles/big2.mp3',
-        false
-      ),
-  new PlaylistItem(
-    'Big buck Bunny',
-    'http://proj.ruppin.ac.il/bgroup73/test1/tar4/mediaFiles/big2.mp3',
-    false
-  ),
+  //   new PlaylistItem(
+  //       'Big Buck Bunny 2',
+  //       'http://proj.ruppin.ac.il/bgroup73/test1/tar4/mediaFiles/big2.mp3',
+  //       false
+  //     ),
+  // new PlaylistItem(
+  //   'Big buck Bunny',
+  //   'http://proj.ruppin.ac.il/bgroup73/test1/tar4/mediaFiles/big2.mp3',
+  //   false
+  // ),
   
 ];
 
@@ -93,7 +99,7 @@ export default class MediaPlayer extends React.Component {
     this.playbackInstance = null;
     this.theUserSectionsDataArr;
     this.theUserSectionData;
-    this.sectionClass;
+    this.nextClass;
     this.userInThisClass;
     
     this.state = {
@@ -107,7 +113,7 @@ export default class MediaPlayer extends React.Component {
       isPlaying: false,
       isBuffering: false,
       isLoading: true,
-      fontLoaded: false,
+      fontLoaded: true,
       shouldCorrectPitch: true,
       volume: 1.0,
       rate: 1.0,
@@ -137,9 +143,28 @@ export default class MediaPlayer extends React.Component {
         'cutive-mono-regular': require('./assets/fonts/CutiveMono-Regular.ttf'),
       });
       this._setUserDetails();
-      this.setState({ fontLoaded: true });
+      // this.setState({ fontLoaded: true });
       
     })();
+    this.updateUserDetails();
+  }
+  //************************************************************************************************************************ */
+  //*work here please
+  //************************************************************************************************************************ */
+  updateUserDetails = async () =>{
+    debugger;
+    this.theUserSectionsDataArr = await this.props.navigation.state.params.SectionFinishedFalse;
+    this.theUserSectionData=await this.theUserSectionsDataArr[this.index];
+    this.nextClass= await this.props.navigation.state.params.nextClass;
+    this.userInThisClass=await this.props.navigation.state.params.userInThisClass;
+
+    this.theUserSectionsDataArr.map((m)=>{
+    PLAYLIST.push(new PlaylistItem(m.Section_Title,m.File_Path,false,m.Class_Id,m.Section_Id));
+  
+    })
+    this.setState({
+      shouldRender:true
+    })
   }
 
   async _loadNewPlaybackInstance(playing) {
@@ -452,16 +477,12 @@ export default class MediaPlayer extends React.Component {
 //** 
 //render the component
 //** 
-  render() {
+  render()
+   
+  {
+    debugger;
     if(!this.state.fontLoaded){
       return ( <View style={styles.emptyContainer} />)
-    }
-    else if(this.state.fontLoaded==true){
-      return(
-        <View style={styles.loadIconStyle}>       
-              <Image source={require('./assets/images/Loading_2.gif')} />
-       </View> 
-       );
     }
     else if((this.state.fontLoaded==true)&&(this.state.shouldRender==true)){
       return(  
@@ -615,6 +636,13 @@ export default class MediaPlayer extends React.Component {
          </View>
         )
       }
+         else if(this.state.fontLoaded==true){
+      return(
+        <View style={styles.loadIconStyle}>       
+              <Image source={require('./assets/images/Loading_2.gif')} />
+       </View> 
+       );
+    }
     }
   }    
 
