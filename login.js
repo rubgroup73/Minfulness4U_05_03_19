@@ -121,7 +121,7 @@ class Login extends React.Component {
           secureTextEntry={true}
           style={styles.input}
         />
-        <AwesomeButtonRick onPress={() =>{this.onLogin(this)}} type="primary">Login           </AwesomeButtonRick>
+        <AwesomeButtonRick onPress={() =>{this.onLogin(this)}} type="primary">Login</AwesomeButtonRick>
         {/* <Button
           title={'Login'}
           style={styles.input}

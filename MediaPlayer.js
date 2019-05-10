@@ -122,12 +122,7 @@ export default class MediaPlayer extends React.Component {
   }
 
   componentDidMount() {
-    theUserSectionsDataArr= this.props.navigation.state.params.userInThisSectionObj;
-    theUserSectionData = thePlayingSectionsArr[this.index];
-    sectionClass =this.props.navigation.state.params.nextClass;
-    userInThisClass = this.props.navigation.state.params.userInThisClass;
     
-
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
       interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
@@ -463,12 +458,10 @@ export default class MediaPlayer extends React.Component {
 //** 
   render() {
     
-     if((this.state.fontLoaded==false) ||( this.state.shouldRender==false) )
-     {
-     return <View style={styles.emptyContainer} />
-     }
-     else{
-       return(
+    return !this.state.fontLoaded ? (
+     
+      <View style={styles.emptyContainer} />
+    ) : (
       <View style={styles.container}>
         <View />
         <View style={styles.nameContainer}>
@@ -618,7 +611,7 @@ export default class MediaPlayer extends React.Component {
         ) : null}
       </View>
        );
-      }
+      
     }
   }
 

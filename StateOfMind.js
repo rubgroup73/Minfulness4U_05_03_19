@@ -1,5 +1,5 @@
 import React from 'react';
-import { PixelRatio, StyleSheet, Text, View, PanResponder, Animated, TouchableOpacity,AsyncStorage } from 'react-native';
+import { PixelRatio, StyleSheet, Text, View, PanResponder, Animated, TouchableOpacity,AsyncStorage,Platform } from 'react-native';
 import AwesomeButton from "react-native-really-awesome-button";
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick'; 
 

@@ -1,9 +1,9 @@
 {
-  "devToolsPort": 19003,
+  "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 26760,
+  "packagerPid": 19572,
   "expoServerNgrokUrl": "https://tb-bup.anonymous.minfulness4u-05-03-19.exp.direct",
   "packagerNgrokUrl": "https://packager.tb-bup.anonymous.minfulness4u-05-03-19.exp.direct",
-  "ngrokPid": 21284
+  "ngrokPid": 16680
 }

@@ -108,6 +108,7 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
     
 //********************************* 
     updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses,userinclass,userFeedback,currentClass,classId,classVersion) =>{
+      debugger;
    this.setState({
   userId: id,
   fullName: fullname,
@@ -146,6 +147,7 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
       }
     }
     SetOldClasses=(userInClass)=>{
+      debugger;
       for(var i=0; i<userInClass.length;i++){
         if(userInClass[i].IsFinished==true){
           oldClasses.push(userInClass[i].AppClass);

@@ -150,7 +150,7 @@ export default class App extends React.Component {
 
   componentDidMount = async ()=>{
     
-    //  await AsyncStorage.removeItem("username")
+    // await AsyncStorage.removeItem("username")
     // await AsyncStorage.removeItem("password")
     // await AsyncStorage.removeItem("login")
     // await AsyncStorage.removeItem("sendfeedback")
