@@ -107,6 +107,8 @@ export default class StateOfMind extends React.Component {
 
 
   render() {
+    if(Platform.OS==='ios')
+    {
     return (
       <View style={styles.container}>
         <View style={styles.wrap}>
@@ -215,6 +217,119 @@ export default class StateOfMind extends React.Component {
         <AwesomeButtonRick onPress={() => {this.UpdateStateOfMind(userId,classId,classVersion,this.state.stateOfMind)}} type="primary">שליחה           </AwesomeButtonRick>
       </View>
     );
+            }
+//*************************************************For Android****************************************************/
+//*************************************************For Android****************************************************/
+            else{
+              return(
+                <View style={styles.container}>
+                <View style={styles.wrap}>
+                  <Text style={styles.welcome}>
+                    בבקשה תבחר את ההרגשה שלך, ובסוף לחץ על 'שליחה'
+                  </Text>
+                  
+                  <View style={styles.line} />
+        
+                  <View style={styles.reactions}>
+                    {REACTIONS.map((reaction, idx) => {
+                      const u = idx * DISTANCE;
+                      let inputRange = [u-20, u, u+20];
+                      let scaleOutputRange = [1, 0.25, 1];
+                      let topOutputRange = [0, 10, 0];
+                      let colorOutputRange = ['#999', '#222', '#999'];
+        
+                      if (u-20 < 0) {
+                        inputRange = [u, u+20];
+                        scaleOutputRange = [0.25, 1];
+                        topOutputRange = [10, 0];
+                        colorOutputRange = ['#222', '#999'];
+                      }
+        
+                      if (u+20 > END) {
+                        inputRange = [u-20, u];
+                        scaleOutputRange = [1, 0.25];
+                        topOutputRange = [0, 10];
+                        colorOutputRange = ['#999', '#222'];
+                      }
+        
+        
+                      return (
+                        <TouchableOpacity onPress={() => this.updatePan(u,reaction.label)} activeOpacity={0.9} key={idx}>
+                          <View style={styles.smileyWrap}>
+                            <Animated.Image
+                              source={reaction.src}
+                              style={[styles.smiley, {
+                                transform: [{
+                                  scale: this._pan.interpolate({
+                                    inputRange,
+                                    outputRange: scaleOutputRange,
+                                    extrapolate: 'clamp',
+                                  })
+                                }]
+                              }]}
+                            />
+                          </View>
+        
+                          <Animated.Text style={[styles.reactionText, {
+                            top: this._pan.interpolate({
+                              inputRange,
+                              outputRange: topOutputRange,
+                              extrapolate: 'clamp',
+                            }),
+                            color: this._pan.interpolate({
+                              inputRange,
+                              outputRange: colorOutputRange,
+                              extrapolate: 'clamp',
+                            })
+                          }]}>
+                            {reaction.label}
+                          </Animated.Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                    <Animated.View {...this._panResponder.panHandlers} style={[styles.bigSmiley, {
+                      transform: [{
+                        translateX: this._pan.interpolate({
+                          inputRange: [0, END],
+                          outputRange: [0, END],
+                          extrapolate: 'clamp',
+                        })
+                      }]
+                    }]}>
+                      {REACTIONS.map((reaction, idx) => {
+                        let inputRange = [(idx-1)*DISTANCE, idx*DISTANCE, (idx+1)*DISTANCE];
+                        let outputRange = [0, 1, 0];
+        
+                        if (idx == 0) {
+                          inputRange = [idx*DISTANCE, (idx+1)*DISTANCE];
+                          outputRange = [1, 0];
+                        }
+        
+                        if (idx == REACTIONS.length - 1) {
+                          inputRange = [(idx-1)*DISTANCE, idx*DISTANCE];
+                          outputRange = [0, 1];
+                        }
+                        return (
+                          <Animated.Image
+                            key={idx}
+                            source={reaction.bigSrc}
+                            style={[styles.bigSmileyImage, {
+                              opacity: this._pan.interpolate({
+                                inputRange,
+                                outputRange,
+                                extrapolate: 'clamp',
+                              })
+                            }]}
+                          />
+                        );
+                      })}
+                    </Animated.View>
+                  </View>
+                </View>
+                <AwesomeButtonRick onPress={() => {this.UpdateStateOfMind(userId,classId,classVersion,this.state.stateOfMind)}} type="primary">שליחה           </AwesomeButtonRick>
+              </View>         
+              )
+            }
             
   }
 }

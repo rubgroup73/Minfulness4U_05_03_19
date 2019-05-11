@@ -11,10 +11,12 @@ import {
   Text,
   TouchableHighlight,
   View,
-  Alert
+  Alert,
+  AsyncStorage,
 } from 'react-native';
 import { Asset, Audio, Font, Video } from 'expo';
 import { MaterialIcons } from '@expo/vector-icons';
+import moment from "moment";
 
 class Icon {
   constructor(module, width, height) {
@@ -44,19 +46,9 @@ class PlaylistItem {
 
 
 const PLAYLIST = [
-  //   new PlaylistItem(
-  //       'Big Buck Bunny 2',
-  //       'http://proj.ruppin.ac.il/bgroup73/test1/tar4/mediaFiles/big2.mp3',
-  //       false
-  //     ),
-  // new PlaylistItem(
-  //   'Big buck Bunny',
-  //   'http://proj.ruppin.ac.il/bgroup73/test1/tar4/mediaFiles/big2.mp3',
-  //   false
-  // ),
-  
 ];
-
+const ServerRequest1 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UserFeelingsReact";
+const ServerRequest2 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UserFeelingsReact";
 const ICON_THROUGH_EARPIECE = 'speaker-phone';
 const ICON_THROUGH_SPEAKER = 'speaker';
 
@@ -90,6 +82,15 @@ const RATE_SCALE = 3.0;
 const VIDEO_CONTAINER_HEIGHT = DEVICE_HEIGHT * 2.0 / 5.0 - FONT_SIZE * 2;
 
 
+var classTime = {
+  startClassS:null,
+  startClassM:null,
+   startClassH:null,
+   finishClassS :null,
+    finishClassM :null,
+    finishClassH : null
+}
+
 export default class MediaPlayer extends React.Component {
   constructor(props) {
     super(props);
@@ -102,8 +103,11 @@ export default class MediaPlayer extends React.Component {
     this.nextClass;
     this.userInThisClass;
     this.shouldRender=false;
+    this.setIntervarForStorage= null;
+    this.startOnHold= null;
+    this.classStartTime = null;
     
-
+    
     this.state = {
       showVideo: false,
       playbackInstanceName: LOADING_STRING,
@@ -115,7 +119,7 @@ export default class MediaPlayer extends React.Component {
       isPlaying: false,
       isBuffering: false,
       isLoading: true,
-      fontLoaded: true,
+      fontLoaded: false,
       shouldCorrectPitch: true,
       volume: 1.0,
       rate: 1.0,
@@ -145,27 +149,32 @@ export default class MediaPlayer extends React.Component {
         ...MaterialIcons.font,
         'cutive-mono-regular': require('./assets/fonts/CutiveMono-Regular.ttf'),
       });
-      
-      debugger;
       this.updateUserDetails();
-      // this.setState({ fontLoaded: true });
-      
     })();
-    
+      
+    this.setIntervarForStorage = setInterval(() =>{
+      AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
+
+     },5000);
+      
   }
   //************************************************************************************************************************ */
   //*work here please
   //************************************************************************************************************************ */
   updateUserDetails = async () =>{
-    debugger;
+    
     this.theUserSectionsDataArr = await this.props.navigation.state.params.SectionFinishedFalse;
     this.theUserSectionData=await this.theUserSectionsDataArr[this.index];
     this.nextClass= await this.props.navigation.state.params.nextClass;
     this.userInThisClass=await this.props.navigation.state.params.userInThisClass;
-
+    this.classStartTime =await new Date();
+    this.userInThisClass.StartTime = await moment(this.classStartTime,'DD/MM/YYYY');
+    this.theUserSectionData.Section_Start_Time = await moment(this.classStartTime,'DD/MM/YYYY');
     this.theUserSectionsDataArr.map((m)=>{
     PLAYLIST.push(new PlaylistItem(m.Section_Title,m.File_Path,false,m.Class_Id,m.Section_Id));
     })
+    this.theUserSectionData.Section_Is_Started=true;
+   
     this.shouldRender = true;
     this.setState({ fontLoaded: true });
   }
@@ -287,25 +296,97 @@ export default class MediaPlayer extends React.Component {
     console.log(`FULLSCREEN UPDATE : ${JSON.stringify(event.fullscreenUpdate)}`);
   };
 
-  _advanceIndex(forward) {
-    
+  async _advanceIndex(forward) {    
+    //Section is finished --> collecting all the relevant information, endTime, datediff   
+    debugger;
+    let classEndTime = await new Date();
+    let diff = await moment.duration(moment(classEndTime).diff(moment(this.classStartTime)));
+    let totalClassTimeM =await parseInt(diff.asMinutes()); 
+    let totalClassTimeS =await parseInt(diff.asSeconds());
+    this.theUserSectionData.Section_Total_Duration = totalClassTimeM.toString()+":"+totalClassTimeS.toString();
+    this.theUserSectionData.Section_End_Time = moment(classEndTime,"DD/MM/YYYY");
+    this.theUserSectionData.Section_Is_Finished=true;
+    clearInterval(this.setIntervarForStorage);
+    AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
+     console.log(this.theUserSectionData);
     if(this.index<PLAYLIST.length-1)
     Alert.alert(
       "להמשיך למקטע הבא?",
       "לחץ 'כן' כדי למשיך או 'לא' כדי להשאר באותו המקטע?",
      [
-        {text:"כן",onPress:()=>{this.index = (this.index + (forward ? 1 : PLAYLIST.length + 1)) % PLAYLIST.length;this._updatePlaybackInstanceForIndex(true);}},
-        {text:"לא",onPress:()=>{this.index = (this.index + (forward ? 0 : PLAYLIST.length + 0)) % PLAYLIST.length;this._updatePlaybackInstanceForIndex(true);}},
+        {text:"כן",onPress:()=>{
+
+          this.index = (this.index + (forward ? 1 : PLAYLIST.length + 1)) % PLAYLIST.length;
+          this._updatePlaybackInstanceForIndex(true);   
+
+        }},
+        {text:"לא",onPress:async ()=>{
+          this.theUserSectionData.Repeat_Section_Counter++;
+          AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
+          this.index = await (this.index + (forward ? 0 : PLAYLIST.length + 0)) % PLAYLIST.length;
+          
+          
+        }},
     ]
     );
-    else{
+    else{  
       Alert.alert(
         "השיעור הסתיים!",
         "כל הכבוד! סיימת את השיעור השבועי!",
        [
-          {text:"אישור",onPress:()=>{this._updatePlaybackInstanceForIndex(false);}},       
-      ]
-      );
+          {text:"אישור",onPress:async ()=>{
+       let classEndTime = await new Date();
+       this.userInThisClass.EndTime =await moment(classEndTime,'DD/MM/YYYY');
+       this.userInThisClass.IsFinished=await true;
+       AsyncStorage.setItem("theUserSectionDataPut",JSON.stringify(this.userInThisClass));
+       AsyncStorage.setItem("userInThisClass",JSON.stringify(this.userInThisClass));
+
+       let theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
+       let userInThisClassPut = await AsyncStorage.getItem("userInThisClass");
+       console.log(theUserSectionDataPut);
+       console.log(userInThisClassPut);
+       debugger;
+       let data1 = await {
+        method: 'PUT',
+        headers: {
+          'Accept':'application/json',
+          'Content-Type':'application/json',
+        },
+        body: data=JSON.stringify(theUserSectionDataPut)
+      }
+      let data2 = await {
+        method: 'PUT',
+        headers: {
+          'Accept':'application/json',
+          'Content-Type':'application/json',
+        },
+        body: data=JSON.stringify(userInThisClassPut)
+      }
+        await fetch(ServerRequest1, data1)
+              .then(response => response.json())  // promise
+              .then((response) =>{    
+                console.log(response);         
+             
+              })
+              .catch((error=>{
+                console.log(error);
+              }))
+
+        await fetch(ServerRequest2, data2)
+              .then(response => response.json())  // promise
+              .then((response) =>{    
+                console.log(response);         
+             
+              })
+              .catch((error=>{
+                console.log(error);
+              }))
+            this.props.navigation.navigate("alertComponentClassFinish",
+            {
+              userFullName:this.props.navigation.state.params.userFullName
+            });
+          }},       
+      ]); 
     }
   }
 
@@ -321,22 +402,40 @@ export default class MediaPlayer extends React.Component {
   }
 
   _onPlayPausePressed = () => {
+    
     if (this.playbackInstance != null) {
       if (this.state.isPlaying) {
+        this.theUserSectionData.Pause_Clicks++;
+        this.startOnHold = new Date();
         this.playbackInstance.pauseAsync();
       } else {
+        if(this.startOnHold != null){
+         let finishPause = new Date();
+         let diff = moment.duration(moment(finishPause).diff(moment(this.startOnHold)));
+         let minutesDiff = parseInt(diff.asSeconds());
+         this.theUserSectionData.Pause_Duration = parseInt(this.theUserSectionData.Pause_Duration);
+         this.theUserSectionData.Pause_Duration += minutesDiff;
+         console.log(this.theUserSectionData.Pause_Duration);
+         console.log(diff);
+      
+        }
+        this.theUserSectionData.Play_Clicks++;
         this.playbackInstance.playAsync();
       }
     }
   };
 
   _onStopPressed = () => {
+    this.theUserSectionData.Stop_Clicks++
+    AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
     if (this.playbackInstance != null) {
       this.playbackInstance.stopAsync();
     }
   };
 
   _onForwardPressed = () => {
+    this.theUserSectionData.Forward_Clicks++;
+    AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
     if (this.playbackInstance != null) {
       this._advanceIndex(true);
       this._updatePlaybackInstanceForIndex(this.state.shouldPlay);
@@ -344,6 +443,8 @@ export default class MediaPlayer extends React.Component {
   };
 
   _onBackPressed = () => {
+    this.theUserSectionData.Backward_Clicks++;
+    AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
     if (this.playbackInstance != null) {
       this._advanceIndex(false);
       this._updatePlaybackInstanceForIndex(this.state.shouldPlay);
@@ -351,6 +452,8 @@ export default class MediaPlayer extends React.Component {
   };
 
   _onMutePressed = () => {
+    
+    AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
     if (this.playbackInstance != null) {
       this.playbackInstance.setIsMutedAsync(!this.state.muted);
     }
@@ -412,6 +515,7 @@ export default class MediaPlayer extends React.Component {
       this.state.playbackInstancePosition != null &&
       this.state.playbackInstanceDuration != null
     ) {
+      this.theUserSectionData.User_Last_Point = Math.floor(this.state.playbackInstancePosition/3600);//Catching where the user in the section
       return this.state.playbackInstancePosition / this.state.playbackInstanceDuration;
     }//Video Slider Progress
     return 0;
@@ -438,6 +542,7 @@ export default class MediaPlayer extends React.Component {
       this.state.playbackInstancePosition != null &&
       this.state.playbackInstanceDuration != null
     ) {
+      
       return `${this._getMMSSFromMillis(
         this.state.playbackInstancePosition
       )} / ${this._getMMSSFromMillis(this.state.playbackInstanceDuration)}`;
@@ -483,7 +588,6 @@ export default class MediaPlayer extends React.Component {
   render()
    
   {
-    debugger;
     if(!this.shouldRender){
       return ( <View style={styles.emptyContainer} />)
     }

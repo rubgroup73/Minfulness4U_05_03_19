@@ -10,12 +10,13 @@ var NextSectionsArr = [];
 export default class NextClass extends React.Component {
     constructor(props) {
         super(props);
-      
+          
         this.state = {
             // We don't know the size of the content initially, and the probably won't instantly try to scroll, so set the initial content height to 0
             screenHeight: 0,
             userInThisClass:this.props.navigation.state.params.userInfo.userInThisClass, //The userInclass instance for this specific class
-            nextClass: this.props.navigation.state.params.nextClass
+            nextClass: this.props.navigation.state.params.nextClass,
+            userFullName:this.props.navigation.state.params.userFullName
           };
       } 
       
@@ -32,18 +33,17 @@ export default class NextClass extends React.Component {
       
       }
       NavigateToUserClass = (NextSectionsArr,userInThisClass) =>{
-        debugger;
       this.props.navigation.navigate(
         pageToNavigate, 
         {
           userInThisClass:userInThisClass,
           nextClass:this.state.nextClass,
-          SectionFinishedFalse:NextSectionsArr //Instance of the current section the user should do
+          SectionFinishedFalse:NextSectionsArr, //Instance of the current section the user should do
+          userFullName:this.state.userFullName
         }
         );
     }
       getUserInSection = async (userinThisClass,nextclass) =>{
-        console.log(this.props.navigation.state.params.userInfo.userInThisClass);
         let userId =await userinThisClass.UserId;
         let classId =await nextclass.Id;
         let classVersion =await nextclass.Version;
@@ -64,12 +64,10 @@ export default class NextClass extends React.Component {
         .catch((error=>{
           console.log(error);
         }))
-
       } 
     render(props) {
      
-        return (   
-            
+        return (            
       <ScrollView>
   <Card 
   style={{fontSize:22,fontWeight:"700"}}

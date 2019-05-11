@@ -9,6 +9,7 @@ import StateOfMind from './StateOfMind';
 import AlertComponent from './alerts/AlertComponent';
 import AlertComponentStateOfMind from './alerts/AlertComponentStateOfMind';
 import AlertComponentLogin from './alerts/AlertComponentLogin';
+import AlertComponentClassFinish from './alerts/AlertComponentClassFinish';
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
 const AppNavigator = createStackNavigator
@@ -63,6 +64,11 @@ const AppNavigator = createStackNavigator
     },
     alertComponentLogin:{
       screen:AlertComponentLogin,
+      navigationOptions:
+      {headerLeft:null}
+    },
+    alertComponentClassFinish:{
+      screen:AlertComponentClassFinish,
       navigationOptions:
       {headerLeft:null}
     },
@@ -126,6 +132,11 @@ const AppNavigatorLogged = createStackNavigator
     },
     alertComponentLogin:{
       screen:AlertComponentLogin,
+      navigationOptions:
+      {headerLeft:null}
+    },
+    alertComponentClassFinish:{
+      screen:AlertComponentClassFinish,
       navigationOptions:
       {headerLeft:null}
     },

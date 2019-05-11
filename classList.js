@@ -100,7 +100,8 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
       this.props.navigation.navigate(
         page,
         {userInfo:userInfo,
-         nextClass:nextclass
+         nextClass:nextclass,
+         userFullName:JSON.parse(this.state.fullName)
         });
       }
        else{userFinishAllClasses = true;}
