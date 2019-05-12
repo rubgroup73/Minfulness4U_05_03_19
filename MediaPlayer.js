@@ -47,7 +47,7 @@ class PlaylistItem {
 
 const PLAYLIST = [
 ];
-const ServerRequest1 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UserFeelingsReact";
+const ServerRequest1 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateDataUserInClassReact";
 const ServerRequest2 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UserFeelingsReact";
 const ICON_THROUGH_EARPIECE = 'speaker-phone';
 const ICON_THROUGH_SPEAKER = 'speaker';
@@ -81,15 +81,13 @@ const BUFFERING_STRING = '...buffering...';
 const RATE_SCALE = 3.0;
 const VIDEO_CONTAINER_HEIGHT = DEVICE_HEIGHT * 2.0 / 5.0 - FONT_SIZE * 2;
 
-
-var classTime = {
-  startClassS:null,
-  startClassM:null,
-   startClassH:null,
-   finishClassS :null,
-    finishClassM :null,
-    finishClassH : null
-}
+//** 
+//**Class StartTime Information
+//** 
+var userInThisClass;
+var Class_StartTime = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+var repeteSection = false;
+var holdingClassInstance = true;
 
 export default class MediaPlayer extends React.Component {
   constructor(props) {
@@ -101,9 +99,9 @@ export default class MediaPlayer extends React.Component {
     this.theUserSectionsDataArr;
     this.theUserSectionData;
     this.nextClass;
-    this.userInThisClass;
     this.shouldRender=false;
     this.setIntervarForStorage= null;
+    this.setIntervarForFetch = null;
     this.startOnHold= null;
     this.classStartTime = null;
     
@@ -152,10 +150,30 @@ export default class MediaPlayer extends React.Component {
       this.updateUserDetails();
     })();
       
-    this.setIntervarForStorage = setInterval(() =>{
-      AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
+     if(!repeteSection){
+       debugger;
+      this.setIntervarForStorage = setInterval(() =>{
+        AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
+       },5000);
 
-     },5000);
+     this.setIntervarForFetch = setInterval(async () => {
+      this._putToServer();
+      // let theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
+      // let data1 =  {
+      //   method: 'PUT',
+      //   headers: {
+      //     'Accept':'application/json',
+      //     'Content-Type':'application/json',
+      //   },
+      //   body: data=theUserSectionDataPut
+      // }
+      //        fetch(ServerRequest1, data1)
+      //         .then(async (response) => await response.json())  // promise
+      //         .then(async (response) =>{    
+      //           console.log(response);})
+      //         .catch((error=>{console.log(error);}))
+            }, 15000);
+          }
       
   }
   //************************************************************************************************************************ */
@@ -166,17 +184,17 @@ export default class MediaPlayer extends React.Component {
     this.theUserSectionsDataArr = await this.props.navigation.state.params.SectionFinishedFalse;
     this.theUserSectionData=await this.theUserSectionsDataArr[this.index];
     this.nextClass= await this.props.navigation.state.params.nextClass;
-    this.userInThisClass=await this.props.navigation.state.params.userInThisClass;
+    if(holdingClassInstance == true){userInThisClass = this.props.navigation.state.params.userInThisClass;}
+    holdingClassInstance = false;
     this.classStartTime =await new Date();
-    this.userInThisClass.StartTime = await moment(this.classStartTime,'DD/MM/YYYY');
-    this.theUserSectionData.Section_Start_Time = await moment(this.classStartTime,'DD/MM/YYYY');
+    this.theUserSectionData.Section_Start_Time = await moment(this.classStartTime).format("YYYY-MM-DD HH:mm:ss");
+    this.theUserSectionData.Section_Is_Started=true;
+   
     this.theUserSectionsDataArr.map((m)=>{
     PLAYLIST.push(new PlaylistItem(m.Section_Title,m.File_Path,false,m.Class_Id,m.Section_Id));
     })
-    this.theUserSectionData.Section_Is_Started=true;
-   
     this.shouldRender = true;
-    this.setState({ fontLoaded: true });
+    this.setState({ fontLoaded: true }); 
   }
 
   async _loadNewPlaybackInstance(playing) {
@@ -297,33 +315,39 @@ export default class MediaPlayer extends React.Component {
   };
 
   async _advanceIndex(forward) {    
-    //Section is finished --> collecting all the relevant information, endTime, datediff   
-    debugger;
-    let classEndTime = await new Date();
-    let diff = await moment.duration(moment(classEndTime).diff(moment(this.classStartTime)));
-    let totalClassTimeM =await parseInt(diff.asMinutes()); 
-    let totalClassTimeS =await parseInt(diff.asSeconds());
-    this.theUserSectionData.Section_Total_Duration = totalClassTimeM.toString()+":"+totalClassTimeS.toString();
-    this.theUserSectionData.Section_End_Time = moment(classEndTime,"DD/MM/YYYY");
-    this.theUserSectionData.Section_Is_Finished=true;
+    //Section is finished --> collecting all the relevant information, endTime, datediff
     clearInterval(this.setIntervarForStorage);
+    clearInterval(this.setIntervarForFetch)
+    if (!repeteSection){
+      debugger;
+    let classEndTime = await new Date();
+    let diff = await moment.duration(moment(classEndTime).diff(moment(this.classStartTime)));//calculate the section time
+    let totalClassTimeS =await parseInt(diff.asSeconds()); ////calculate section in Sec
+    this.theUserSectionData.Section_Total_Duration = totalClassTimeS.toString();//section total duration
+    this.theUserSectionData.Section_End_Time = moment(classEndTime).format("YYYY-MM-DD HH:mm:ss");//section end time date format
+    this.theUserSectionData.Section_Is_Finished=true;
     AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
-     console.log(this.theUserSectionData);
+    console.log(this.theUserSectionData);
+    putResponse = await this._putToServer();
+    }   
+      
+    
     if(this.index<PLAYLIST.length-1)
     Alert.alert(
       "להמשיך למקטע הבא?",
       "לחץ 'כן' כדי למשיך או 'לא' כדי להשאר באותו המקטע?",
      [
-        {text:"כן",onPress:()=>{
-
+        {text:"כן",onPress:async()=>{
+          repeteSection = await false;
           this.index = (this.index + (forward ? 1 : PLAYLIST.length + 1)) % PLAYLIST.length;
           this._updatePlaybackInstanceForIndex(true);   
 
         }},
         {text:"לא",onPress:async ()=>{
           this.theUserSectionData.Repeat_Section_Counter++;
-          AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
+          repeteSection =await true;
           this.index = await (this.index + (forward ? 0 : PLAYLIST.length + 0)) % PLAYLIST.length;
+          this._updatePlaybackInstanceForIndex(true); 
           
           
         }},
@@ -335,59 +359,85 @@ export default class MediaPlayer extends React.Component {
         "כל הכבוד! סיימת את השיעור השבועי!",
        [
           {text:"אישור",onPress:async ()=>{
-       let classEndTime = await new Date();
-       this.userInThisClass.EndTime =await moment(classEndTime,'DD/MM/YYYY');
-       this.userInThisClass.IsFinished=await true;
-       AsyncStorage.setItem("theUserSectionDataPut",JSON.stringify(this.userInThisClass));
-       AsyncStorage.setItem("userInThisClass",JSON.stringify(this.userInThisClass));
+    
+       let userInThisClassPut = null;
+       let theUserSectionDataPut;
 
-       let theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
-       let userInThisClassPut = await AsyncStorage.getItem("userInThisClass");
-       console.log(theUserSectionDataPut);
-       console.log(userInThisClassPut);
-       debugger;
+      if(!userInThisClass.IsFinished)//When the user finish is first class
+      {
+        let classEndTime = await new Date();
+        userInThisClass.EndTime =await moment(classEndTime).format("YYYY-MM-DD HH:mm:ss");
+        userInThisClass.IsFinished=await true;
+        userInThisClassPut = await AsyncStorage.getItem("userInThisClass");
+        await AsyncStorage.setItem("userInThisClass",JSON.stringify(userInThisClass));
+        userInThisClassPut = await AsyncStorage.getItem("userInThisClass");
+        console.log(userInThisClassPut);
+      }
+     
+      theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
+      console.log(theUserSectionDataPut);
+       
+       
        let data1 = await {
         method: 'PUT',
         headers: {
           'Accept':'application/json',
           'Content-Type':'application/json',
         },
-        body: data=JSON.stringify(theUserSectionDataPut)
+        body: data=theUserSectionDataPut
       }
-      let data2 = await {
+        await fetch(ServerRequest1, data1)
+              .then(response => response.json())  // promise
+              .then(async (response) =>{    
+                console.log(response);         
+                 if(userInThisClassPut!=null) {
+                  let data2 = {
+                    method: 'PUT',
+                    headers: {
+                      'Accept':'application/json',
+                      'Content-Type':'application/json',
+                    },
+                    body: data=userInThisClassPut
+                  }
+                  fetch(ServerRequest2, data2)
+                  .then(response => response.json())  // promise
+                  .then((response) =>{    
+                    console.log(response);})
+                  .catch((error=>{
+                    console.log(error);
+                  }))
+                 }
+                 
+              })
+              .catch((error=>{
+                console.log(error);
+              }))  
+              
+              this.props.navigation.navigate(
+                "alertComponentClassFinish",
+                {userFullName:this.props.navigation.state.params.userFullName})  
+          }
+       },
+       
+      ]); 
+    }
+  }
+
+  _putToServer = async()=>{
+    let theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
+      let data1 =  {
         method: 'PUT',
         headers: {
           'Accept':'application/json',
           'Content-Type':'application/json',
         },
-        body: data=JSON.stringify(userInThisClassPut)
+        body: data=theUserSectionDataPut
       }
-        await fetch(ServerRequest1, data1)
-              .then(response => response.json())  // promise
-              .then((response) =>{    
-                console.log(response);         
-             
-              })
-              .catch((error=>{
-                console.log(error);
-              }))
-
-        await fetch(ServerRequest2, data2)
-              .then(response => response.json())  // promise
-              .then((response) =>{    
-                console.log(response);         
-             
-              })
-              .catch((error=>{
-                console.log(error);
-              }))
-            this.props.navigation.navigate("alertComponentClassFinish",
-            {
-              userFullName:this.props.navigation.state.params.userFullName
-            });
-          }},       
-      ]); 
-    }
+             fetch(ServerRequest1, data1)
+              .then(async (response) => await response.json())  // promise
+              .then(async (response) =>{    
+                console.log(response);})
+              .catch((error=>{console.log(error);}))
   }
 
   async _updatePlaybackInstanceForIndex(playing) {
@@ -402,7 +452,7 @@ export default class MediaPlayer extends React.Component {
   }
 
   _onPlayPausePressed = () => {
-    
+    debugger;
     if (this.playbackInstance != null) {
       if (this.state.isPlaying) {
         this.theUserSectionData.Pause_Clicks++;
@@ -453,7 +503,10 @@ export default class MediaPlayer extends React.Component {
 
   _onMutePressed = () => {
     
-    AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
+    if(!this.state.muted){
+      this.theUserSectionData.Mute_Clicks++;
+      AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
+    }
     if (this.playbackInstance != null) {
       this.playbackInstance.setIsMutedAsync(!this.state.muted);
     }

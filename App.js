@@ -10,7 +10,9 @@ import AlertComponent from './alerts/AlertComponent';
 import AlertComponentStateOfMind from './alerts/AlertComponentStateOfMind';
 import AlertComponentLogin from './alerts/AlertComponentLogin';
 import AlertComponentClassFinish from './alerts/AlertComponentClassFinish';
+import LoadingLogo from './LoadingLogo';
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
+
 
 const AppNavigator = createStackNavigator
 (
@@ -69,6 +71,11 @@ const AppNavigator = createStackNavigator
     },
     alertComponentClassFinish:{
       screen:AlertComponentClassFinish,
+      navigationOptions:
+      {headerLeft:null}
+    },
+    LoadingLogo:{
+      screen:LoadingLogo,
       navigationOptions:
       {headerLeft:null}
     },
@@ -140,6 +147,11 @@ const AppNavigatorLogged = createStackNavigator
       navigationOptions:
       {headerLeft:null}
     },
+    LoadingLogo:{
+      screen:LoadingLogo,
+      navigationOptions:
+      {headerLeft:null}
+    },
   },
   {
     initialRouteName:"classlist",  
@@ -159,8 +171,7 @@ export default class App extends React.Component {
     }  
   } 
 
-  componentDidMount = async ()=>{
-    
+  componentDidMount = async ()=>{  
     // await AsyncStorage.removeItem("username")
     // await AsyncStorage.removeItem("password")
     // await AsyncStorage.removeItem("login")
@@ -188,14 +199,11 @@ export default class App extends React.Component {
 }
 
   render() 
-  
  {
     if(this.state.isLoad == false)
     {
       return(
-        <View style={{ flexDirection: 'column', justifyContent: 'center',alignItems: 'center',}}>       
-              <Image source={require('./assets/images/Loading_2.gif')} />
-       </View> 
+        <LoadingLogo></LoadingLogo>
 );
 }
 else if(this.state.isLogged == false)
@@ -204,6 +212,7 @@ else if(this.state.isLogged == false)
     }
     else{
       return <AppContainerLogged/>
+
     }
   }
 }

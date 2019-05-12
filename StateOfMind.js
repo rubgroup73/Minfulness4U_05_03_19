@@ -1,6 +1,5 @@
 import React from 'react';
 import { PixelRatio, StyleSheet, Text, View, PanResponder, Animated, TouchableOpacity,AsyncStorage,Platform } from 'react-native';
-import AwesomeButton from "react-native-really-awesome-button";
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick'; 
 
 const REACTIONS = [
@@ -69,7 +68,9 @@ export default class StateOfMind extends React.Component {
   //Need to do a fetch (post) to our's server and then to activate the alert component.
   //** 
   updatePan(toValue,lable) {
-
+if(lable==null){
+  this.setState({stateOfMind:"חזק"});
+}
     Animated.spring(this._pan, { toValue, friction: 7 }).start();
     this.setState({stateOfMind:lable});
    
@@ -106,15 +107,19 @@ export default class StateOfMind extends React.Component {
     }
 
 
+   
+    
+
   render() {
-    if(Platform.OS==='ios')
-    {
+    if(Platform.OS==='ios'){
     return (
+      <View style={styles.outerdiv}>
+      <Text h1 style={styles.header}>איך אתה מרגיש עכשיו?</Text>
       <View style={styles.container}>
         <View style={styles.wrap}>
-          <Text style={styles.welcome}>
-            בבקשה תבחר את ההרגשה שלך, ובסוף לחץ על 'שליחה'
-          </Text>
+        <Text style={styles.welcome}>
+                  אנא בחר את הרגשתך ולסיום לחץ על 'שליחה'
+                  </Text>
           
           <View style={styles.line} />
 
@@ -214,23 +219,25 @@ export default class StateOfMind extends React.Component {
             </Animated.View>
           </View>
         </View>
-        <AwesomeButtonRick onPress={() => {this.UpdateStateOfMind(userId,classId,classVersion,this.state.stateOfMind)}} type="primary">שליחה           </AwesomeButtonRick>
+        <AwesomeButtonRick style={styles.okbtn} onPress={() => {this.UpdateStateOfMind(userId,classId,classVersion,this.state.stateOfMind)}} backgroundColor="#3f96bf" backgroundDarker="#2b83ad" borderColor="black" borderWidth={1} width={140} height={70}  backgroundShadow="transparent"><Text style={styles.centerdText}>שליחה</Text></AwesomeButtonRick>
+      </View>
       </View>
     );
             }
-//*************************************************For Android****************************************************/
-//*************************************************For Android****************************************************/
+            /***************************************************Android***************************************************/
             else{
               return(
-                <View style={styles.container}>
-                <View style={styles.wrap}>
-                  <Text style={styles.welcome}>
-                    בבקשה תבחר את ההרגשה שלך, ובסוף לחץ על 'שליחה'
+              <View style={styles2.outerdiv2}>
+                <Text h1 style={styles2.header2}>איך אתה מרגיש עכשיו?</Text>
+              <View style={styles2.container2}>
+                <View style={styles2.wrap2}>
+                  <Text style={styles2.welcome2}>
+                  אנא בחר את הרגשתך ולסיום לחץ על 'שליחה'
                   </Text>
                   
-                  <View style={styles.line} />
+                  <View style={styles2.line2} />
         
-                  <View style={styles.reactions}>
+                  <View style={styles2.reactions2}>
                     {REACTIONS.map((reaction, idx) => {
                       const u = idx * DISTANCE;
                       let inputRange = [u-20, u, u+20];
@@ -255,10 +262,10 @@ export default class StateOfMind extends React.Component {
         
                       return (
                         <TouchableOpacity onPress={() => this.updatePan(u,reaction.label)} activeOpacity={0.9} key={idx}>
-                          <View style={styles.smileyWrap}>
+                          <View style={styles2.smileyWrap2}>
                             <Animated.Image
                               source={reaction.src}
-                              style={[styles.smiley, {
+                              style={[styles2.smiley2, {
                                 transform: [{
                                   scale: this._pan.interpolate({
                                     inputRange,
@@ -270,7 +277,7 @@ export default class StateOfMind extends React.Component {
                             />
                           </View>
         
-                          <Animated.Text style={[styles.reactionText, {
+                          <Animated.Text style={[styles2.reactionText2, {
                             top: this._pan.interpolate({
                               inputRange,
                               outputRange: topOutputRange,
@@ -287,7 +294,7 @@ export default class StateOfMind extends React.Component {
                         </TouchableOpacity>
                       );
                     })}
-                    <Animated.View {...this._panResponder.panHandlers} style={[styles.bigSmiley, {
+                    <Animated.View {...this._panResponder.panHandlers} style={[styles2.bigSmiley2, {
                       transform: [{
                         translateX: this._pan.interpolate({
                           inputRange: [0, END],
@@ -313,7 +320,7 @@ export default class StateOfMind extends React.Component {
                           <Animated.Image
                             key={idx}
                             source={reaction.bigSrc}
-                            style={[styles.bigSmileyImage, {
+                            style={[styles2.bigSmileyImage2, {
                               opacity: this._pan.interpolate({
                                 inputRange,
                                 outputRange,
@@ -326,33 +333,42 @@ export default class StateOfMind extends React.Component {
                     </Animated.View>
                   </View>
                 </View>
-                <AwesomeButtonRick onPress={() => {this.UpdateStateOfMind(userId,classId,classVersion,this.state.stateOfMind)}} type="primary">שליחה           </AwesomeButtonRick>
-              </View>         
-              )
-            }
-            
+                <AwesomeButtonRick style={styles2.okbtn2} onPress={() => {this.UpdateStateOfMind(userId,classId,classVersion,this.state.stateOfMind)}} backgroundColor="#3f96bf" backgroundDarker="#2b83ad" borderColor="black" borderWidth={1} width={140} height={70}  backgroundShadow="transparent"><Text style={styles2.centerdText}>שליחה</Text></AwesomeButtonRick>
+              </View></View>);
+            }    
   }
 }
- const size = 42;
 
+ const size = 42;
+/******************************************** IOS Operating System Srtles **********************************************/
 const styles = StyleSheet.create({
+  outerdiv:{
+    padding:20,
+    flex: 1,
+    backgroundColor: '#c6edff'},
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
+    borderColor:'black',
   },
+  header:{
+    fontSize:40,
+    fontWeight:'600',
+    textAlign:'center',
+    
+      },
   wrap: {
     width: WIDTH,
     marginBottom: 50,
   },
   welcome: {
-    fontSize: 18,
+    fontSize: 24,
     textAlign: 'center',
     color: '#777',
-    fontWeight: '600',
-    fontFamily: 'Avenir',
-    marginBottom: 50,
+    fontWeight: '700',
+    marginBottom:20
   },
   reactions: {
     flexDirection: 'row',
@@ -371,6 +387,14 @@ const styles = StyleSheet.create({
     borderRadius: size/2,
     backgroundColor: '#c7ced3',
   },
+  centerdText:{
+    fontSize:20,
+  textAlign:'center',
+  width:120,
+  color: 'black',
+  fontWeight: '600',
+  
+  },
   bigSmiley: {
     width: DISTANCE,
     height: DISTANCE,
@@ -387,11 +411,18 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
   },
+  okbtn:{
+    justifyContent: 'center',
+    width:120,
+    marginTop:20
+    
+  },
+ 
   reactionText: {
-    fontSize: 12,
+    fontSize: 16,
     textAlign: 'center',
     color: '#999',
-    fontWeight: '400',
+    fontWeight: '600',
     fontFamily: 'Avenir',
     marginTop: 5,
   },
@@ -406,4 +437,103 @@ const styles = StyleSheet.create({
           
 
   
+/******************************************** IOS Operating System Srtles **********************************************/
 
+const styles2 = StyleSheet.create({
+  outerdiv2:{
+    padding:20,
+    flex: 1,
+    backgroundColor: '#c6edff',
+  },
+  container2: {
+    marginTop:10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  
+
+  },
+  wrap2: {
+    width: WIDTH,
+    marginBottom: 50,
+  },
+  header2:{
+fontSize:40,
+fontWeight:'600',
+textAlign:'center',
+marginBottom:20
+
+  },
+okbtn2:{
+  justifyContent: 'center',
+  width:120,
+  marginTop:20
+  
+},
+centerdText:{
+  fontSize:20,
+textAlign:'center',
+width:120,
+color: 'black',
+fontWeight: '600',
+
+},
+  welcome2: {
+    fontSize: 24,
+    textAlign: 'center',
+    color: '#777',
+    fontWeight: '700',
+    marginBottom:20
+    
+  },
+
+  reactions2: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+  },
+  smileyWrap2: {
+    width: DISTANCE,
+    height: DISTANCE,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  smiley2: {
+    width: size,
+    height: size,
+    borderRadius: size/2,
+    backgroundColor: '#c7ced3',
+  },
+  bigSmiley2: {
+  
+    width: DISTANCE,
+    height: DISTANCE,
+    borderRadius: DISTANCE/2,
+    backgroundColor: '#ffb18d',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  bigSmileyImage2: {
+    width: DISTANCE,
+    height: DISTANCE,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  reactionText2: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#999',
+    fontWeight: '600',
+    
+    marginTop: 5,
+  },
+  line2: {
+    height: 4 / PixelRatio.get(),
+    backgroundColor: '#eee',
+    width: WIDTH - (DISTANCE-size),
+    left: (DISTANCE-size) / 2,
+    top: DISTANCE/2 + (2 / PixelRatio.get()),
+  }
+});
+          

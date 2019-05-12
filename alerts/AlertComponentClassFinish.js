@@ -14,7 +14,8 @@ export default class AlertComponentClassFinish extends React.Component {
   };
 
   componentWillMount = async () =>{
-    userFullName = this.props.navigation.state.params.userFullName;
+    // userFullName = this.props.navigation.state.params.userFullName;
+    userFullName="needdddd"
  }
         
     
