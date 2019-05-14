@@ -42,18 +42,18 @@ class Login extends React.Component {
    /*************************************************/
   /*Check if the User credentials are True or False*/
   /*************************************************/
-  checkAuthentic(){
+ async checkAuthentic(){
     debugger;
         if(personFromDBObj.Credentials1 == true){
         
-      AsyncStorage.setItem("username",JSON.stringify(personFromDBObj.UserName));
-      AsyncStorage.setItem("password",JSON.stringify(personFromDBObj.Password));
-      AsyncStorage.setItem("login",JSON.stringify(personFromDBObj.Credentials1));
-      AsyncStorage.setItem("userid",JSON.stringify(personFromDBObj.Id));
-      AsyncStorage.setItem("fullname",JSON.stringify(personFromDBObj.FullName));
-      AsyncStorage.setItem("groupId",JSON.stringify(personFromDBObj.Group_Id));
-      AsyncStorage.setItem("groupVersion",JSON.stringify(personFromDBObj.Group_Version));
-     
+      await AsyncStorage.setItem("username",JSON.stringify(personFromDBObj.UserName));
+      await AsyncStorage.setItem("password",JSON.stringify(personFromDBObj.Password));
+      await AsyncStorage.setItem("login",JSON.stringify(personFromDBObj.Credentials1));
+      await AsyncStorage.setItem("userid",JSON.stringify(personFromDBObj.Id));
+      await AsyncStorage.setItem("fullname",JSON.stringify(personFromDBObj.FullName));
+      await AsyncStorage.setItem("groupId",JSON.stringify(personFromDBObj.Group_Id));
+      await AsyncStorage.setItem("groupVersion",JSON.stringify(personFromDBObj.Group_Version));
+      
       this.props.navigation.navigate(
         nextPage,
         {userFullName: personFromDBObj.FullName}

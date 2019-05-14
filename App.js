@@ -200,13 +200,7 @@ export default class App extends React.Component {
 
   render() 
  {
-    if(this.state.isLoad == false)
-    {
-      return(
-        <LoadingLogo></LoadingLogo>
-);
-}
-else if(this.state.isLogged == false)
+   if(this.state.isLogged == false)
     {
     return <AppContainer />;
     }

@@ -28,27 +28,12 @@ class Icon {
 }
 
 
-//Creat a class for Items to play
-//*******************************/
-class PlaylistItem {
-  constructor(name, uri, isVideo,Class_Id,Section_Id) {
-    this.name = name;
-    this.uri = uri;
-    this.isVideo = isVideo;
-    this.Class_Id=Class_Id;
-    this.Section_Id= Section_Id;
-  }
-}
 //Const var to store all our's PlaylistiItem
 //*******************************/
 
-
-
-
-const PLAYLIST = [
-];
 const ServerRequest1 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateDataUserInClassReact";
-const ServerRequest2 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UserFeelingsReact";
+const ServerRequest2 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateDataUserRepeatSecReact";
+const ServerRequest3 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateDataUserRepeatSecReact";
 const ICON_THROUGH_EARPIECE = 'speaker-phone';
 const ICON_THROUGH_SPEAKER = 'speaker';
 
@@ -84,10 +69,10 @@ const VIDEO_CONTAINER_HEIGHT = DEVICE_HEIGHT * 2.0 / 5.0 - FONT_SIZE * 2;
 //** 
 //**Class StartTime Information
 //** 
-var userInThisClass;
-var Class_StartTime = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-var repeteSection = false;
 var holdingClassInstance = true;
+const repeatSection = 1;
+
+
 
 export default class MediaPlayer extends React.Component {
   constructor(props) {
@@ -96,15 +81,17 @@ export default class MediaPlayer extends React.Component {
     this.isSeeking = false;
     this.shouldPlayAtEndOfSeek = false;
     this.playbackInstance = null;
-    this.theUserSectionsDataArr;
     this.theUserSectionData;
-    this.nextClass;
     this.shouldRender=false;
     this.setIntervarForStorage= null;
     this.setIntervarForFetch = null;
     this.startOnHold= null;
     this.classStartTime = null;
-    
+    this.userInThisClass = null;
+    this.PLAYLIST= this.props.navigation.state.params.PLAYLIST;
+    this.nextClass = this.props.navigation.state.params.nextClass;
+    this.theUserSectionsDataArr=this.props.navigation.state.params.SectionFinishedFalse;
+      
     
     this.state = {
       showVideo: false,
@@ -131,8 +118,8 @@ export default class MediaPlayer extends React.Component {
     };
   }
 
-  componentDidMount() {
-    
+     componentDidMount() {
+   
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
       interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
@@ -147,54 +134,43 @@ export default class MediaPlayer extends React.Component {
         ...MaterialIcons.font,
         'cutive-mono-regular': require('./assets/fonts/CutiveMono-Regular.ttf'),
       });
-      this.updateUserDetails();
-    })();
       
-     if(!repeteSection){
-       debugger;
-      this.setIntervarForStorage = setInterval(() =>{
-        AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
-       },5000);
-
-     this.setIntervarForFetch = setInterval(async () => {
-      this._putToServer();
-      // let theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
-      // let data1 =  {
-      //   method: 'PUT',
-      //   headers: {
-      //     'Accept':'application/json',
-      //     'Content-Type':'application/json',
-      //   },
-      //   body: data=theUserSectionDataPut
-      // }
-      //        fetch(ServerRequest1, data1)
-      //         .then(async (response) => await response.json())  // promise
-      //         .then(async (response) =>{    
-      //           console.log(response);})
-      //         .catch((error=>{console.log(error);}))
-            }, 15000);
-          }
+     await this.updateUserDetails();
+    })(); 
       
   }
+     
+    
   //************************************************************************************************************************ */
   //*work here please
   //************************************************************************************************************************ */
+  //need to add somehow a vairable which indicates if to send put requests to the server.
   updateUserDetails = async () =>{
+    let request;
     
-    this.theUserSectionsDataArr = await this.props.navigation.state.params.SectionFinishedFalse;
+    try{
+    request = await AsyncStorage.getItem("requestToServer");
     this.theUserSectionData=await this.theUserSectionsDataArr[this.index];
-    this.nextClass= await this.props.navigation.state.params.nextClass;
-    if(holdingClassInstance == true){userInThisClass = this.props.navigation.state.params.userInThisClass;}
-    holdingClassInstance = false;
     this.classStartTime =await new Date();
     this.theUserSectionData.Section_Start_Time = await moment(this.classStartTime).format("YYYY-MM-DD HH:mm:ss");
+    this.userInThisClass = await AsyncStorage.getItem("userInThisClass");
+    this.userInThisClass = await JSON.parse(this.userInThisClass);
+    }
+    catch(error){console.log(error);}
     this.theUserSectionData.Section_Is_Started=true;
-   
-    this.theUserSectionsDataArr.map((m)=>{
-    PLAYLIST.push(new PlaylistItem(m.Section_Title,m.File_Path,false,m.Class_Id,m.Section_Id));
-    })
     this.shouldRender = true;
     this.setState({ fontLoaded: true }); 
+
+    if( request == "true"){
+    this.setIntervarForStorage = setInterval(() =>{
+      AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
+     },5000);
+
+     this.setIntervarForFetch = setInterval(async () => {
+     this._putToServer();
+          }, 10000);
+        }
+    
   }
 
   async _loadNewPlaybackInstance(playing) {
@@ -204,7 +180,7 @@ export default class MediaPlayer extends React.Component {
       this.playbackInstance = null;
     }
 
-    const source = { uri: PLAYLIST[this.index].uri };
+    const source = { uri: this.PLAYLIST[this.index].uri };
     const initialStatus = {
       shouldPlay: false,
       rate: this.state.rate,
@@ -216,7 +192,7 @@ export default class MediaPlayer extends React.Component {
       // androidImplementation: 'MediaPlayer',
     };
 
-    if (PLAYLIST[this.index].isVideo) {
+    if (this.PLAYLIST[this.index].isVideo) {
       this._video.setOnPlaybackStatusUpdate(this._onPlaybackStatusUpdate);
       await this._video.loadAsync(source, initialStatus);
       this.playbackInstance = this._video;
@@ -250,8 +226,8 @@ export default class MediaPlayer extends React.Component {
       });
     } else {
       this.setState({
-        playbackInstanceName: PLAYLIST[this.index].name,
-        showVideo: PLAYLIST[this.index].isVideo,
+        playbackInstanceName: this.PLAYLIST[this.index].name,
+        showVideo: this.PLAYLIST[this.index].isVideo,
         isLoading: false,
       });
     }
@@ -317,9 +293,12 @@ export default class MediaPlayer extends React.Component {
   async _advanceIndex(forward) {    
     //Section is finished --> collecting all the relevant information, endTime, datediff
     clearInterval(this.setIntervarForStorage);
-    clearInterval(this.setIntervarForFetch)
-    if (!repeteSection){
-      debugger;
+    clearInterval(this.setIntervarForFetch);
+    let request;
+    try{request= await AsyncStorage.getItem("requestToServer");}
+    catch(error){console.log(error);}
+
+    if ( request == "true"){
     let classEndTime = await new Date();
     let diff = await moment.duration(moment(classEndTime).diff(moment(this.classStartTime)));//calculate the section time
     let totalClassTimeS =await parseInt(diff.asSeconds()); ////calculate section in Sec
@@ -331,25 +310,27 @@ export default class MediaPlayer extends React.Component {
     putResponse = await this._putToServer();
     }   
       
-    
-    if(this.index<PLAYLIST.length-1)
+    if(this.index<this.PLAYLIST.length-1)
     Alert.alert(
       "להמשיך למקטע הבא?",
       "לחץ 'כן' כדי למשיך או 'לא' כדי להשאר באותו המקטע?",
      [
         {text:"כן",onPress:async()=>{
-          repeteSection = await false;
-          this.index = (this.index + (forward ? 1 : PLAYLIST.length + 1)) % PLAYLIST.length;
-          this._updatePlaybackInstanceForIndex(true);   
-
+          await AsyncStorage.setItem("requestToServer",JSON.stringify(true));
+          try{let r = await AsyncStorage.getItem("requestToServer");
+          console.log(r);
+        }catch(error){console.log(error);}
+          this._putToServerRepeatedSection(this.theUserSectionData,forward);//need to do the fetch here or to move the function
+            
         }},
         {text:"לא",onPress:async ()=>{
-          this.theUserSectionData.Repeat_Section_Counter++;
-          repeteSection =await true;
-          this.index = await (this.index + (forward ? 0 : PLAYLIST.length + 0)) % PLAYLIST.length;
+          let temp = await AsyncStorage.getItem("repeatSection");
+          temp = await JSON.parse(temp)+repeatSection;
+          await AsyncStorage.setItem("repeatSection",JSON.stringify(temp));//will save the number of time the user did the section
+          await AsyncStorage.setItem("requestToServer",JSON.stringify(false));
+          this.index = (this.index + (forward ? 0 : this.PLAYLIST.length + 0)) % this.PLAYLIST.length;
           this._updatePlaybackInstanceForIndex(true); 
-          
-          
+           
         }},
     ]
     );
@@ -359,71 +340,76 @@ export default class MediaPlayer extends React.Component {
         "כל הכבוד! סיימת את השיעור השבועי!",
        [
           {text:"אישור",onPress:async ()=>{
-    
-       let userInThisClassPut = null;
        let theUserSectionDataPut;
-
-      if(!userInThisClass.IsFinished)//When the user finish is first class
+       if(!this.userInThisClass.IsFinished)//When the user finish is first class
       {
+        try{
         let classEndTime = await new Date();
-        userInThisClass.EndTime =await moment(classEndTime).format("YYYY-MM-DD HH:mm:ss");
-        userInThisClass.IsFinished=await true;
-        userInThisClassPut = await AsyncStorage.getItem("userInThisClass");
-        await AsyncStorage.setItem("userInThisClass",JSON.stringify(userInThisClass));
-        userInThisClassPut = await AsyncStorage.getItem("userInThisClass");
-        console.log(userInThisClassPut);
+        this.userInThisClass.EndTime =await moment(classEndTime).format("YYYY-MM-DD HH:mm:ss");
+        this.userInThisClass.IsFinished=await true;
+        }catch(error){console.log(error);}
       }
+     try{theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
+     console.log(theUserSectionDataPut);}
+     catch(error){console.log(error);}
+      
+  //** 
+  //**Prepering DATA for fetch requests --> data1 and data2
+  //**    
+        let data1;
+        let data2;  
+        try{
+          data1 = await {
+            method: 'PUT',
+            headers: {
+              'Accept':'application/json',
+              'Content-Type':'application/json',
+            },
+            body: data=theUserSectionDataPut//get the value from storage so don't need to stringify
+          }
+           data2 = await {
+            method: 'PUT',
+            headers: {
+              'Accept':'application/json',
+              'Content-Type':'application/json',
+            },
+            body: data=JSON.stringify(this.userInThisClass)
+          }
+        }  catch(error){console.log(error);}
      
-      theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
-      console.log(theUserSectionDataPut);
-       
-       
-       let data1 = await {
-        method: 'PUT',
-        headers: {
-          'Accept':'application/json',
-          'Content-Type':'application/json',
-        },
-        body: data=theUserSectionDataPut
-      }
-        await fetch(ServerRequest1, data1)
+              fetch(ServerRequest1, data1)
               .then(response => response.json())  // promise
               .then(async (response) =>{    
                 console.log(response);         
-                 if(userInThisClassPut!=null) {
-                  let data2 = {
-                    method: 'PUT',
-                    headers: {
-                      'Accept':'application/json',
-                      'Content-Type':'application/json',
-                    },
-                    body: data=userInThisClassPut
-                  }
+                
                   fetch(ServerRequest2, data2)
                   .then(response => response.json())  // promise
-                  .then((response) =>{    
-                    console.log(response);})
+                  .then((response) =>{
+                   console.log(response);
+                   debugger;
+                   this.props.navigation.navigate(
+                    "alertComponentClassFinish",
+                    {userFullName:this.props.navigation.state.params.userFullName})  
+                  })
                   .catch((error=>{
                     console.log(error);
-                  }))
-                 }
-                 
+                  }))    
               })
               .catch((error=>{
                 console.log(error);
               }))  
               
-              this.props.navigation.navigate(
-                "alertComponentClassFinish",
-                {userFullName:this.props.navigation.state.params.userFullName})  
           }
        },
        
       ]); 
     }
   }
-
-  _putToServer = async()=>{
+//** 
+//**will  be in action only in section which the user dose in the first time */
+//**
+  _putToServer = async()=>
+  {
     let theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
       let data1 =  {
         method: 'PUT',
@@ -439,8 +425,44 @@ export default class MediaPlayer extends React.Component {
                 console.log(response);})
               .catch((error=>{console.log(error);}))
   }
+//** 
+//**will update only the repeated section filed in SQL */
+//**
+  _putToServerRepeatedSection = async(sectionData,forward) =>
+  {
+    let temp
+    let data1
+    try
+    {
+      temp= await AsyncStorage.getItem("repeatSection");
+      temp=await JSON.parse(temp);
+      sectionData.Repeat_Section_Counter = await temp;
+      data1 = await  {
+        method: 'PUT',
+        headers: {
+          'Accept':'application/json',
+          'Content-Type':'application/json',
+        },
+        body: data=JSON.stringify(sectionData)
+      }
+  }
+    catch(error){console.log(error)}
+    try{
+      await fetch(ServerRequest2, data1)
+      .then((response) => response.json())  // promise
+      .then((response) =>{    
+        console.log(response);
+        this.index = (this.index + (forward ? 1 : this.PLAYLIST.length + 1)) % this.PLAYLIST.length;
+        this._updatePlaybackInstanceForIndex(true); 
+      })
+      .catch((error=>{console.log(error);}))
+    }catch(error){console.log(error)}
+ 
+  }
 
   async _updatePlaybackInstanceForIndex(playing) {
+    try{await this.updateUserDetails();}
+    catch(error){console.log(error);}
     this._updateScreenForLoading(true);
 
     this.setState({
@@ -452,7 +474,7 @@ export default class MediaPlayer extends React.Component {
   }
 
   _onPlayPausePressed = () => {
-    debugger;
+    
     if (this.playbackInstance != null) {
       if (this.state.isPlaying) {
         this.theUserSectionData.Pause_Clicks++;

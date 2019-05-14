@@ -1,11 +1,22 @@
 import React from 'react';
-import { StyleSheet, Text, View , Image,ScrollView} from 'react-native';
+import { StyleSheet, Text, View , Image,ScrollView,AsyncStorage} from 'react-native';
 import { Card, Button} from 'react-native-elements';
+import moment from "moment";
 
 
 const gifUri = 'https://media.giphy.com/media/AZ1PPDF8uO9MI/giphy.gif';
 const pageToNavigate =  'mediaplayer';
 var NextSectionsArr = [];
+class PlaylistItem {
+  constructor(name, uri, isVideo,Class_Id,Section_Id) {
+    this.name = name;
+    this.uri = uri;
+    this.isVideo = isVideo;
+    this.Class_Id=Class_Id;
+    this.Section_Id= Section_Id;
+  }
+}
+const PLAYLIST = [];
 
 export default class NextClass extends React.Component {
     constructor(props) {
@@ -27,21 +38,38 @@ export default class NextClass extends React.Component {
         for(var i=0; i<res.length;i++){
           if(res[i].Section_Is_Finished==false){
             NextSectionsArr.push(res[i]);
+            PLAYLIST.push(new PlaylistItem(res[i].Section_Title,res[i].File_Path,false,res[i].Class_Id,res[i].Section_Id));
           }
         }
         debugger;
       
       }
-      NavigateToUserClass = (NextSectionsArr,userInThisClass) =>{
+      NavigateToUserClass = async (NextSectionsArr,userInThisClass) =>{
+        try{
+          let userInClassData = await AsyncStorage.getItem("userInThisClass");
+          userInClassData = await JSON.parse(userInClassData);
+          userInClassData.StartTime=await moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+          await AsyncStorage.setItem("userInThisClass",JSON.stringify(userInClassData));
+        }
+        catch(error){console.log(error);}
+        
       this.props.navigation.navigate(
         pageToNavigate, 
         {
           userInThisClass:userInThisClass,
           nextClass:this.state.nextClass,
           SectionFinishedFalse:NextSectionsArr, //Instance of the current section the user should do
-          userFullName:this.state.userFullName
+          userFullName:this.state.userFullName,
+          PLAYLIST:PLAYLIST
         }
         );
+    }
+
+    componentDidMount = async ()=>{
+      try{
+        await AsyncStorage.setItem("userInThisClass",JSON.stringify(this.props.navigation.state.params.userInfo.userInThisClass));
+      }
+      catch(error){console.log(error);}
     }
       getUserInSection = async (userinThisClass,nextclass) =>{
         let userId =await userinThisClass.UserId;
@@ -84,7 +112,7 @@ export default class NextClass extends React.Component {
       buttonStyle={{borderRadius:5, marginLeft: 0, marginRight: 0, marginBottom: 0}}
       title={<Text>היכנס לשיעור</Text>} 
       onPress= { () => {
-        console.log(this.state.userInThisClass.UserId);
+        
         this.getUserInSection(this.state.userInThisClass,this.state.nextClass); //get user in section array for this specific class from DB 
      
       }}

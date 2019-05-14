@@ -95,7 +95,7 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
     );
 }
     loadClassesFromDB = (page,userInfo,nextclass) =>{   
-     debugger;
+     
       if(nextclass != null){
       this.props.navigation.navigate(
         page,
@@ -109,7 +109,7 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
     
 //********************************* 
     updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses,userinclass,userFeedback,currentClass,classId,classVersion) =>{
-      debugger;
+    
    this.setState({
   userId: id,
   fullName: fullname,
@@ -133,8 +133,8 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
       for (var i=0; i<userInClassArr.length;i++){
         allUserclasses.push(userInClassArr[i].AppClass);
         if(userInClassArr[i].IsFinished != true){
-         debugger;
-         counter++;
+        
+          counter++;
           nextclass=userInClassArr[i].AppClass;
           userInThisClass=userInClassArr[i];
           currentClass=userInClassArr[i].AppClass.Title;
@@ -156,13 +156,14 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
       }
     }
 componentDidMount = async () => {
- 
+ await AsyncStorage.setItem("requestToServer",JSON.stringify(true));
+ await AsyncStorage.setItem("repeatSection",JSON.stringify(0));
  let id = await AsyncStorage.getItem("userid");
  let fullname = await AsyncStorage.getItem("fullname");
  let username = await AsyncStorage.getItem("username");
  let groupId = await AsyncStorage.getItem("groupId");
  let groupVersion = await AsyncStorage.getItem("groupVersion");
- let userFeedback = await await AsyncStorage.getItem("sendfeedback");
+ let userFeedback = await AsyncStorage.getItem("sendfeedback");
 
 urluserInClass = userInClassFetch;
 urluserInClass += id;
