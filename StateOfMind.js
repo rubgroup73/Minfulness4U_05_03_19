@@ -105,11 +105,6 @@ if(lable==null){
                 console.log(error);
               }))
     }
-
-
-   
-    
-
   render() {
     if(Platform.OS==='ios'){
     return (

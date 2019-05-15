@@ -156,14 +156,22 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
       }
     }
 componentDidMount = async () => {
- await AsyncStorage.setItem("requestToServer",JSON.stringify(true));
- await AsyncStorage.setItem("repeatSection",JSON.stringify(0));
- let id = await AsyncStorage.getItem("userid");
- let fullname = await AsyncStorage.getItem("fullname");
- let username = await AsyncStorage.getItem("username");
- let groupId = await AsyncStorage.getItem("groupId");
- let groupVersion = await AsyncStorage.getItem("groupVersion");
- let userFeedback = await AsyncStorage.getItem("sendfeedback");
+  let id;
+  let fullname;
+  let username;
+  let groupId;
+  let groupVersion;
+  let userFeedback;
+  try{
+    await AsyncStorage.setItem("requestToServer",JSON.stringify(true));
+    await AsyncStorage.setItem("repeatSection",JSON.stringify(0));
+     id = await AsyncStorage.getItem("userid");
+     fullname = await AsyncStorage.getItem("fullname");
+     username = await AsyncStorage.getItem("username");
+     groupId = await AsyncStorage.getItem("groupId");
+     groupVersion = await AsyncStorage.getItem("groupVersion");
+     userFeedback = await AsyncStorage.getItem("sendfeedback");
+  }catch(error){console.log(error);}
 
 urluserInClass = userInClassFetch;
 urluserInClass += id;

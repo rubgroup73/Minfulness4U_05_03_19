@@ -7,6 +7,7 @@ import moment from "moment";
 const gifUri = 'https://media.giphy.com/media/AZ1PPDF8uO9MI/giphy.gif';
 const pageToNavigate =  'mediaplayer';
 var NextSectionsArr = [];
+
 class PlaylistItem {
   constructor(name, uri, isVideo,Class_Id,Section_Id) {
     this.name = name;
@@ -31,9 +32,6 @@ export default class NextClass extends React.Component {
           };
       } 
       
-      //** 
-      //**need to continue thish function
-      //**
       GetNextSectionsArr =(res) =>{
         for(var i=0; i<res.length;i++){
           if(res[i].Section_Is_Finished==false){
@@ -45,10 +43,14 @@ export default class NextClass extends React.Component {
       
       }
       NavigateToUserClass = async (NextSectionsArr,userInThisClass) =>{
+        let userInClassData;
         try{
-          let userInClassData = await AsyncStorage.getItem("userInThisClass");
+          userInClassData = await AsyncStorage.getItem("userInThisClass");
           userInClassData = await JSON.parse(userInClassData);
-          userInClassData.StartTime=await moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+          debugger;
+          if(!userInClassData.IsStarted){
+            userInClassData.StartTime=await moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+          }     
           await AsyncStorage.setItem("userInThisClass",JSON.stringify(userInClassData));
         }
         catch(error){console.log(error);}
@@ -65,18 +67,17 @@ export default class NextClass extends React.Component {
         );
     }
 
-    componentDidMount = async ()=>{
-      try{
-        await AsyncStorage.setItem("userInThisClass",JSON.stringify(this.props.navigation.state.params.userInfo.userInThisClass));
-      }
+    componentDidMount = async ()=>
+    {
+      try{await AsyncStorage.setItem("userInThisClass",JSON.stringify(this.props.navigation.state.params.userInfo.userInThisClass));}
       catch(error){console.log(error);}
     }
-      getUserInSection = async (userinThisClass,nextclass) =>{
-        let userId =await userinThisClass.UserId;
-        let classId =await nextclass.Id;
-        let classVersion =await nextclass.Version;
-        let userInThisClass = await this.state.userInThisClass;
-        debugger;
+
+      getUserInSection = (userinThisClass,nextclass) =>{
+        let userId = userinThisClass.UserId;
+        let classId = nextclass.Id;
+        let classVersion = nextclass.Version;
+        let userInThisClass = this.state.userInThisClass;
         let url = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInSectionReact?userId=";
         url += userId;
         url += "&classVersion="+classVersion;
@@ -85,7 +86,6 @@ export default class NextClass extends React.Component {
         fetch(url)
         .then(response => response.json())
         .then((response) => {
-          debugger;
            this.GetNextSectionsArr(response);
            this.NavigateToUserClass(NextSectionsArr,userInThisClass);
         })
@@ -112,9 +112,7 @@ export default class NextClass extends React.Component {
       buttonStyle={{borderRadius:5, marginLeft: 0, marginRight: 0, marginBottom: 0}}
       title={<Text>היכנס לשיעור</Text>} 
       onPress= { () => {
-        
         this.getUserInSection(this.state.userInThisClass,this.state.nextClass); //get user in section array for this specific class from DB 
-     
       }}
       />      
   </Card>

@@ -45,7 +45,7 @@ class Login extends React.Component {
  async checkAuthentic(){
     debugger;
         if(personFromDBObj.Credentials1 == true){
-        
+        try{
       await AsyncStorage.setItem("username",JSON.stringify(personFromDBObj.UserName));
       await AsyncStorage.setItem("password",JSON.stringify(personFromDBObj.Password));
       await AsyncStorage.setItem("login",JSON.stringify(personFromDBObj.Credentials1));
@@ -53,6 +53,7 @@ class Login extends React.Component {
       await AsyncStorage.setItem("fullname",JSON.stringify(personFromDBObj.FullName));
       await AsyncStorage.setItem("groupId",JSON.stringify(personFromDBObj.Group_Id));
       await AsyncStorage.setItem("groupVersion",JSON.stringify(personFromDBObj.Group_Version));
+        }catch(error){console.log(error);}
       
       this.props.navigation.navigate(
         nextPage,
@@ -62,15 +63,10 @@ class Login extends React.Component {
     else{alert(wrongPassword);}
       }
   testfunc = async () =>{
-   
-    try{
-    let user = await AsyncStorage.getItem("login");
+    let user;
+    try{ user = await AsyncStorage.getItem("login");}
+    catch(error){console.log(error);}
     alert(user);
-    }
-    catch(error){
-     console.log(error);
-    }
-  
   }
       /*************************************************/
       /*Fetch request to DB - return True or False*/
@@ -122,11 +118,6 @@ class Login extends React.Component {
           style={styles.input}
         />
         <AwesomeButtonRick onPress={() =>{this.onLogin(this)}} type="primary">Login</AwesomeButtonRick>
-        {/* <Button
-          title={'Login'}
-          style={styles.input}
-          onPress={this.onLogin.bind(this)}
-        /> */}
       </View>
     );
   }

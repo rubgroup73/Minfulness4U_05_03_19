@@ -13,16 +13,10 @@ export default class AlertComponentClassFinish extends React.Component {
     this.state = { showAlert: true };
   };
 
-  componentWillMount = async () =>{
-    // userFullName = this.props.navigation.state.params.userFullName;
-    userFullName="needdddd"
+  componentWillMount = () =>{
+    userFullName = this.props.navigation.state.params.userFullName;   
  }
         
-    
-  
-  
-
-
   showAlert = () => {
     this.setState({
       showAlert: true

@@ -159,8 +159,8 @@ export default class MediaPlayer extends React.Component {
     catch(error){console.log(error);}
     this.theUserSectionData.Section_Is_Started=true;
     this.shouldRender = true;
-    this.setState({ fontLoaded: true }); 
-
+    this.setState({fontLoaded: true }); 
+    debugger;
     if( request == "true"){
     this.setIntervarForStorage = setInterval(() =>{
       AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
@@ -191,13 +191,14 @@ export default class MediaPlayer extends React.Component {
       // // UNCOMMENT THIS TO TEST THE OLD androidImplementation:
       // androidImplementation: 'MediaPlayer',
     };
-
+    debugger;
     if (this.PLAYLIST[this.index].isVideo) {
       this._video.setOnPlaybackStatusUpdate(this._onPlaybackStatusUpdate);
       await this._video.loadAsync(source, initialStatus);
       this.playbackInstance = this._video;
       const status = await this._video.getStatusAsync();
     } else {
+      debugger;
       const { sound, status } = await Audio.Sound.create(
         source,
         initialStatus,
@@ -234,6 +235,7 @@ export default class MediaPlayer extends React.Component {
   }
 
   _onPlaybackStatusUpdate = status => {
+    this.theUserSectionData.User_Last_Point =status.positionMillis;
     if (status.isLoaded) {
       this.setState({
         playbackInstancePosition: status.positionMillis,
@@ -386,7 +388,6 @@ export default class MediaPlayer extends React.Component {
                   .then(response => response.json())  // promise
                   .then((response) =>{
                    console.log(response);
-                   debugger;
                    this.props.navigation.navigate(
                     "alertComponentClassFinish",
                     {userFullName:this.props.navigation.state.params.userFullName})  
@@ -420,8 +421,8 @@ export default class MediaPlayer extends React.Component {
         body: data=theUserSectionDataPut
       }
              fetch(ServerRequest1, data1)
-              .then(async (response) => await response.json())  // promise
-              .then(async (response) =>{    
+              .then( (response) =>  response.json())  // promise
+              .then( (response) =>{    
                 console.log(response);})
               .catch((error=>{console.log(error);}))
   }
@@ -587,10 +588,10 @@ export default class MediaPlayer extends React.Component {
   _getSeekSliderPosition() {
     if (
       this.playbackInstance != null &&
-      this.state.playbackInstancePosition != null &&
+      this.state.playbackInstancePosition != null &&//need to start here**********
       this.state.playbackInstanceDuration != null
     ) {
-      this.theUserSectionData.User_Last_Point = Math.floor(this.state.playbackInstancePosition/3600);//Catching where the user in the section
+      
       return this.state.playbackInstancePosition / this.state.playbackInstanceDuration;
     }//Video Slider Progress
     return 0;

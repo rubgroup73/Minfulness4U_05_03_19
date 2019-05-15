@@ -14,6 +14,7 @@ import LoadingLogo from './LoadingLogo';
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
 
+
 const AppNavigator = createStackNavigator
 (
   { 
@@ -176,7 +177,9 @@ export default class App extends React.Component {
     // await AsyncStorage.removeItem("password")
     // await AsyncStorage.removeItem("login")
     // await AsyncStorage.removeItem("sendfeedback")
-   let temp = await AsyncStorage.getItem("login");
+    let temp
+    try{temp= await AsyncStorage.getItem("login");}
+    catch(error){console.log(error);}
    if(temp != null){
     if(temp == "true")
     {
