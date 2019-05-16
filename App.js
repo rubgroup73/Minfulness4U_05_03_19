@@ -166,13 +166,23 @@ export default class App extends React.Component {
 
   constructor(props){
     super(props); 
+     this.timeOutTemp=0;
+
     this.state = {
       isLoad:false,
-      isLogged:false
+      isLogged:false,
+      timeOut:0,
+
     }  
   } 
 
   componentDidMount = async ()=>{  
+    setInterval(LoadPage=()=>{
+      this.timeOutTemp++;
+      this.setState( {
+       timeOut:this.timeOutTemp
+      });
+    }, 1000);
     // await AsyncStorage.removeItem("username")
     // await AsyncStorage.removeItem("password")
     // await AsyncStorage.removeItem("login")
@@ -201,17 +211,23 @@ export default class App extends React.Component {
   }
 }
 
-  render() 
- {
-   if(this.state.isLogged == false)
-    {
-    return <AppContainer />;
-    }
-    else{
-      return <AppContainerLogged/>
-
-    }
-  }
+render() 
+  
+{
+   if(this.state.isLoad == false || this.state.timeOut<5)
+   {
+     return(
+     <LoadingLogo  loadVersion='123'></LoadingLogo>
+);
+}
+else if(this.state.isLogged == false)
+   {
+   return <AppContainer />;
+   }
+   else{
+     return <AppContainerLogged/>
+   }
+ }
 }
 
 // const styles = StyleSheet.create({

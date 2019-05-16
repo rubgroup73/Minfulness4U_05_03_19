@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, FlatList,Image,AsyncStorage,Text} from 'react-native';
 import { ListItem , List} from 'react-native-elements';
+import LoadingLogo from './LoadingLogo';
 
 const classesPic =  require('./assets/images/classes.jpg');
 const finishClassesPic = require('./assets/images/finishedClasses.png');
@@ -11,7 +12,6 @@ const heightPic = 80;
 const widthPic = 100;
 const loadIcon = require('./assets/images/Loading_2.gif');
 const userInClassFetch = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInClassReact?userId=";
-
 
 const styles = StyleSheet.create({
   subtitleView: {
@@ -25,24 +25,44 @@ const styles = StyleSheet.create({
   },
   listStyle:{
       textAlign:'right',
+      backgroundColor:'#fff5dd',
   },
   rightto:{
     textAlign:'right'
   },
   listItemStyle:{
-    borderBottomColor:'#e3e4e5',borderBottomWidth : 1.25
+    backgroundColor:'#fff5dd',
+    borderBottomColor:'#ffedc1',
+    borderBottomWidth : 3,
+  
   },
-  subtitleFont:{
-    fontSize:13,paddingTop:10
+  titleStyle:{
+    fontSize:18,
+    fontWeight:'500',
+    color:'#2e3747',
+    
+  },
+  subtitleStyle:{
+    fontSize:15,paddingTop:10,
+    fontWeight:'500',
+    color:'#2e3747',
   },
   userNameHead:{
-    textAlign:'center',fontSize:20,borderWidth:2
+    textAlign:'center',
+    fontSize:20,
+    elevation: 2,
+    backgroundColor:'#2e3747',
+    color:'white',
+    fontWeight:'500',
+    borderBottomColor:'white',
+    borderBottomWidth:1,
+
+    
   },
   loadIconStyle:{
     flexDirection: 'column', justifyContent: 'center',alignItems: 'center',
   }
 });
-
 const appPages = 
 [
     'classlist',
@@ -59,13 +79,13 @@ var nextclass ;//Next class for the user-(*)
 var userInThisClass; //The userInclass instance for this (*) class
 var oldClasses=[];//Previous classes-The user has already done these classes.
 var userFinishAllClasses=false;
-var currentClass = null;
 var classId = status; //if we found in the server that the classId is equal to -100 it's mean that all classes has finished
 var classVersion = status // the same reason like classId
 
 export default class Classlist extends React.Component{
 constructor(props){
   super(props);
+  this.currentClass;
   this.state = {
     fullName:"",
     classVersion:-1,
@@ -78,7 +98,6 @@ constructor(props){
     changed:false,
     oldClasses:null,
     userInThisClass:null,
-    currentClass:"כל השיעורים בוצעו",//the name(string) of the next class
     classVersion:status,
     classId:status
   
@@ -108,7 +127,7 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
       }
     
 //********************************* 
-    updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses,userinclass,userFeedback,currentClass,classId,classVersion) =>{
+    updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses,userinclass,userFeedback,classId,classVersion) =>{
     
    this.setState({
   userId: id,
@@ -122,22 +141,21 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
   oldClasses:oldClasses,
   userInThisClass:userinclass,
   userFeedback:userFeedback,
-  currentClass:currentClass,
   classVersion:classVersion,
   classId:classId,
 
   });
     }
     setAllClasses = (userInClassArr) =>{
+      debugger;
       let counter = 0;//Indicates if all classess has finished
       for (var i=0; i<userInClassArr.length;i++){
         allUserclasses.push(userInClassArr[i].AppClass);
         if(userInClassArr[i].IsFinished != true){
-        
           counter++;
           nextclass=userInClassArr[i].AppClass;
           userInThisClass=userInClassArr[i];
-          currentClass=userInClassArr[i].AppClass.Title;
+          this.currentClass=userInClassArr[i].AppClass.Title;
           classId = userInClassArr[i].AppClass.Id;
           classVersion = userInClassArr[i].AppClass.Version;
           break;
@@ -145,6 +163,7 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
       }
       if(counter == 0){
         nextclass = null;
+        this.currentClass= 'סיימת את כל השיעורים'
       }
     }
     SetOldClasses=(userInClass)=>{
@@ -182,7 +201,7 @@ fetch(urluserInClass)
   userInClassArr = response;
   this.setAllClasses(userInClassArr);
   this.SetOldClasses(userInClassArr);
-  this.updateStates(id,fullname,username,groupId,groupVersion,allUserclasses,nextclass,oldClasses,userInThisClass,userFeedback,currentClass,classId,classVersion);
+  this.updateStates(id,fullname,username,groupId,groupVersion,allUserclasses,nextclass,oldClasses,userInThisClass,userFeedback,classId,classVersion);
 })
 
 .catch((error=>{
@@ -193,14 +212,11 @@ fetch(urluserInClass)
     render () {
       if(this.state.changed == false){
         return(
-          <View style={styles.loadIconStyle}>       
-                <Image source={loadIcon} />
-         </View> 
+          <LoadingLogo></LoadingLogo>
 );
       }
       else{
         return (
-   
             <View style = {styles.listStyle}>
             <Text style={styles.userNameHead}>שלום {JSON.parse(this.state.fullName)}</Text>
             <ListItem
@@ -211,27 +227,33 @@ fetch(urluserInClass)
                     this.props.navigation.navigate(appPages[5]);
                   }
                 }}
-              style = {styles.listItemStyle}
-               title = {<Text>השיעור הבא</Text>}
-               subtitle = {<Text style={styles.subtitleFont}>{this.state.currentClass}</Text>}
-               numberOfLines={1}
+                containerStyle = {styles.listItemStyle}
+                title ='השיעור הבא'
+                titleStyle={styles.titleStyle}
+                subtitle ={this.currentClass}
+                subtitleStyle={styles.subtitleStyle}
+                numberOfLines={1}
                titleNumberOfLines={1}
                leftAvatar = {{source:classesPic,height:heightPic,width:widthPic}}
                 
              />  
               <ListItem
               onPress = {() => {this.loadPreviousClassesFromDB(appPages[1],this.state,allUserclasses);}}
-              style = {styles.listItemStyle}
-               title = {<Text>שיעורים שביצעתי</Text>}
-               subtitle =  {<Text style={styles.subtitleFont} >כמה שיעורים עשיתי</Text>}
+              containerStyle = {styles.listItemStyle}
+              title = 'שיעורים שביצעתי'
+               subtitle ='רשימת השיעורים שסיימתי'
+               titleStyle={styles.titleStyle}
+               subtitleStyle={styles.subtitleStyle}
                numberOfLines={1}
                titleNumberOfLines={1}
                leftAvatar = {{source:finishClassesPic,height:heightPic,width:widthPic}}
              />  
               <ListItem
-              style = {styles.listItemStyle}
-               title = {<Text>שיעורי בית</Text>}
-               subtitle =  {<Text style={styles.subtitleFont} >חזרה על השיעור</Text>}
+              containerStyle = {styles.listItemStyle}
+              title = 'שיעורי בית'
+               subtitle = 'שיעורי בית לשיעור הנוכחי'
+               titleStyle={styles.titleStyle}
+               subtitleStyle={styles.subtitleStyle}
                numberOfLines={1}
                titleNumberOfLines={1}
                leftAvatar = {{source:homeWorkPic,height:heightPic,width:widthPic}}
@@ -243,17 +265,21 @@ fetch(urluserInClass)
                   {userId:this.state.userId,classId:this.state.classId,classVersion:this.state.classVersion,
                     userFullName:JSON.parse(this.state.fullName)}
                   )}}
-              style = {styles.listItemStyle}
-               title = {<Text>איך אני מרגיש</Text>}
-               subtitle =  {<Text style={styles.subtitleFont} >שתף אותנו</Text>}
+               containerStyle = {styles.listItemStyle}
+               title ='איך אני מרגיש'
+               subtitle = 'שתף אותנו בהרגשתך'
+               titleStyle={styles.titleStyle}
+               subtitleStyle={styles.subtitleStyle}
                numberOfLines={1}
                titleNumberOfLines={1}
                leftAvatar = {{source:userFeelingPic,height:heightPic,width:widthPic}}
              />     
                <ListItem
-               style = {styles.listItemStyle}
-               title = {<Text>פורום קבוצתי</Text>}
-               subtitle =  {<Text style={styles.subtitleFont} >בוא נדבר</Text>}
+                containerStyle = {styles.listItemStyle}
+                title = 'פורום קבוצתי'
+                subtitle = 'המקום שלך לדבר עם קבוצתך'
+                titleStyle={styles.titleStyle}
+                subtitleStyle={styles.subtitleStyle}
                numberOfLines={1}
                titleNumberOfLines={1}
                leftAvatar = {{source:chatPic,height:heightPic,width:widthPic}}

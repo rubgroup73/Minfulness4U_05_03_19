@@ -1,12 +1,53 @@
 import React from 'react';
-import { StyleSheet, Text, View , Image,ScrollView,AsyncStorage} from 'react-native';
+import { StyleSheet, Text, View , Image,ScrollView,AsyncStorage,Dimensions} from 'react-native';
 import { Card, Button} from 'react-native-elements';
 import moment from "moment";
 
+const ex={
+  width: Dimensions.get('window').width,
+  height: Dimensions.get('window').height
+  };
 
-const gifUri = 'https://media.giphy.com/media/AZ1PPDF8uO9MI/giphy.gif';
+const ServerUpdateRequest = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateClassStartedReact";
 const pageToNavigate =  'mediaplayer';
 var NextSectionsArr = [];
+
+const styles = StyleSheet.create({
+  outerContainer:{
+    backgroundColor:'#ffffff'
+  },
+  cardStyle:{
+    borderRadius:10,
+    elevation: 8,
+    backgroundColor:'#fff5dd',
+    marginBottom:20
+  },
+  imageStyle:{ 
+    width: '100%',
+     height: ex.height*0.5 ,
+     borderRadius:5
+    },
+    descriotion:{marginBottom: 10,
+      fontSize:20,
+      textAlign:"center",
+      fontWeight:"700",
+      marginTop:3,
+      marginBottom:3 
+    },
+  titleStyle:
+  {fontSize:35,
+    fontWeight:'700',
+    textShadowColor:'#585858',
+  textShadowOffset:{width: 5, height: 5},
+  textShadowRadius:5,},
+  buttonStyle:{borderRadius:5, 
+    marginLeft: 0,
+     marginRight: 0, 
+     marginBottom: 0,
+     backgroundColor:'#ffedc1',
+     elevation:2},
+     titleStyle2:{fontSize:35,fontWeight:"700"}
+  });
 
 class PlaylistItem {
   constructor(name, uri, isVideo,Class_Id,Section_Id) {
@@ -49,12 +90,38 @@ export default class NextClass extends React.Component {
           userInClassData = await JSON.parse(userInClassData);
           debugger;
           if(!userInClassData.IsStarted){
-            userInClassData.StartTime=await moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
-          }     
-          await AsyncStorage.setItem("userInThisClass",JSON.stringify(userInClassData));
+            try{userInClassData.StartTime=await moment(new Date()).format("YYYY-MM-DD HH:mm:ss");}
+            catch(error){console.log(error);}
+
+            let data = {
+              method: 'PUT',
+              headers: {
+                'Accept':'application/json',
+                'Content-Type':'application/json',
+              },
+              body: data=JSON.stringify(userInClassData)
+            }
+            return fetch(ServerUpdateRequest, data)
+                    .then(response => response.json())  // promise
+                    .then(async (response) =>{    
+                      console.log(response);
+                      try{await AsyncStorage.setItem("userInThisClass",JSON.stringify(userInClassData));}
+                      catch(error){console.log(error);} 
+                      this.navigationToPlayer(NextSectionsArr,userInThisClass)
+                     
+                    })
+                    .catch((error=>{
+                      console.log(error);
+                    }))
+          } 
+        else
+        this.navigationToPlayer(NextSectionsArr,userInThisClass) 
+
         }
         catch(error){console.log(error);}
         
+    }
+    navigationToPlayer = (NextSectionsArr,userInThisClass)=>{
       this.props.navigation.navigate(
         pageToNavigate, 
         {
@@ -96,22 +163,23 @@ export default class NextClass extends React.Component {
     render(props) {
      
         return (            
-      <ScrollView>
-  <Card 
-  style={{fontSize:22,fontWeight:"700"}}
+      <ScrollView style={styles.outerContainer}>
+  <Card containerStyle={styles.cardStyle}
+  titleStyle={styles.titleStyle2}
     title={this.state.nextClass.Title}>
     <Image
-    source={{ uri:gifUri}}
-    style={{ width: '100%', height: 200 }}/>
-    <Text style={{marginBottom: 10,fontSize:20,textAlign:"center",fontWeight:"700" }}>
+    source={{ uri:this.state.userInThisClass.AppClass.Class_File_Path}}
+    style={styles.imageStyle}
+    resizeMode="cover"
+    />
+    <Text style={styles.descriotion}>
       {this.state.nextClass.Description}
     </Text>
     <Button
-     style={{fontSize:50}}
-      backgroundColor='#03A9F4'
-      buttonStyle={{borderRadius:5, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-      title={<Text>היכנס לשיעור</Text>} 
-      onPress= { () => {
+     titleStyle={styles.titleStyle}
+     buttonStyle={styles.buttonStyle}
+     title='היכנס לשיעור' 
+     onPress= { () => {
         this.getUserInSection(this.state.userInThisClass,this.state.nextClass); //get user in section array for this specific class from DB 
       }}
       />      

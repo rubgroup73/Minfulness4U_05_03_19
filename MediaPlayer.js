@@ -33,7 +33,7 @@ class Icon {
 
 const ServerRequest1 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateDataUserInClassReact";
 const ServerRequest2 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateDataUserRepeatSecReact";
-const ServerRequest3 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateDataUserRepeatSecReact";
+const ServerRequest3 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateClassStatuscReact";
 const ICON_THROUGH_EARPIECE = 'speaker-phone';
 const ICON_THROUGH_SPEAKER = 'speaker';
 
@@ -337,6 +337,7 @@ export default class MediaPlayer extends React.Component {
     ]
     );
     else{  
+      debugger;
       Alert.alert(
         "השיעור הסתיים!",
         "כל הכבוד! סיימת את השיעור השבועי!",
@@ -348,20 +349,24 @@ export default class MediaPlayer extends React.Component {
         try{
         let classEndTime = await new Date();
         this.userInThisClass.EndTime =await moment(classEndTime).format("YYYY-MM-DD HH:mm:ss");
-        this.userInThisClass.IsFinished=await true;
+        this.userInThisClass.IsFinished= true;
         }catch(error){console.log(error);}
       }
-     try{theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
-     console.log(theUserSectionDataPut);}
-     catch(error){console.log(error);}
-      
-  //** 
-  //**Prepering DATA for fetch requests --> data1 and data2
-  //**    
-        let data1;
-        let data2;  
+        try{theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
+        console.log(theUserSectionDataPut);}
+        catch(error){console.log(error);}  
+        this.updateClassInDB(theUserSectionDataPut);  
+          }
+       },  
+      ]);    
+    }
+  }
+
+updateClassInDB = (theUserSectionDataPut) => {
+  let data1;
+  let data2;  
         try{
-          data1 = await {
+          data1 =  {
             method: 'PUT',
             headers: {
               'Accept':'application/json',
@@ -369,7 +374,7 @@ export default class MediaPlayer extends React.Component {
             },
             body: data=theUserSectionDataPut//get the value from storage so don't need to stringify
           }
-           data2 = await {
+           data2 =  {
             method: 'PUT',
             headers: {
               'Accept':'application/json',
@@ -383,14 +388,11 @@ export default class MediaPlayer extends React.Component {
               .then(response => response.json())  // promise
               .then(async (response) =>{    
                 console.log(response);         
-                
-                  fetch(ServerRequest2, data2)
+                  fetch(ServerRequest3, data2)
                   .then(response => response.json())  // promise
                   .then((response) =>{
                    console.log(response);
-                   this.props.navigation.navigate(
-                    "alertComponentClassFinish",
-                    {userFullName:this.props.navigation.state.params.userFullName})  
+                   this.navigateToAlert();
                   })
                   .catch((error=>{
                     console.log(error);
@@ -398,13 +400,14 @@ export default class MediaPlayer extends React.Component {
               })
               .catch((error=>{
                 console.log(error);
-              }))  
-              
-          }
-       },
-       
-      ]); 
-    }
+              }))   
+}
+
+  navigateToAlert = ()=>{
+    this.props.navigation.navigate(
+      "alertComponentClassFinish",
+      {userFullName:this.props.navigation.state.params.userFullName}
+      )  
   }
 //** 
 //**will  be in action only in section which the user dose in the first time */
