@@ -177,8 +177,11 @@ export default class App extends React.Component {
   } 
 
   componentDidMount = async ()=>{  
-    setInterval(LoadPage=()=>{
+   let interval= setInterval(LoadPage=()=>{
       this.timeOutTemp++;
+      if(this.timeOut==5){
+        clearInterval(interval);
+      }
       this.setState( {
        timeOut:this.timeOutTemp
       });

@@ -26,6 +26,12 @@ const styles = StyleSheet.create({
   listStyle:{
       textAlign:'right',
       backgroundColor:'#fff5dd',
+      marginBottom:0,
+      height:'100%',
+      borderBottomWidth:20,
+      borderBottomColor:'#ffedc1',
+      
+      
   },
   rightto:{
     textAlign:'right'
@@ -50,12 +56,12 @@ const styles = StyleSheet.create({
   userNameHead:{
     textAlign:'center',
     fontSize:20,
-    elevation: 2,
+
     backgroundColor:'#2e3747',
     color:'white',
     fontWeight:'500',
-    borderBottomColor:'white',
-    borderBottomWidth:1,
+    borderBottomWidth:10,
+      borderBottomColor:'#ffedc1',
 
     
   },
@@ -174,7 +180,9 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
         }
       }
     }
+   
 componentDidMount = async () => {
+  debugger;
   let id;
   let fullname;
   let username;
@@ -215,6 +223,7 @@ fetch(urluserInClass)
           <LoadingLogo></LoadingLogo>
 );
       }
+      //temp list of screens should be dynamic after test
       else{
         return (
             <View style = {styles.listStyle}>

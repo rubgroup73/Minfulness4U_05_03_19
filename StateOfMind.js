@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   outerdiv:{
     padding:20,
     flex: 1,
-    backgroundColor: '#c6edff'},
+    backgroundColor: '#fff5dd'},
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -438,7 +438,7 @@ const styles2 = StyleSheet.create({
   outerdiv2:{
     padding:20,
     flex: 1,
-    backgroundColor: '#c6edff',
+    backgroundColor: '#fff5dd',
   },
   container2: {
     marginTop:10,

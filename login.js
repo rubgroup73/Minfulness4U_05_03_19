@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
-import { Alert, Button, TextInput, View, StyleSheet,AsyncStorage } from 'react-native';
+import { Alert, Button, TextInput, View, StyleSheet,AsyncStorage,Text,Dimensions } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick'; 
+
+const ex={
+  width: Dimensions.get('window').width,
+  height: Dimensions.get('window').height
+  };
 
 const nextPage = 'alertComponentLogin';
 const wrongPassword = "השם משתמש או הסיסמא אינם נכונים";
@@ -12,18 +17,36 @@ const welcome = "ברוך הבא";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height:ex.height,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ecf0f1',
+    backgroundColor: '#fff5dd',
   },
   input: {
-    width: 200,
-    height: 44,
+    width: 280,
+    height: 70,
     padding: 10,
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: '#a37911',
     marginBottom: 10,
+    fontSize:25,
+fontWeight:'500'
   },
+  inputText:{
+fontSize:25,
+fontWeight:'500'
+  },
+  header1:{
+    fontSize:35,
+    fontWeight:'500',
+    marginBottom:5,
+  },
+  header2:{
+    fontSize:24,
+    fontWeight:'500',
+    marginBottom:20,
+  textAlign:'center'},
+  
 });
 
 var personFromDBObj;
@@ -104,20 +127,23 @@ class Login extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+      <Text style={styles.header1}>ברוך הבא</Text>  
+      <Text style={styles.header2}>אנא הכנס שם משתמש וסיסמה</Text>
         <TextInput
           value={this.state.username}
           onChangeText={(username) => this.setState({ username })}
-          placeholder={'Username'}
+          placeholder={'שם משתמש'}
           style={styles.input}
         />
         <TextInput
+          style={styles.inputText}
           value={this.state.password}
           onChangeText={(password) => this.setState({ password })}
-          placeholder={'Password'}
+          placeholder={'סיסמה'}
           secureTextEntry={true}
           style={styles.input}
         />
-        <AwesomeButtonRick onPress={() =>{this.onLogin(this)}} type="primary">Login</AwesomeButtonRick>
+        <AwesomeButtonRick onPress={() =>{this.onLogin(this)}}  backgroundColor="#f9d886" backgroundDarker="#f4d077" borderColor="black" borderWidth={1} width={140} height={70}  backgroundShadow="transparent" style={styles.btnText} >היכנס</AwesomeButtonRick>
       </View>
     );
   }
