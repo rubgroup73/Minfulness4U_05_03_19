@@ -49,6 +49,7 @@ export default class AlertComponentLogin extends React.Component {
           messageStyle = {styles.messageStyle}
           titleStyle = {styles.titleStyle}
           confirmButtonTextStyle = {styles.confirmButtonTextStyle}
+          closeOnTouchOutside = {false}
           onConfirmPressed={() => {
           this.hideAlert();
           }}
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#a8e0c1',
     
   },
   button: {

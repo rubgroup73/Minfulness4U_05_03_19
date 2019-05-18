@@ -299,7 +299,7 @@ export default class MediaPlayer extends React.Component {
     let request;
     try{request= await AsyncStorage.getItem("requestToServer");}
     catch(error){console.log(error);}
-
+    debugger;
     if ( request == "true"){
     let classEndTime = await new Date();
     let diff = await moment.duration(moment(classEndTime).diff(moment(this.classStartTime)));//calculate the section time
@@ -331,8 +331,7 @@ export default class MediaPlayer extends React.Component {
           await AsyncStorage.setItem("repeatSection",JSON.stringify(temp));//will save the number of time the user did the section
           await AsyncStorage.setItem("requestToServer",JSON.stringify(false));
           this.index = (this.index + (forward ? 0 : this.PLAYLIST.length + 0)) % this.PLAYLIST.length;
-          this._updatePlaybackInstanceForIndex(true); 
-           
+          this._updatePlaybackInstanceForIndex(true);      
         }},
     ]
     );

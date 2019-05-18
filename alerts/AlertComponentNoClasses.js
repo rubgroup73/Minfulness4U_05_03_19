@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
-export default class AlertComponent extends React.Component {
+export default class AlertComponentNoClasses extends React.Component {
 
   constructor(props) {
     super(props);
@@ -17,7 +17,8 @@ export default class AlertComponent extends React.Component {
 
   hideAlert = () => {
     this.props.navigation.navigate(
-      'classlist'     
+      'classlist',
+      {comeFrom: 'AlertComponentNoClasses'}     
     )
   };
 
@@ -31,8 +32,8 @@ export default class AlertComponent extends React.Component {
           alertContainerStyle = {styles.boxStyle}
           show={showAlert}
           showProgress={false}
-          title="הקורס הסתיים!"
-          message="כל הכבוד סיימת את הקורס"
+          title="אין שיעורים שביצעת"
+          message= "לחץ 'אישור' וגש ל'השיעור הבא'"
           closeOnTouchOutside={true}
           closeOnHardwareBackPress={false}
           showCancelButton={false}

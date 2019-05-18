@@ -9,8 +9,8 @@ const styles = StyleSheet.create({
   imageStyle:{height:250, width:ex.width,justifyContent:'center',alignItems:'center',backgroundColor:'#2e3747',marginTop:120,zIndex:3},
   viewStyle:{flex:1,backgroundColor:'#2e3747'},
   imageStyle2:{height:250, width:ex.width,justifyContent:'center',alignItems:'center',backgroundColor:'#2e3747',marginTop:-30,zIndex:0},
-  spinner:{ transform: [{ rotate: '-90deg'}],marginTop:30},
-  viewStyle2:{flex:1,backgroundColor:'#2e3747',position:'absolute',top:0,width:ex.width,height:ex.height,zIndex:3},
+  spinner:{ transform: [{ rotate: '-90deg'}],marginTop:180,zIndex:3},
+ 
 
  })
 
@@ -35,21 +35,18 @@ export default class LoadingLogo extends React.Component {
         source={require('./assets/images/FreeYour.gif')}
         resizeMode="contain"
       />}
-      {/*<View style={styles.spinner}>
-      <Spinner duration={500} color='#ECA627' size={50} ></Spinner>
-      </View>*/}
+      
      </View>
 
       )}
       
       else{
-        return( <View style={styles.viewStyle2}>
+        return( <View style={styles.viewStyle}>
           <Image
           style={styles.imageStyle}
           source={require('./assets/images/Mindfulness4ULogo.png')}
           resizeMode="contain"
         />
-      
         <View style={styles.spinner}>
         <Spinner duration={500} color='#ECA627' size={50} ></Spinner>
         </View>
@@ -63,5 +60,3 @@ export default class LoadingLogo extends React.Component {
         source={require('./assets/images/Ellipsis-3.4s-200p.gif')}
         resizeMode="contain"
       /> */
-          
-      

@@ -10,6 +10,7 @@ import AlertComponent from './alerts/AlertComponent';
 import AlertComponentStateOfMind from './alerts/AlertComponentStateOfMind';
 import AlertComponentLogin from './alerts/AlertComponentLogin';
 import AlertComponentClassFinish from './alerts/AlertComponentClassFinish';
+import AlertComponentNoClasses from './alerts/AlertComponentNoClasses';
 import LoadingLogo from './LoadingLogo';
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
@@ -72,6 +73,11 @@ const AppNavigator = createStackNavigator
     },
     alertComponentClassFinish:{
       screen:AlertComponentClassFinish,
+      navigationOptions:
+      {headerLeft:null}
+    },
+    alertComponentNoClasses:{
+      screen:AlertComponentNoClasses,
       navigationOptions:
       {headerLeft:null}
     },
@@ -148,6 +154,11 @@ const AppNavigatorLogged = createStackNavigator
       navigationOptions:
       {headerLeft:null}
     },
+    alertComponentNoClasses:{
+      screen:AlertComponentNoClasses,
+      navigationOptions:
+      {headerLeft:null}
+    },
     LoadingLogo:{
       screen:LoadingLogo,
       navigationOptions:
@@ -186,10 +197,11 @@ export default class App extends React.Component {
        timeOut:this.timeOutTemp
       });
     }, 1000);
-    // await AsyncStorage.removeItem("username")
-    // await AsyncStorage.removeItem("password")
-    // await AsyncStorage.removeItem("login")
-    // await AsyncStorage.removeItem("sendfeedback")
+  
+    //  await AsyncStorage.getAllKeys()
+    //       .then(keys => AsyncStorage.multiRemove(keys))
+    //       .then(() => alert('success'));
+ 
     let temp
     try{temp= await AsyncStorage.getItem("login");}
     catch(error){console.log(error);}

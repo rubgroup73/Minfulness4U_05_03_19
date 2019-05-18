@@ -80,16 +80,15 @@ export default class NextClass extends React.Component {
             PLAYLIST.push(new PlaylistItem(res[i].Section_Title,res[i].File_Path,false,res[i].Class_Id,res[i].Section_Id));
           }
         }
-        debugger;
-      
       }
       NavigateToUserClass = async (NextSectionsArr,userInThisClass) =>{
+        debugger;
         let userInClassData;
         try{
           userInClassData = await AsyncStorage.getItem("userInThisClass");
           userInClassData = await JSON.parse(userInClassData);
           debugger;
-          if(!userInClassData.IsStarted){
+          if(!userInClassData.IsStarted){//if != false =>enter
             try{userInClassData.StartTime=await moment(new Date()).format("YYYY-MM-DD HH:mm:ss");}
             catch(error){console.log(error);}
 
@@ -107,7 +106,7 @@ export default class NextClass extends React.Component {
                       console.log(response);
                       try{await AsyncStorage.setItem("userInThisClass",JSON.stringify(userInClassData));}
                       catch(error){console.log(error);} 
-                      this.navigationToPlayer(NextSectionsArr,userInThisClass)
+                      this.navigationToPlayer(NextSectionsArr,userInThisClass);
                      
                     })
                     .catch((error=>{
@@ -149,7 +148,7 @@ export default class NextClass extends React.Component {
         url += userId;
         url += "&classVersion="+classVersion;
         url += "&classId="+classId;
-
+        debugger;
         fetch(url)
         .then(response => response.json())
         .then((response) => {

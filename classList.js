@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, FlatList,Image,AsyncStorage,Text} from 'react-native';
+import { StyleSheet, View, FlatList,Image,AsyncStorage,Text,Alert} from 'react-native';
 import { ListItem , List} from 'react-native-elements';
 import LoadingLogo from './LoadingLogo';
+
 
 const classesPic =  require('./assets/images/classes.jpg');
 const finishClassesPic = require('./assets/images/finishedClasses.png');
@@ -76,7 +77,8 @@ const appPages =
     'nextclass',
     'mediaplayer',
     'stateofmind',
-    'alertComponent'
+    'alertComponent',
+    'alertComponentNoClasses'
 ]
 const status = -100;
 var userInClassArr =[];//All userInClass array for all classes
@@ -92,6 +94,7 @@ export default class Classlist extends React.Component{
 constructor(props){
   super(props);
   this.currentClass;
+  this.noOldClassess;
   this.state = {
     fullName:"",
     classVersion:-1,
@@ -108,6 +111,9 @@ constructor(props){
     classId:status
   
   }
+}
+static navigationOptions = {
+  header: null
 }
 loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{   
 
@@ -154,6 +160,7 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
     }
     setAllClasses = (userInClassArr) =>{
       debugger;
+      allUserclasses = [];
       let counter = 0;//Indicates if all classess has finished
       for (var i=0; i<userInClassArr.length;i++){
         allUserclasses.push(userInClassArr[i].AppClass);
@@ -174,14 +181,21 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
     }
     SetOldClasses=(userInClass)=>{
       debugger;
+      oldClasses=[];
       for(var i=0; i<userInClass.length;i++){
         if(userInClass[i].IsFinished==true){
           oldClasses.push(userInClass[i].AppClass);
         }
       }
+      debugger;
+      if(!oldClasses.length){
+        console.log("No Classes has made");
+        this.noOldClassess=false;
+      }
+      else this.noOldClassess=true;
     }
-   
-componentDidMount = async () => {
+
+componentDidMountAsync = async () => {
   debugger;
   let id;
   let fullname;
@@ -217,16 +231,42 @@ fetch(urluserInClass)
 }))
 
 }
-    render () {
-      if(this.state.changed == false){
-        return(
-          <LoadingLogo></LoadingLogo>
+
+didBlurSubscription = this.props.navigation.addListener(
+  'willFocus',
+  payload => {
+    console.log('willFocus', payload);
+    let comeFrom=this.props.navigation.getParam("comeFrom");
+    debugger;
+    if(typeof comeFrom == "undefined"){
+      this.setState({changed:false});
+      console.log(this.state.changed);
+    }
+    
+  }
 );
+didBlurSubscription = this.props.navigation.addListener(
+  'didFocus',
+  payload => {
+    let comeFrom=this.props.navigation.getParam("comeFrom");
+    if(typeof comeFrom == "undefined"){
+      console.log('didFocus', payload);
+      this.componentDidMountAsync();
+    }
+    
+  }
+);
+
+    render () {
+      
+      if(!this.state.changed){
+        return( <LoadingLogo></LoadingLogo> );
       }
       //temp list of screens should be dynamic after test
       else{
         return (
             <View style = {styles.listStyle}>
+            {/* <NavigationEvents onDidFocus={()=> this.componentDidMountAsync()} /> */}
             <Text style={styles.userNameHead}>שלום {JSON.parse(this.state.fullName)}</Text>
             <ListItem
               onPress = {() => 
@@ -247,7 +287,14 @@ fetch(urluserInClass)
                 
              />  
               <ListItem
-              onPress = {() => {this.loadPreviousClassesFromDB(appPages[1],this.state,allUserclasses);}}
+              onPress = {() => 
+                {
+                  if(this.noOldClassess) 
+                  this.loadPreviousClassesFromDB(appPages[1],this.state,allUserclasses);
+                  else
+                  {
+                    this.props.navigation.navigate(appPages[6]);
+                  }}}
               containerStyle = {styles.listItemStyle}
               title = 'שיעורים שביצעתי'
                subtitle ='רשימת השיעורים שסיימתי'
@@ -300,3 +347,30 @@ fetch(urluserInClass)
       }
 }
 
+// didBlurSubscription = this.props.navigation.addListener(
+//   'willBlur',
+//   payload => {
+//     console.log('willBlur', payload);
+//     this.setState({changed:false});
+//     console.log(this.state.changed);
+//   }
+// );
+// didBlurSubscription = this.props.navigation.addListener(
+//   'didFocus',
+//   payload => {
+//     console.log('didFocus', payload);
+//   }
+// );
+// didBlurSubscription = this.props.navigation.addListener(
+//   'didBlur',
+//   payload => {
+//     console.log('didBlur', payload);
+//   }
+// );
+
+// Alert.alert(
+//   'אין שיעורים',
+//   "לחץ 'אישור' וגש ל'השיעור הבא'",
+//   [{text:'אישור'}],
+//   {cancelable: false}
+// );

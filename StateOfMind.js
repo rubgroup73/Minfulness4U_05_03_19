@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
           
 
   
-/******************************************** IOS Operating System Srtles **********************************************/
+/******************************************** Androind Operating System Srtles **********************************************/
 
 const styles2 = StyleSheet.create({
   outerdiv2:{
