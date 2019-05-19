@@ -11,12 +11,10 @@ import {
   Text,
   TouchableHighlight,
   View,
-  Alert,
-  AsyncStorage,
+  Alert
 } from 'react-native';
 import { Asset, Audio, Font, Video } from 'expo';
 import { MaterialIcons } from '@expo/vector-icons';
-import moment from "moment";
 
 class Icon {
   constructor(module, width, height) {
@@ -27,13 +25,6 @@ class Icon {
   }
 }
 
-
-//Const var to store all our's PlaylistiItem
-//*******************************/
-
-const ServerRequest1 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateDataUserInClassReact";
-const ServerRequest2 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateDataUserRepeatSecReact";
-const ServerRequest3 = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateClassStatuscReact";
 const ICON_THROUGH_EARPIECE = 'speaker-phone';
 const ICON_THROUGH_SPEAKER = 'speaker';
 
@@ -66,33 +57,15 @@ const BUFFERING_STRING = '...buffering...';
 const RATE_SCALE = 3.0;
 const VIDEO_CONTAINER_HEIGHT = DEVICE_HEIGHT * 2.0 / 5.0 - FONT_SIZE * 2;
 
-//** 
-//**Class StartTime Information
-//** 
-var holdingClassInstance = true;
-const repeatSection = 1;
-
-
-
-export default class MediaPlayer extends React.Component {
+export default class MediaPlayerOldClasses extends React.Component {
   constructor(props) {
     super(props);
     this.index = 0;
     this.isSeeking = false;
     this.shouldPlayAtEndOfSeek = false;
     this.playbackInstance = null;
-    this.theUserSectionData;
-    this.shouldRender=false;
-    this.setIntervarForStorage= null;
-    this.setIntervarForFetch = null;
-    this.startOnHold= null;
-    this.classStartTime = null;
-    this.userInThisClass = null;
-    this.PLAYLIST= this.props.navigation.state.params.PLAYLIST;
-    this.nextClass = this.props.navigation.state.params.nextClass;
-    this.theUserSectionsDataArr=this.props.navigation.state.params.SectionFinishedFalse;
-      
-    
+    classStatus = null;
+    this.PLAYLIST=this.props.navigation.state.params.PLAYLIST;
     this.state = {
       showVideo: false,
       playbackInstanceName: LOADING_STRING,
@@ -114,12 +87,10 @@ export default class MediaPlayer extends React.Component {
       useNativeControls: false,
       fullscreen: false,
       throughEarpiece: false,
-      
     };
   }
 
-     componentDidMount() {
-   
+  componentDidMount() {
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
       interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
@@ -128,48 +99,14 @@ export default class MediaPlayer extends React.Component {
       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
       playThroughEarpieceAndroid: false,
     });
-    
     (async () => {
       await Font.loadAsync({
         ...MaterialIcons.font,
         'cutive-mono-regular': require('./assets/fonts/CutiveMono-Regular.ttf'),
       });
-      
-     await this.updateUserDetails();
-    })(); 
-      
-  }
-  //************************************************************************************************************************ */
-  //*work here please
-  //************************************************************************************************************************ */
-  //need to add somehow a vairable which indicates if to send put requests to the server.
-  updateUserDetails = async () =>{
-    let request;
-    
-    try{
-    request = await AsyncStorage.getItem("requestToServer");
-    this.theUserSectionData=await this.theUserSectionsDataArr[this.index];
-    this.classStartTime =await new Date();
-    this.theUserSectionData.Section_Start_Time = await moment(this.classStartTime).format("YYYY-MM-DD HH:mm:ss");
-    this.userInThisClass = await AsyncStorage.getItem("userInThisClass");
-    this.userInThisClass = await JSON.parse(this.userInThisClass);
-    }
-    catch(error){console.log(error);}
-    this.theUserSectionData.Section_Is_Started=true;
-    this.shouldRender = true;
-    this.setState({fontLoaded: true }); 
-    debugger;
-    if( request == "true"){
-    this.setIntervarForStorage = setInterval(() =>{
-      AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
-     },5000);
-
-     this.setIntervarForFetch = setInterval(async () => {
-     this._putToServer();
-          }, 10000);
-        }
-    
-  }
+      this.setState({ fontLoaded: true });
+    })();
+}
 
   async _loadNewPlaybackInstance(playing) {
     if (this.playbackInstance != null) {
@@ -189,14 +126,13 @@ export default class MediaPlayer extends React.Component {
       // // UNCOMMENT THIS TO TEST THE OLD androidImplementation:
       // androidImplementation: 'MediaPlayer',
     };
-    debugger;
+
     if (this.PLAYLIST[this.index].isVideo) {
       this._video.setOnPlaybackStatusUpdate(this._onPlaybackStatusUpdate);
       await this._video.loadAsync(source, initialStatus);
       this.playbackInstance = this._video;
       const status = await this._video.getStatusAsync();
     } else {
-      debugger;
       const { sound, status } = await Audio.Sound.create(
         source,
         initialStatus,
@@ -233,7 +169,6 @@ export default class MediaPlayer extends React.Component {
   }
 
   _onPlaybackStatusUpdate = status => {
-    this.theUserSectionData.User_Last_Point =status.positionMillis;
     if (status.isLoaded) {
       this.setState({
         playbackInstancePosition: status.positionMillis,
@@ -290,180 +225,29 @@ export default class MediaPlayer extends React.Component {
     console.log(`FULLSCREEN UPDATE : ${JSON.stringify(event.fullscreenUpdate)}`);
   };
 
-  async _advanceIndex(forward) {    
-    //Section is finished --> collecting all the relevant information, endTime, datediff
-    clearInterval(this.setIntervarForStorage);
-    clearInterval(this.setIntervarForFetch);
-    let request;
-    try{request= await AsyncStorage.getItem("requestToServer");}
-    catch(error){console.log(error);}
-    debugger;
-    if ( request == "true"){
-    let classEndTime = await new Date();
-    let diff = await moment.duration(moment(classEndTime).diff(moment(this.classStartTime)));//calculate the section time
-    let totalClassTimeS =await parseInt(diff.asSeconds()); ////calculate section in Sec
-    this.theUserSectionData.Section_Total_Duration = totalClassTimeS.toString();//section total duration
-    this.theUserSectionData.Section_End_Time = moment(classEndTime).format("YYYY-MM-DD HH:mm:ss");//section end time date format
-    this.theUserSectionData.Section_Is_Finished=true;
-    AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
-    console.log(this.theUserSectionData);
-    putResponse = await this._putToServer();
-    }   
-      
+  _advanceIndex(forward) {
+    
     if(this.index<this.PLAYLIST.length-1)
     Alert.alert(
       "להמשיך למקטע הבא?",
       "לחץ 'כן' כדי למשיך או 'לא' כדי להשאר באותו המקטע?",
      [
-        {text:"כן",onPress:async()=>{
-          await AsyncStorage.setItem("requestToServer",JSON.stringify(true));
-          try{let r = await AsyncStorage.getItem("requestToServer");
-          console.log(r);
-        }catch(error){console.log(error);}
-          this._putToServerRepeatedSection(this.theUserSectionData,forward);//need to do the fetch here or to move the function
-            
-        }},
-        {text:"לא",onPress:async ()=>{
-          let temp = await AsyncStorage.getItem("repeatSection");
-          temp = await JSON.parse(temp)+repeatSection;
-          await AsyncStorage.setItem("repeatSection",JSON.stringify(temp));//will save the number of time the user did the section
-          await AsyncStorage.setItem("requestToServer",JSON.stringify(false));
-          this.index = (this.index + (forward ? 0 : this.PLAYLIST.length + 0)) % this.PLAYLIST.length;
-          this._updatePlaybackInstanceForIndex(true);      
-        }},
+        {text:"כן",onPress:()=>{this.index = (this.index + (forward ? 1 : this.PLAYLIST.length + 1)) % this.PLAYLIST.length;this._updatePlaybackInstanceForIndex(true);}},
+        {text:"לא",onPress:()=>{this.index = (this.index + (forward ? 0 : this.PLAYLIST.length + 0)) % this.PLAYLIST.length;this._updatePlaybackInstanceForIndex(true);}},
     ]
     );
-    else{  
-      debugger;
+    else{
       Alert.alert(
         "השיעור הסתיים!",
-        "כל הכבוד! סיימת את השיעור השבועי!",
+        "כל הכבוד! סיימת את השיעור!",
        [
-          {text:"אישור",onPress:async ()=>{
-       let theUserSectionDataPut;
-       if(!this.userInThisClass.IsFinished)//When the user finish is first class
-      {
-        try{
-        let classEndTime = await new Date();
-        this.userInThisClass.EndTime =await moment(classEndTime).format("YYYY-MM-DD HH:mm:ss");
-        this.userInThisClass.IsFinished= true;
-        }catch(error){console.log(error);}
-      }
-        try{theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
-        console.log(theUserSectionDataPut);}
-        catch(error){console.log(error);}  
-        this.updateClassInDB(theUserSectionDataPut);  
-          }
-       },  
-      ]);    
+          {text:"אישור",onPress:()=>{this.props.navigation.navigate('classlist')}},      
+      ]
+      );
     }
   }
 
-updateClassInDB = (theUserSectionDataPut) => {
-  let data1;
-  let data2;  
-        try{
-          data1 =  {
-            method: 'PUT',
-            headers: {
-              'Accept':'application/json',
-              'Content-Type':'application/json',
-            },
-            body: data=theUserSectionDataPut//get the value from storage so don't need to stringify
-          }
-           data2 =  {
-            method: 'PUT',
-            headers: {
-              'Accept':'application/json',
-              'Content-Type':'application/json',
-            },
-            body: data=JSON.stringify(this.userInThisClass)
-          }
-        }  catch(error){console.log(error);}
-     
-              fetch(ServerRequest1, data1)
-              .then(response => response.json())  // promise
-              .then(async (response) =>{    
-                console.log(response);         
-                  fetch(ServerRequest3, data2)
-                  .then(response => response.json())  // promise
-                  .then((response) =>{
-                   console.log(response);
-                   this.navigateToAlert();
-                  })
-                  .catch((error=>{
-                    console.log(error);
-                  }))    
-              })
-              .catch((error=>{
-                console.log(error);
-              }))   
-}
-
-  navigateToAlert = ()=>{
-    this.props.navigation.navigate(
-      "alertComponentClassFinish",
-      {userFullName:this.props.navigation.state.params.userFullName}
-      )  
-  }
-//** 
-//**will  be in action only in section which the user dose in the first time */
-//**
-  _putToServer = async()=>
-  {
-    let theUserSectionDataPut = await AsyncStorage.getItem("theUserSectionData");
-      let data1 =  {
-        method: 'PUT',
-        headers: {
-          'Accept':'application/json',
-          'Content-Type':'application/json',
-        },
-        body: data=theUserSectionDataPut
-      }
-             fetch(ServerRequest1, data1)
-              .then( (response) =>  response.json())  // promise
-              .then( (response) =>{    
-                console.log(response);})
-              .catch((error=>{console.log(error);}))
-  }
-//** 
-//**will update only the repeated section filed in SQL */
-//**
-  _putToServerRepeatedSection = async(sectionData,forward) =>
-  {
-    let temp
-    let data1
-    try
-    {
-      temp= await AsyncStorage.getItem("repeatSection");
-      temp=await JSON.parse(temp);
-      sectionData.Repeat_Section_Counter = await temp;
-      data1 = await  {
-        method: 'PUT',
-        headers: {
-          'Accept':'application/json',
-          'Content-Type':'application/json',
-        },
-        body: data=JSON.stringify(sectionData)
-      }
-  }
-    catch(error){console.log(error)}
-    try{
-      await fetch(ServerRequest2, data1)
-      .then((response) => response.json())  // promise
-      .then((response) =>{    
-        console.log(response);
-        this.index = (this.index + (forward ? 1 : this.PLAYLIST.length + 1)) % this.PLAYLIST.length;
-        this._updatePlaybackInstanceForIndex(true); 
-      })
-      .catch((error=>{console.log(error);}))
-    }catch(error){console.log(error)}
- 
-  }
-
   async _updatePlaybackInstanceForIndex(playing) {
-    try{await this.updateUserDetails();}
-    catch(error){console.log(error);}
     this._updateScreenForLoading(true);
 
     this.setState({
@@ -475,40 +259,22 @@ updateClassInDB = (theUserSectionDataPut) => {
   }
 
   _onPlayPausePressed = () => {
-    
     if (this.playbackInstance != null) {
       if (this.state.isPlaying) {
-        this.theUserSectionData.Pause_Clicks++;
-        this.startOnHold = new Date();
         this.playbackInstance.pauseAsync();
       } else {
-        if(this.startOnHold != null){
-         let finishPause = new Date();
-         let diff = moment.duration(moment(finishPause).diff(moment(this.startOnHold)));
-         let minutesDiff = parseInt(diff.asSeconds());
-         this.theUserSectionData.Pause_Duration = parseInt(this.theUserSectionData.Pause_Duration);
-         this.theUserSectionData.Pause_Duration += minutesDiff;
-         console.log(this.theUserSectionData.Pause_Duration);
-         console.log(diff);
-      
-        }
-        this.theUserSectionData.Play_Clicks++;
         this.playbackInstance.playAsync();
       }
     }
   };
 
   _onStopPressed = () => {
-    this.theUserSectionData.Stop_Clicks++
-    AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
     if (this.playbackInstance != null) {
       this.playbackInstance.stopAsync();
     }
   };
 
   _onForwardPressed = () => {
-    this.theUserSectionData.Forward_Clicks++;
-    AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
     if (this.playbackInstance != null) {
       this._advanceIndex(true);
       this._updatePlaybackInstanceForIndex(this.state.shouldPlay);
@@ -516,8 +282,6 @@ updateClassInDB = (theUserSectionDataPut) => {
   };
 
   _onBackPressed = () => {
-    this.theUserSectionData.Backward_Clicks++;
-    AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
     if (this.playbackInstance != null) {
       this._advanceIndex(false);
       this._updatePlaybackInstanceForIndex(this.state.shouldPlay);
@@ -525,11 +289,6 @@ updateClassInDB = (theUserSectionDataPut) => {
   };
 
   _onMutePressed = () => {
-    
-    if(!this.state.muted){
-      this.theUserSectionData.Mute_Clicks++;
-      AsyncStorage.setItem("theUserSectionData",JSON.stringify(this.theUserSectionData));
-    }
     if (this.playbackInstance != null) {
       this.playbackInstance.setIsMutedAsync(!this.state.muted);
     }
@@ -588,10 +347,9 @@ updateClassInDB = (theUserSectionDataPut) => {
   _getSeekSliderPosition() {
     if (
       this.playbackInstance != null &&
-      this.state.playbackInstancePosition != null &&//need to start here**********
+      this.state.playbackInstancePosition != null &&
       this.state.playbackInstanceDuration != null
     ) {
-      
       return this.state.playbackInstancePosition / this.state.playbackInstanceDuration;
     }//Video Slider Progress
     return 0;
@@ -618,7 +376,6 @@ updateClassInDB = (theUserSectionDataPut) => {
       this.state.playbackInstancePosition != null &&
       this.state.playbackInstanceDuration != null
     ) {
-      
       return `${this._getMMSSFromMillis(
         this.state.playbackInstancePosition
       )} / ${this._getMMSSFromMillis(this.state.playbackInstanceDuration)}`;
@@ -658,17 +415,13 @@ updateClassInDB = (theUserSectionDataPut) => {
         })
     );
   };
-//** 
-//render the component
-//** 
-  render()
-   
-  {
-    if(!this.shouldRender){
-      return ( <View style={styles.emptyContainer} />)
-    }
-    else if((this.state.fontLoaded==true)&&(this.shouldRender==true)){
-      return(  
+
+  render() {
+    
+    return !this.state.fontLoaded ? (
+     
+      <View style={styles.emptyContainer} />
+    ) : (
         <View style={styles.container}>
         <View />
         <View style={styles.nameContainer}>
@@ -872,21 +625,12 @@ updateClassInDB = (theUserSectionDataPut) => {
               <View />
             </View>
           </View>
-        ):null}
-         </View>
-        )
-      }
-         else if(this.state.fontLoaded==true){
-      return(
-        <View style={styles.loadIconStyle}>       
-              <Image source={require('./assets/images/Loading_2.gif')} />
-       </View> 
-       );
-    }
-    }
-  }    
+        ) : null}
+      </View>
+    );
+  }
+}
 
-       
 const styles = StyleSheet.create({
   emptyContainer: {
     alignSelf: 'stretch',

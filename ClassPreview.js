@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View , Image,ScrollView,Dimensions} from 'react-native';
+import { StyleSheet, Text, View , Image,ScrollView,Dimensions,AsyncStorage} from 'react-native';
 import { Card, Button} from 'react-native-elements';
-
 
 const ex={
   width: Dimensions.get('window').width,
@@ -44,28 +43,57 @@ const styles = StyleSheet.create({
      titleStyle2:{fontSize:22,fontWeight:"700"}
   });
 
+  class PlaylistItem {
+    constructor(name, uri, isVideo,Class_Id,Section_Id) {
+      this.name = name;
+      this.uri = uri;
+      this.isVideo = isVideo;
+      this.Class_Id=Class_Id;
+      this.Section_Id= Section_Id;
+    }
+  }
+  var PLAYLIST = [];
+
 export default class ClassPreview extends React.Component {
     constructor(props) {
         super(props);
+        this.classesFromDB =this.props.navigation.state.params.userInfo.oldClasses
         this.state = {
             // We don't know the size of the content initially, and the probably won't instantly try to scroll, so set the initial content height to 0
             screenHeight: 0,
-            classesFromDB: this.props.navigation.state.params.userInfo.oldClasses,
             classList:this.props.navigation.state.params.userInfo
-
-
           };
       }
+       componentDidMountAsync = async () =>{
+        var PLAYLIST = [];
+      }
+      oldClassesPlayer = (classObject) =>{
+        debugger
+        classObject.Sections.map((res) => {
+        PLAYLIST.push(new PlaylistItem(res.Title,res.FilePath,false,res.ClassId,res.Id));
+        })
+        debugger;
+       this.props.navigation.navigate('mediaPlayerOldClasses',
+       {PLAYLIST:PLAYLIST});
+      }
+
+      didBlurSubscription = this.props.navigation.addListener(
+        'didFocus',
+        payload => {
+            console.log('didFocus', payload);
+            this.componentDidMountAsync(); 
+        }
+      );
   
     render(props) {
       console.log(this.props.navigation.state.params.userInfo);
         return (        
       <ScrollView>
 {
-this.state.classesFromDB.map((l, i) => (
+this.classesFromDB.map((l, i) => (
   <Card 
-  key={i}
-  containerStyle={styles.cardStyle}
+    key={i}
+    containerStyle={styles.cardStyle}
     title={l.Title}
     titleStyle={styles.titleStyle2}
     >
@@ -77,11 +105,11 @@ this.state.classesFromDB.map((l, i) => (
       {l.Description}
     </Text>
     <Button
+     onPress = {()=>{this.oldClassesPlayer(l);}}
      titleStyle={styles.titleStyle}
      buttonStyle={styles.buttonStyle}
      title='היכנס לשיעור' 
-      />
-       
+      />   
   </Card>
 ))
 }

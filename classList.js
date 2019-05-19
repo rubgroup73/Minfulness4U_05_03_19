@@ -282,19 +282,16 @@ didBlurSubscription = this.props.navigation.addListener(
                 subtitle ={this.currentClass}
                 subtitleStyle={styles.subtitleStyle}
                 numberOfLines={1}
-               titleNumberOfLines={1}
-               leftAvatar = {{source:classesPic,height:heightPic,width:widthPic}}
+                titleNumberOfLines={1}
+                leftAvatar = {{source:classesPic,height:heightPic,width:widthPic}}
                 
              />  
               <ListItem
-              onPress = {() => 
-                {
+              onPress = {() =>{
                   if(this.noOldClassess) 
                   this.loadPreviousClassesFromDB(appPages[1],this.state,allUserclasses);
                   else
-                  {
-                    this.props.navigation.navigate(appPages[6]);
-                  }}}
+                  {this.props.navigation.navigate(appPages[6]);}}}
               containerStyle = {styles.listItemStyle}
               title = 'שיעורים שביצעתי'
                subtitle ='רשימת השיעורים שסיימתי'

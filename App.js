@@ -12,6 +12,7 @@ import AlertComponentLogin from './alerts/AlertComponentLogin';
 import AlertComponentClassFinish from './alerts/AlertComponentClassFinish';
 import AlertComponentNoClasses from './alerts/AlertComponentNoClasses';
 import LoadingLogo from './LoadingLogo';
+import MediaPlayerOldClasses from './MediaPlayerOldClasses';
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
 
@@ -49,6 +50,9 @@ const AppNavigator = createStackNavigator
     mediaplayer:
     {
       screen:MediaPlayer, 
+    },
+    mediaPlayerOldClasses:{
+      screen:MediaPlayerOldClasses, 
     },
     stateofmind:
     {
@@ -114,20 +118,10 @@ const AppNavigatorLogged = createStackNavigator
         headerLeft:null
       }
     },
-      classpreview:
-    {
-      screen:ClassPreview,
-     
-    },
-    nextclass:
-    {
-      screen:NextClass,
-    }, 
-    mediaplayer:
-    {
-      screen:MediaPlayer,
-     
-    },
+    classpreview:{screen:ClassPreview,},
+    nextclass:{screen:NextClass,}, 
+    mediaplayer:{screen:MediaPlayer,},
+    mediaPlayerOldClasses:{screen:MediaPlayerOldClasses,},
     stateofmind:
     {
       screen:StateOfMind, 
