@@ -106,8 +106,7 @@ export default class NextClass extends React.Component {
                       console.log(response);
                       try{await AsyncStorage.setItem("userInThisClass",JSON.stringify(userInClassData));}
                       catch(error){console.log(error);} 
-                      this.navigationToPlayer(NextSectionsArr,userInThisClass);
-                     
+                      this.navigationToPlayer(NextSectionsArr,userInThisClass);                    
                     })
                     .catch((error=>{
                       console.log(error);
@@ -115,10 +114,8 @@ export default class NextClass extends React.Component {
           } 
         else
         this.navigationToPlayer(NextSectionsArr,userInThisClass) 
-
         }
-        catch(error){console.log(error);}
-        
+        catch(error){console.log(error);}     
     }
     navigationToPlayer = (NextSectionsArr,userInThisClass)=>{
       this.props.navigation.navigate(
@@ -159,6 +156,21 @@ export default class NextClass extends React.Component {
           console.log(error);
         }))
       } 
+  
+      //Need to continue from here.
+  didBlurSubscription = this.props.navigation.addListener(
+  'didFocus',
+  payload => {
+    debugger;
+    (async () =>{
+    let firstClass = await AsyncStorage.getItem('firstClass');
+    console.log(firstClass);
+    })();
+    
+  }
+);
+
+
     render(props) {
      
         return (            
