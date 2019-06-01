@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, FlatList,AsyncStorage,Text,Alert} from 'react-native';
+import { StyleSheet, View, FlatList,AsyncStorage,Text,Alert,ScrollView} from 'react-native';
 import { ListItem , List,Image} from 'react-native-elements';
 import LoadingLogo from './LoadingLogo';
 import moment from "moment";
@@ -297,7 +297,7 @@ SwitchPage = ()=>{
       //temp list of screens should be dynamic after test
       else{
         return (
-            <View style = {styles.listStyle}>
+            <ScrollView style = {styles.listStyle}>
             {/* <NavigationEvents onDidFocus={()=> this.componentDidMountAsync()} /> */}
             <Text style={styles.userNameHead}>שלום {JSON.parse(this.state.fullName)}</Text>
             <ListItem
@@ -367,7 +367,7 @@ SwitchPage = ()=>{
                titleNumberOfLines={1}
                leftAvatar = {{source:chatPic,height:heightPic,width:widthPic}}
              />        
-          </View>
+          </ScrollView>
          
         )
           }
