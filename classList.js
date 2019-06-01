@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, FlatList,Image,AsyncStorage,Text,Alert} from 'react-native';
-import { ListItem , List} from 'react-native-elements';
+import { StyleSheet, View, FlatList,AsyncStorage,Text,Alert} from 'react-native';
+import { ListItem , List,Image} from 'react-native-elements';
 import LoadingLogo from './LoadingLogo';
 import moment from "moment";
-
 
 const classesPic =  require('./assets/images/classes.jpg');
 const finishClassesPic = require('./assets/images/finishedClasses.png');
@@ -15,7 +14,9 @@ const widthPic = 100;
 const loadIcon = require('./assets/images/Loading_2.gif');
 const userInClassFetch = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInClassReact?userId=";
 
-const dayDictionary = ['יום ראשון ה: ','יום שני ה:','יום שלישי ה:','יום רביעי ה:','יום חמישי ה:','יום שישי ה:','יום שבת ה:']
+const dayDictionary = ['יום ראשון ה: ','יום שני ה:','יום שלישי ה:','יום רביעי ה:','יום חמישי ה:','יום שישי ה:','יום שבת ה:'];
+const appPages = ['classlist','classpreview','nextclass','mediaplayer','stateofmind','alertComponent','alertComponentNoClasses','alertComponentCloseClass']
+
 const styles = StyleSheet.create({
   subtitleView: {
     flexDirection: 'row',paddingLeft: 10,paddingTop: 5
@@ -32,9 +33,7 @@ const styles = StyleSheet.create({
       marginBottom:0,
       height:'100%',
       borderBottomWidth:20,
-      borderBottomColor:'#ffedc1',
-      
-      
+      borderBottomColor:'#ffedc1',    
   },
   rightto:{
     textAlign:'right'
@@ -64,25 +63,33 @@ const styles = StyleSheet.create({
     color:'white',
     fontWeight:'500',
     borderBottomWidth:10,
-      borderBottomColor:'#ffedc1',
-
-    
+      borderBottomColor:'#ffedc1',  
   },
   loadIconStyle:{
     flexDirection: 'column', justifyContent: 'center',alignItems: 'center',
+  },
+  Image:{
+    borderRadius:10,
+    height:200,
+    width:'100%',
+    marginTop:10,
+    
+    
+  },
+  NextClassTitle:{
+    textAlign:'center',
+    fontSize:22,
+    fontWeight:'500',
+    color:'#2e3747',
+  },
+  NextClassSubTitle:{
+    textAlign:'center',
+    fontSize:18,paddingTop:10,
+    fontWeight:'500',
+    color:'#2e3747',
   }
 });
-const appPages = 
-[
-    'classlist',
-    'classpreview',
-    'nextclass',
-    'mediaplayer',
-    'stateofmind',
-    'alertComponent',
-    'alertComponentNoClasses',
-    'alertComponentCloseClass'
-]
+
 const status = -100;
 var userInClassArr =[];//All userInClass array for all classes
 var allUserclasses =[];//All classes array with the user's version  
@@ -145,7 +152,6 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
     
 //********************************* 
     updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses,userinclass,userFeedback,classId,classVersion) =>{
-    debugger;
     userinclass.ShouldStart = moment(userinclass.ShouldStart).format("YYYY-MM-DD");
 
    this.setState({
@@ -166,7 +172,6 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
   });
     }
     setAllClasses = (userInClassArr) =>{
-      debugger;
       allUserclasses = [];
       let counter = 0;//Indicates if all classess has finished
       for (var i=0; i<userInClassArr.length;i++){
@@ -187,14 +192,12 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
       }
     }
     SetOldClasses=(userInClass)=>{
-      debugger;
       oldClasses=[];
       for(var i=0; i<userInClass.length;i++){
         if(userInClass[i].IsFinished==true){
           oldClasses.push(userInClass[i].AppClass);
         }
       }
-      debugger;
       if(!oldClasses.length){
         console.log("No Classes has made");
         this.noOldClassess=false;
@@ -203,7 +206,6 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
     }
 
 componentDidMountAsync = async () => {
-  debugger;
   let id;
   let fullname;
   let username;
@@ -303,13 +305,16 @@ SwitchPage = ()=>{
                 {this.SwitchPage();}}
                 containerStyle = {styles.listItemStyle}
                 title ='השיעור הבא'
-                titleStyle={styles.titleStyle}
-                subtitle ={this.currentClass}
+                titleStyle={styles.NextClassTitle}
+                subtitle ={
+                  <View>
+                  <Text style={styles.NextClassSubTitle}>{this.currentClass}</Text>
+                <Image source={classesPic} style={styles.Image}/>
+                </View>
+                }
                 subtitleStyle={styles.subtitleStyle}
                 numberOfLines={1}
-                titleNumberOfLines={1}
-                leftAvatar = {{source:classesPic,height:heightPic,width:widthPic}}
-                
+                titleNumberOfLines={1}                
              />  
               <ListItem
               onPress = {() =>{
