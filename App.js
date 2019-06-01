@@ -13,6 +13,7 @@ import AlertComponentClassFinish from './alerts/AlertComponentClassFinish';
 import AlertComponentNoClasses from './alerts/AlertComponentNoClasses';
 import LoadingLogo from './LoadingLogo';
 import MediaPlayerOldClasses from './MediaPlayerOldClasses';
+import AlertComponentCloseClass from './alerts/AlertComponentCloseClass';
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
 
@@ -90,6 +91,11 @@ const AppNavigator = createStackNavigator
       navigationOptions:
       {headerLeft:null}
     },
+    alertComponentCloseClass:{
+      screen:AlertComponentCloseClass,
+      navigationOptions:
+      {headerLeft:null}
+    },
     
   },
   {
@@ -155,6 +161,11 @@ const AppNavigatorLogged = createStackNavigator
     },
     LoadingLogo:{
       screen:LoadingLogo,
+      navigationOptions:
+      {headerLeft:null}
+    },
+    alertComponentCloseClass:{
+      screen:AlertComponentCloseClass,
       navigationOptions:
       {headerLeft:null}
     },

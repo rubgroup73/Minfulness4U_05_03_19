@@ -699,6 +699,12 @@ updateClassInDB = (theUserSectionDataPut) => {
             useNativeControls={this.state.useNativeControls}
           />
         </View>
+        {/*  *****************************************************/ }
+        <Image
+  source={{ uri:'https://images.performgroup.com/di/library/GOAL/15/8b/lionel-messi-barcelona-2018-19_e02kyh93iz8c1ag0irilngp6w.jpg?t=1966780634' }}
+  style={{ width: 200, height: 200 ,position:'absolute',top:80,borderRadius:10}}
+ 
+/>
         <View
           style={[
             styles.playbackContainer,

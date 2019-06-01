@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, FlatList,Image,AsyncStorage,Text,Alert} from 'react-native';
 import { ListItem , List} from 'react-native-elements';
 import LoadingLogo from './LoadingLogo';
+import moment from "moment";
 
 
 const classesPic =  require('./assets/images/classes.jpg');
@@ -14,6 +15,7 @@ const widthPic = 100;
 const loadIcon = require('./assets/images/Loading_2.gif');
 const userInClassFetch = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInClassReact?userId=";
 
+const dayDictionary = ['יום ראשון ה: ','יום שני ה:','יום שלישי ה:','יום רביעי ה:','יום חמישי ה:','יום שישי ה:','יום שבת ה:']
 const styles = StyleSheet.create({
   subtitleView: {
     flexDirection: 'row',paddingLeft: 10,paddingTop: 5
@@ -78,7 +80,8 @@ const appPages =
     'mediaplayer',
     'stateofmind',
     'alertComponent',
-    'alertComponentNoClasses'
+    'alertComponentNoClasses',
+    'alertComponentCloseClass'
 ]
 const status = -100;
 var userInClassArr =[];//All userInClass array for all classes
@@ -95,6 +98,8 @@ constructor(props){
   super(props);
   this.currentClass;
   this.noOldClassess;
+  this.currentDay = moment(new Date()).format("YYYY-MM-DD");
+
   this.state = {
     fullName:"",
     classVersion:-1,
@@ -140,7 +145,9 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
     
 //********************************* 
     updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses,userinclass,userFeedback,classId,classVersion) =>{
-    
+    debugger;
+    userinclass.ShouldStart = moment(userinclass.ShouldStart).format("YYYY-MM-DD");
+
    this.setState({
   userId: id,
   fullName: fullname,
@@ -257,6 +264,29 @@ didBlurSubscription = this.props.navigation.addListener(
   }
 );
 
+SwitchPage = ()=>{
+  if(this.currentDay>=this.state.userInThisClass.ShouldStart){
+    this.loadClassesFromDB(appPages[2],this.state,this.state.nextLesson);
+    if(userFinishAllClasses==true){
+      this.props.navigation.navigate(appPages[5]);
+    }
+    
+  }
+  else{       
+    let time =moment(this.state.userInThisClass.ShouldStart).format('DD-MM-YYYY');
+    let date = moment(this.state.userInThisClass.ShouldStart).format('YYYY-MM-DD');
+    date = moment(date);
+    let dayInWeek = date.day();
+    let textmessage = dayDictionary[dayInWeek];
+    this.props.navigation.navigate(appPages[7],
+      {
+        willOpenIn:textmessage + time,
+        userFullName:JSON.parse(this.state.fullName),
+        alertMessage:'השיעור ייפתח ב:'
+      })
+  }
+}
+
     render () {
       
       if(!this.state.changed){
@@ -270,12 +300,7 @@ didBlurSubscription = this.props.navigation.addListener(
             <Text style={styles.userNameHead}>שלום {JSON.parse(this.state.fullName)}</Text>
             <ListItem
               onPress = {() => 
-                {
-                  this.loadClassesFromDB(appPages[2],this.state,this.state.nextLesson);
-                  if(userFinishAllClasses==true){
-                    this.props.navigation.navigate(appPages[5]);
-                  }
-                }}
+                {this.SwitchPage();}}
                 containerStyle = {styles.listItemStyle}
                 title ='השיעור הבא'
                 titleStyle={styles.titleStyle}

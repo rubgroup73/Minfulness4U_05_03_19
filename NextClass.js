@@ -165,12 +165,9 @@ export default class NextClass extends React.Component {
     (async () =>{
     let firstClass = await AsyncStorage.getItem('firstClass');
     console.log(firstClass);
-    })();
-    
+    })(); 
   }
 );
-
-
     render(props) {
      
         return (            
