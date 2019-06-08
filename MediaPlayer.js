@@ -401,9 +401,15 @@ updateClassInDB = (theUserSectionDataPut) => {
 }
 
   navigateToAlert = ()=>{
-    this.props.navigation.navigate(
-      "alertComponentClassFinish",
-      {userFullName:this.props.navigation.state.params.userFullName}
+    this.props.navigation.push(
+      "stateofmind",
+      {
+        userFullName:this.props.navigation.state.params.userFullName,
+        userId:this.props.navigation.state.params.userId,
+        classId:this.props.navigation.state.params.classId,
+        classVersion:this.props.navigation.state.params.classVersion,
+        beforeClass:false
+      }
       )  
   }
 //** 

@@ -144,7 +144,10 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
         page,
         {userInfo:userInfo,
          nextClass:nextclass,
-         userFullName:JSON.parse(this.state.fullName)
+         userFullName:JSON.parse(this.state.fullName),
+         userId:this.state.userId,
+         classId:this.state.classId,
+         classVersion:this.state.classVersion,
         });
       }
        else{userFinishAllClasses = true;}
@@ -341,22 +344,7 @@ SwitchPage = ()=>{
                titleNumberOfLines={1}
                leftAvatar = {{source:homeWorkPic,height:heightPic,width:widthPic}}
              />    
-              <ListItem
-              onPress = {()=>{
-                this.props.navigation.navigate(
-                  appPages[4],
-                  {userId:this.state.userId,classId:this.state.classId,classVersion:this.state.classVersion,
-                    userFullName:JSON.parse(this.state.fullName)}
-                  )}}
-               containerStyle = {styles.listItemStyle}
-               title ='איך אני מרגיש'
-               subtitle = 'שתף אותנו בהרגשתך'
-               titleStyle={styles.titleStyle}
-               subtitleStyle={styles.subtitleStyle}
-               numberOfLines={1}
-               titleNumberOfLines={1}
-               leftAvatar = {{source:userFeelingPic,height:heightPic,width:widthPic}}
-             />     
+  
                <ListItem
                 containerStyle = {styles.listItemStyle}
                 title = 'פורום קבוצתי'
@@ -401,3 +389,20 @@ SwitchPage = ()=>{
 //   [{text:'אישור'}],
 //   {cancelable: false}
 // );
+
+// <ListItem
+// onPress = {()=>{
+//   this.props.navigation.navigate(
+//     appPages[4],
+//     {userId:this.state.userId,classId:this.state.classId,classVersion:this.state.classVersion,
+//       userFullName:JSON.parse(this.state.fullName)}
+//     )}}
+//  containerStyle = {styles.listItemStyle}
+//  title ='איך אני מרגיש'
+//  subtitle = 'שתף אותנו בהרגשתך'
+//  titleStyle={styles.titleStyle}
+//  subtitleStyle={styles.subtitleStyle}
+//  numberOfLines={1}
+//  titleNumberOfLines={1}
+//  leftAvatar = {{source:userFeelingPic,height:heightPic,width:widthPic}}
+// />   

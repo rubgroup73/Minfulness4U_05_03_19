@@ -25,22 +25,32 @@ export default class StateOfMind extends React.Component {
   constructor(props) {
     super(props);
     this._pan = new Animated.Value(2 * DISTANCE);
+    this.userFullName;
     this.state = {
       stateOfMind:"חזק",
       toLoad:false
     }
   }
 
-  componentWillMount() {
+  didBlurSubscription = this.props.navigation.addListener(
+    'willFocus',
+    payload => {
+      this.componentWillMountAsync(); 
+    }
+  );
+
+  componentWillMountAsync = async() => {
+    debugger;
     userId = this.props.navigation.state.params.userId;
     classId = this.props.navigation.state.params.classId;
     classVersion = this.props.navigation.state.params.classVersion;
     userFullName = this.props.navigation.state.params.userFullName;
-    
+    await this.componentWillMountTry();
     console.log(userId);
     console.log(classId);
     console.log(classVersion);
-
+  }
+  componentWillMount(){
     this._panResponder = PanResponder.create({
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
@@ -78,15 +88,17 @@ if(lable==null){
 
     UpdateStateOfMind = (UserId,ClassId,ClassVersion,User_Feeling) => {
       // this.props.navigation.navigate(navigatePage,{userFullName:userFullName});
+      let BeforeClassTemp = this.props.navigation.state.params.beforeClass ? this.props.navigation.state.params.beforeClass : false;
       UserId = JSON.parse(UserId);
       UserInClassObj = {
         UserId:UserId,
         ClassId:ClassId,
         ClassVersion:ClassVersion,
-        User_Feeling:User_Feeling
+        User_Feeling:User_Feeling,
+        BeforeClass:BeforeClassTemp
       }
       debugger;
-      console.log(UserInClassObj)
+      console.log(UserInClassObj);
       let data = {
         method: 'PUT',
         headers: {
@@ -97,9 +109,27 @@ if(lable==null){
       }
       return fetch(ServerStatus, data)
               .then(response => response.json())  // promise
-              .then((response) =>{    
-                console.log(response);         
-                this.props.navigation.navigate(navigatePage,{userFullName:userFullName});
+              .then((response) =>{
+                if(this.props.navigation.state.params.beforeClass== true){
+                  console.log("Start Lesson - State Of Mind Component");               
+                  this.props.navigation.navigate('mediaplayer',
+                  {
+                    userInThisClass:this.props.navigation.state.params.userInThisClass,
+                    nextClass:this.props.navigation.state.params.nextClass,
+                    SectionFinishedFalse:this.props.navigation.state.params.SectionFinishedFalse, //Instance of the current section the user should do
+                    userFullName:this.props.navigation.state.params.userFullName,
+                    PLAYLIST:this.props.navigation.state.params.PLAYLIST,
+                    userId:this.props.navigation.state.params.userId,
+                    classId:this.props.navigation.state.params.classId,
+                    classVersion:this.props.navigation.state.params.classVersion
+                  }
+                  )
+                }
+                else{
+                  console.log("End Lesson - State Of Mind Component");
+                this.props.navigation.navigate(navigatePage,
+                  {userFullName:userFullName});
+                }
               })
               .catch((error=>{
                 console.log(error);

@@ -9,7 +9,7 @@ const ex={
   };
 
 const ServerUpdateRequest = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateClassStartedReact";
-const pageToNavigate =  'mediaplayer';
+const pageToNavigate =  'stateofmind';
 var NextSectionsArr = [];
 
 const styles = StyleSheet.create({
@@ -125,7 +125,12 @@ export default class NextClass extends React.Component {
           nextClass:this.state.nextClass,
           SectionFinishedFalse:NextSectionsArr, //Instance of the current section the user should do
           userFullName:this.state.userFullName,
-          PLAYLIST:PLAYLIST
+          PLAYLIST:PLAYLIST,
+          beforeClass:true,
+          userId:this.props.navigation.state.params.userId,
+          classId:this.props.navigation.state.params.classId,
+          classVersion:this.props.navigation.state.params.classVersion,
+          userFullName:this.props.navigation.state.params.userFullName
         }
         );
     }
@@ -168,6 +173,7 @@ export default class NextClass extends React.Component {
     })(); 
   }
 );
+
     render(props) {
      
         return (            
