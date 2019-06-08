@@ -3,11 +3,11 @@ import { PixelRatio, StyleSheet, Text, View, PanResponder, Animated, TouchableOp
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick'; 
 
 const REACTIONS = [
-  { label: "מודאג", src: require('./assets/images/worried.png'), bigSrc: require('./assets/images/worried_big.png') },
-  { label: "עצוב", src: require('./assets/images/sad.png'), bigSrc: require('./assets/images/sad_big.png') },
-  { label: "חזק", src: require('./assets/images/ambitious.png'), bigSrc: require('./assets/images/ambitious_big.png') },
-  { label: "שמח", src: require('./assets/images/smile.png'), bigSrc: require('./assets/images/smile_big.png') },
-  { label: "מופתע", src: require('./assets/images/surprised.png'), bigSrc: require('./assets/images/surprised_big.png') },
+  { label: "קודר ", src: require('./assets/images/cry.png'), bigSrc: require('./assets/images/cry-big.png') },
+  { label: "עצוב", src: require('./assets/images/sad.png'), bigSrc: require('./assets/images/sad-big.png') },
+  { label: "בסדר", src: require('./assets/images/natural.jpg'), bigSrc: require('./assets/images/natural-big.png') },
+  { label: "שמח", src: require('./assets/images/happy.png'), bigSrc: require('./assets/images/happy-big.png') },
+  { label: "מאושר", src: require('./assets/images/veryhappy.png'), bigSrc: require('./assets/images/veryhappy-big.png') },
 ];
 const WIDTH = 320;
 const DISTANCE =  WIDTH / REACTIONS.length;
@@ -27,7 +27,7 @@ export default class StateOfMind extends React.Component {
     this._pan = new Animated.Value(2 * DISTANCE);
     this.userFullName;
     this.state = {
-      stateOfMind:"חזק",
+      stateOfMind:"בסדר",
       toLoad:false
     }
   }
@@ -79,7 +79,7 @@ export default class StateOfMind extends React.Component {
   //** 
   updatePan(toValue,lable) {
 if(lable==null){
-  this.setState({stateOfMind:"חזק"});
+  this.setState({stateOfMind:"בסדר"});
 }
     Animated.spring(this._pan, { toValue, friction: 7 }).start();
     this.setState({stateOfMind:lable});

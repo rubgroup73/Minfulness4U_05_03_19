@@ -9,9 +9,10 @@ const ex={
 const gifUri = 'http://proj.ruppin.ac.il/bgroup73/test1/tar4/mediaFiles/touch.jpg';
 const styles = StyleSheet.create({
   outerContainer:{
-    backgroundColor:'#ffffff'
+    backgroundColor:'#2e3747'
   },
   cardStyle:{
+   
     borderRadius:10,
     elevation: 8,
     backgroundColor:'#fff5dd',
@@ -27,21 +28,25 @@ const styles = StyleSheet.create({
       textAlign:"center",
       fontWeight:"700",
       marginTop:3,
-      marginBottom:3 
+      marginBottom:8,
+    height:55,
     },
   titleStyle:
   {fontSize:22,
     fontWeight:'700',
     color:'black'
   },
-  buttonStyle:{borderRadius:5, 
+  buttonStyle:
+  { color:'#b2810a',
+    borderRadius:5, 
     marginLeft: 0,
      marginRight: 0, 
      marginBottom: 0,
      backgroundColor:'#ffedc1',
      elevation:2},
-     titleStyle2:{fontSize:22,fontWeight:"700"}
+     titleStyle2:{fontSize:22,fontWeight:"700",height:70,textAlign:'center'}
   });
+
 
   class PlaylistItem {
     constructor(name, uri, isVideo,Class_Id,Section_Id) {
@@ -88,14 +93,13 @@ export default class ClassPreview extends React.Component {
     render(props) {
       console.log(this.props.navigation.state.params.userInfo);
         return (        
-      <ScrollView>
+      <ScrollView style={styles.outerContainer}>
 {
 this.classesFromDB.map((l, i) => (
   <Card 
     key={i}
     containerStyle={styles.cardStyle}
-    title={l.Title}
-    titleStyle={styles.titleStyle2}
+    title={<Text numberOfLines={2} style={styles.titleStyle2}>{l.Title}</Text>}
     >
     <Image
     source={{ uri:this.state.classList.oldClasses[i].Class_File_Path}}

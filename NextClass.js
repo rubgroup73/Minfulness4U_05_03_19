@@ -12,19 +12,23 @@ const ServerUpdateRequest = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fe
 const pageToNavigate =  'stateofmind';
 var NextSectionsArr = [];
 
+
 const styles = StyleSheet.create({
   outerContainer:{
-    backgroundColor:'#ffffff'
+    backgroundColor:'#2e3747'
   },
   cardStyle:{
+  
+   
+    paddingTop:1,
     borderRadius:10,
     elevation: 8,
     backgroundColor:'#fff5dd',
-    marginBottom:20
+    marginBottom:20,
   },
   imageStyle:{ 
     width: '100%',
-     height: ex.height*0.5 ,
+     height: ex.height*0.4 ,
      borderRadius:5
     },
     descriotion:{marginBottom: 10,
@@ -32,22 +36,26 @@ const styles = StyleSheet.create({
       textAlign:"center",
       fontWeight:"700",
       marginTop:3,
-      marginBottom:3 
+      marginBottom:3,
+      minHeight:95 
     },
   titleStyle:
-  {fontSize:35,
-    fontWeight:'700',
+  {
+    color:'#b2810a',
+    fontSize:36,
+    fontWeight:'900',
     textShadowColor:'#585858',
-  textShadowOffset:{width: 5, height: 5},
   textShadowRadius:5,},
   buttonStyle:{borderRadius:5, 
+    marginTop:15,
     marginLeft: 0,
      marginRight: 0, 
      marginBottom: 0,
      backgroundColor:'#ffedc1',
      elevation:2},
-     titleStyle2:{fontSize:35,fontWeight:"700"}
+     titleStyle2:{fontSize:30,fontWeight:"700",height:150,textAlign:'center'}
   });
+
 
 class PlaylistItem {
   constructor(name, uri, isVideo,Class_Id,Section_Id) {
@@ -179,16 +187,14 @@ export default class NextClass extends React.Component {
         return (            
       <ScrollView style={styles.outerContainer}>
   <Card containerStyle={styles.cardStyle}
-  titleStyle={styles.titleStyle2}
-    title={this.state.nextClass.Title}>
+  title={<Text numberOfLines={3} style={styles.titleStyle2}>{this.state.nextClass.Title}</Text>}>
+  
     <Image
     source={{ uri:this.state.userInThisClass.AppClass.Class_File_Path}}
     style={styles.imageStyle}
     resizeMode="cover"
     />
-    <Text style={styles.descriotion}>
-      {this.state.nextClass.Description}
-    </Text>
+    
     <Button
      titleStyle={styles.titleStyle}
      buttonStyle={styles.buttonStyle}
