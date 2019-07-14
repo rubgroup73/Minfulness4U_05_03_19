@@ -6,6 +6,7 @@ import ClassPreview from './ClassPreview';
 import NextClass from './NextClass';
 import MediaPlayer from './MediaPlayer';
 import StateOfMind from './StateOfMind';
+import StateOfMindAfter from './StateOfMindAfter';
 import AlertComponent from './alerts/AlertComponent';
 import AlertComponentStateOfMind from './alerts/AlertComponentStateOfMind';
 import AlertComponentLogin from './alerts/AlertComponentLogin';
@@ -96,6 +97,11 @@ const AppNavigator = createStackNavigator
       navigationOptions:
       {headerLeft:null}
     },
+    stateOfMindAfter:{
+      screen:StateOfMindAfter,
+      navigationOptions:
+      {headerLeft:null}
+    },
     
   },
   {
@@ -166,6 +172,11 @@ const AppNavigatorLogged = createStackNavigator
     },
     alertComponentCloseClass:{
       screen:AlertComponentCloseClass,
+      navigationOptions:
+      {headerLeft:null}
+    },
+    stateOfMindAfter:{
+      screen:StateOfMindAfter,
       navigationOptions:
       {headerLeft:null}
     },

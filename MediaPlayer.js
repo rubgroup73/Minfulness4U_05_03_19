@@ -401,8 +401,8 @@ updateClassInDB = (theUserSectionDataPut) => {
 }
 
   navigateToAlert = ()=>{
-    this.props.navigation.push(
-      "stateofmind",
+    this.props.navigation.navigate(
+      "stateOfMindAfter",
       {
         userFullName:this.props.navigation.state.params.userFullName,
         userId:this.props.navigation.state.params.userId,

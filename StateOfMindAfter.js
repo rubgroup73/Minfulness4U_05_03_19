@@ -32,6 +32,7 @@ export default class StateOfMind extends React.Component {
     }
   }
 
+  
   componentWillMount(){
     userId = this.props.navigation.state.params.userId;
     classId = this.props.navigation.state.params.classId;
@@ -100,19 +101,10 @@ if(lable==null){
       return fetch(ServerStatus, data)
               .then(response => response.json())  // promise
               .then((response) =>{
-                  console.log("Start Lesson - State Of Mind Component");               
-                  this.props.navigation.navigate('mediaplayer',
-                  {
-                    userInThisClass:this.props.navigation.state.params.userInThisClass,
-                    nextClass:this.props.navigation.state.params.nextClass,
-                    SectionFinishedFalse:this.props.navigation.state.params.SectionFinishedFalse, //Instance of the current section the user should do
-                    userFullName:this.props.navigation.state.params.userFullName,
-                    PLAYLIST:this.props.navigation.state.params.PLAYLIST,
-                    userId:this.props.navigation.state.params.userId,
-                    classId:this.props.navigation.state.params.classId,
-                    classVersion:this.props.navigation.state.params.classVersion
-                  }
-                  )
+                  console.log("End Lesson - State Of Mind Component");
+                this.props.navigation.navigate(navigatePage,
+                  {userFullName:userFullName
+                });
                 
               })
               .catch((error=>{

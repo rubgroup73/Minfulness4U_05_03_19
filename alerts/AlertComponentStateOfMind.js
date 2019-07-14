@@ -23,8 +23,7 @@ export default class AlertComponentStateOfMind extends React.Component {
 
   hideAlert = () => {
     this.props.navigation.navigate(
-      navigatePage,
-      {comeFrom: 'AlertComponentNoClasses'}
+      navigatePage
           
     )
   };
