@@ -15,6 +15,9 @@ import AlertComponentNoClasses from './alerts/AlertComponentNoClasses';
 import LoadingLogo from './LoadingLogo';
 import MediaPlayerOldClasses from './MediaPlayerOldClasses';
 import AlertComponentCloseClass from './alerts/AlertComponentCloseClass';
+import AlertComponentNoHomework from './alerts/AlertComponentNoHomework';
+import Homework from './Homework';
+import MediaPlayerHomework from './MediaPlayerHomework';
 import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
 
 
@@ -102,6 +105,19 @@ const AppNavigator = createStackNavigator
       navigationOptions:
       {headerLeft:null}
     },
+    Homework:{
+      screen:Homework,
+    },
+    AlertComponentNoHomework:{
+      screen:AlertComponentNoHomework,
+      navigationOptions:
+      {headerLeft:null}
+    },
+    MediaPlayerHomework:{
+      screen:MediaPlayerHomework,
+      navigationOptions:
+      {headerLeft:null}
+    },
     
   },
   {
@@ -177,6 +193,19 @@ const AppNavigatorLogged = createStackNavigator
     },
     stateOfMindAfter:{
       screen:StateOfMindAfter,
+      navigationOptions:
+      {headerLeft:null}
+    },
+    Homework:{
+      screen:Homework,
+    },
+    AlertComponentNoHomework:{
+      screen:AlertComponentNoHomework,
+      navigationOptions:
+      {headerLeft:null}
+    },
+    MediaPlayerHomework:{
+      screen:MediaPlayerHomework,
       navigationOptions:
       {headerLeft:null}
     },

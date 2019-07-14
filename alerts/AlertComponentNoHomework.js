@@ -2,21 +2,13 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
-const navigatePage = 'classlist';
-
-
-export default class AlertComponentClassFinish extends React.Component {
+export default class AlertComponentNoHomework extends React.Component {
 
   constructor(props) {
     super(props);
-   
     this.state = { showAlert: true };
   };
 
-  componentWillMount = () =>{
-    userFullName = this.props.navigation.state.params.userFullName;   
- }
-        
   showAlert = () => {
     this.setState({
       showAlert: true
@@ -25,7 +17,8 @@ export default class AlertComponentClassFinish extends React.Component {
 
   hideAlert = () => {
     this.props.navigation.navigate(
-      navigatePage     
+      'classlist',
+      {comeFrom: 'AlertComponentNoClasses'}     
     )
   };
 
@@ -39,8 +32,8 @@ export default class AlertComponentClassFinish extends React.Component {
           alertContainerStyle = {styles.boxStyle}
           show={showAlert}
           showProgress={false}
-          title={userFullName}
-          message="כל הכבוד! סיימת את השיעור!"
+          title="אין שיעורי בית "
+          message= "לחץ 'אישור'"
           closeOnTouchOutside={true}
           closeOnHardwareBackPress={false}
           showCancelButton={false}
@@ -51,6 +44,7 @@ export default class AlertComponentClassFinish extends React.Component {
           messageStyle = {styles.messageStyle}
           titleStyle = {styles.titleStyle}
           confirmButtonTextStyle = {styles.confirmButtonTextStyle}
+          closeOnTouchOutside = {false}
           onConfirmPressed={() => {
           this.hideAlert();
           }}

@@ -15,7 +15,7 @@ const loadIcon = require('./assets/images/Loading_2.gif');
 const userInClassFetch = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInClassReact?userId=";
 
 const dayDictionary = ['יום ראשון ה: ','יום שני ה:','יום שלישי ה:','יום רביעי ה:','יום חמישי ה:','יום שישי ה:','יום שבת ה:'];
-const appPages = ['classlist','classpreview','nextclass','mediaplayer','stateofmind','alertComponent','alertComponentNoClasses','alertComponentCloseClass']
+const appPages = ['classlist','classpreview','nextclass','mediaplayer','stateofmind','alertComponent','alertComponentNoClasses','alertComponentCloseClass','Homework']
 
 const styles = StyleSheet.create({
   subtitleView: {
@@ -335,6 +335,18 @@ SwitchPage = ()=>{
                leftAvatar = {{source:finishClassesPic,height:heightPic,width:widthPic}}
              />  
               <ListItem
+              onPress = {() => 
+                {
+                  this.props.navigation.navigate(appPages[8],
+                   {
+                     classId:this.state.classId,
+                     classVersion: this.state.classVersion,
+                     userId:this.state.userId,
+                     currentDay:this.currentDay,
+                     userFullName:JSON.parse(this.state.fullName)
+                  }
+                    );}
+              }
               containerStyle = {styles.listItemStyle}
               title = 'שיעורי בית'
                subtitle = 'שיעורי בית לשיעור הנוכחי'

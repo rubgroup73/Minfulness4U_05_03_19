@@ -7,19 +7,13 @@ const ex={
   width: Dimensions.get('window').width,
   height: Dimensions.get('window').height
   };
-
-const ServerUpdateRequest = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/UpdateClassStartedReact";
-const pageToNavigate =  'stateofmind';
+const pageToNavigate =  'mediaPlayerHomework';
 var NextSectionsArr = [];
-
-
 const styles = StyleSheet.create({
   outerContainer:{
     backgroundColor:'#2e3747'
   },
   cardStyle:{
-  
-   
     paddingTop:1,
     borderRadius:10,
     elevation: 8,
@@ -56,7 +50,6 @@ const styles = StyleSheet.create({
      titleStyle2:{fontSize:30,fontWeight:"700",height:150,textAlign:'center'}
   });
 
-
 class PlaylistItem {
   constructor(name, uri, isVideo,Class_Id,Section_Id) {
     this.name = name;
@@ -67,140 +60,108 @@ class PlaylistItem {
   }
 }
 const PLAYLIST = [];
-
 export default class Homework extends React.Component {
     constructor(props) {
         super(props);
-          
+          this.userInHomeWorkData;
         this.state = {
             // We don't know the size of the content initially, and the probably won't instantly try to scroll, so set the initial content height to 0
             screenHeight: 0,
-            userInThisClass:this.props.navigation.state.params.userInfo.userInThisClass, //The userInclass instance for this specific class
-            nextClass: this.props.navigation.state.params.nextClass,
-            userFullName:this.props.navigation.state.params.userFullName
+            userFullName:this.props.navigation.state.params.userFullName,
+            classId:this.props.navigation.state.params.classId,
+            classVersion:this.props.navigation.state.params.classVersion,
+            userId:this.props.navigation.state.params.userId,
+            currentDay:this.props.navigation.state.params.currentDay,
           };
       } 
-      
       GetNextSectionsArr =(res) =>{
-        for(var i=0; i<res.length;i++){
-          if(res[i].Section_Is_Finished==false){
-            NextSectionsArr.push(res[i]);
-            PLAYLIST.push(new PlaylistItem(res[i].Section_Title,res[i].File_Path,false,res[i].Class_Id,res[i].Section_Id));
+          if(res.Is_Finished==false){
+            NextSectionsArr.push(res);
+            PLAYLIST.push(new PlaylistItem(res.HomeWork_Name,res.HomeWork_Audio,false,res.Class_Id,res.HomeWorkId));
           }
         }
-      }
-      NavigateToUserClass = async (NextSectionsArr,userInThisClass) =>{
+    
+    componentDidMount = async () =>{
+        console.log(this.state.userFullName);
+        console.log(this.state.userId);
+        console.log(this.state.currentDay);
+        console.log(this.state.classVersion);
+        console.log(this.state.classId);
+        ServerGetHomework = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/returnhomeworkforuser?userId="+this.state.userId;
         debugger;
-        let userInClassData;
-        try{
-          userInClassData = await AsyncStorage.getItem("userInThisClass");
-          userInClassData = await JSON.parse(userInClassData);
-          debugger;
-          if(!userInClassData.IsStarted){//if != false =>enter
-            try{userInClassData.StartTime=await moment(new Date()).format("YYYY-MM-DD HH:mm:ss");}
-            catch(error){console.log(error);}
-
-            let data = {
-              method: 'PUT',
-              headers: {
-                'Accept':'application/json',
-                'Content-Type':'application/json',
-              },
-              body: data=JSON.stringify(userInClassData)
-            }
-            return fetch(ServerUpdateRequest, data)
-                    .then(response => response.json())  // promise
-                    .then(async (response) =>{    
-                      console.log(response);
-                      try{await AsyncStorage.setItem("userInThisClass",JSON.stringify(userInClassData));}
-                      catch(error){console.log(error);} 
-                      this.navigationToPlayer(NextSectionsArr,userInThisClass);                    
-                    })
-                    .catch((error=>{
-                      console.log(error);
-                    }))
-          } 
-        else
-        this.navigationToPlayer(NextSectionsArr,userInThisClass) 
+         fetch(ServerGetHomework)
+                .then(response => response.json())  // promise
+                .then(async (response) =>{
+                    if(response.IsHomeWork!=false) {   
+                  console.log(response);
+                  this.userInHomeWorkData = response;
+                  this.GetNextSectionsArr(response);//one object of homework, sections not exists            
+                    } 
+                    else{
+                        console.log("No homework were found for this user in DB");
+                        this.props.navigation.navigate(AlertComponentNoHomework)
+                    }                 
+                })
+                .catch((error=>{
+                  console.log(error);
+                }))
+    }
+    navigationToPlayer = async (NextSectionsArr,userInThisClass)=>{
+        try{this.userInHomeWorkData.Start_Time= await moment(new Date()).format("YYYY-MM-DD HH:mm:ss");}
+        catch(error){console.log(error);}
+        let url = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/userStartHomeWork";
+        let data1;
+        data1 =  {
+          method: 'PUT',
+          headers: {
+            'Accept':'application/json',
+            'Content-Type':'application/json',
+          },
+          body: data=JSON.stringify(this.userInHomeWorkData)//get the value from storage so don't need to stringify
         }
-        catch(error){console.log(error);}     
-    }
-    navigationToPlayer = (NextSectionsArr,userInThisClass)=>{
-      this.props.navigation.navigate(
-        pageToNavigate, 
-        {
-          userInThisClass:userInThisClass,
-          nextClass:this.state.nextClass,
-          SectionFinishedFalse:NextSectionsArr, //Instance of the current section the user should do
-          userFullName:this.state.userFullName,
-          PLAYLIST:PLAYLIST,
-          beforeClass:true,
-          userId:this.props.navigation.state.params.userId,
-          classId:this.props.navigation.state.params.classId,
-          classVersion:this.props.navigation.state.params.classVersion,
-          userFullName:this.props.navigation.state.params.userFullName
-        }
-        );
-    }
-
-    componentDidMount = async ()=>
-    {
-      try{await AsyncStorage.setItem("userInThisClass",JSON.stringify(this.props.navigation.state.params.userInfo.userInThisClass));}
-      catch(error){console.log(error);}
-    }
-
-      getUserInSection = (userinThisClass,nextclass) =>{
-        let userId = userinThisClass.UserId;
-        let classId = nextclass.Id;
-        let classVersion = nextclass.Version;
-        let userInThisClass = this.state.userInThisClass;
-        let url = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInSectionReact?userId=";
-        url += userId;
-        url += "&classVersion="+classVersion;
-        url += "&classId="+classId;
-        debugger;
-        fetch(url)
-        .then(response => response.json())
-        .then((response) => {
-           this.GetNextSectionsArr(response);
-           this.NavigateToUserClass(NextSectionsArr,userInThisClass);
-        })
-        .catch((error=>{
-          console.log(error);
-        }))
-      } 
   
-      //Need to continue from here.
-  didBlurSubscription = this.props.navigation.addListener(
-  'didFocus',
-  payload => {
-    debugger;
-    (async () =>{
-    let firstClass = await AsyncStorage.getItem('firstClass');
-    console.log(firstClass);
-    })(); 
-  }
-);
-
+            fetch(url, data1)
+            .then(response => response.json())  // promise
+            .then(async (response) =>{    
+              console.log(response); 
+              this.props.navigation.navigate(
+                'MediaPlayerHomework', 
+                {
+                  userInThisClass:userInThisClass,//HomeWork object
+                  nextClass:this.state.nextClass,
+                  SectionFinishedFalse:NextSectionsArr, //Instance of the current section the user should do
+                  userFullName:this.state.userFullName,
+                  PLAYLIST:PLAYLIST,
+                  beforeClass:true,
+                  userId:this.props.navigation.state.params.userId,
+                  classId:this.props.navigation.state.params.classId,//update to the correct ClassId
+                  classVersion:this.props.navigation.state.params.classVersion,
+                  userFullName:this.props.navigation.state.params.userFullName
+                }
+                ); 
+            })
+            .catch((error=>{
+              console.log(error);
+            }))   
+    }
     render(props) {
-     
         return (            
       <ScrollView style={styles.outerContainer}>
   <Card containerStyle={styles.cardStyle}
-  title={<Text numberOfLines={3} style={styles.titleStyle2}>{this.state.nextClass.Title}</Text>}>
+  title={<Text numberOfLines={3} style={styles.titleStyle2}></Text>}>
   
-    <Image
+    {/* <Image
     source={{ uri:this.state.userInThisClass.AppClass.Class_File_Path}}
     style={styles.imageStyle}
     resizeMode="cover"
-    />
+    /> */}
     
     <Button
      titleStyle={styles.titleStyle}
      buttonStyle={styles.buttonStyle}
      title='היכנס לשיעור' 
      onPress= { () => {
-        this.getUserInSection(this.state.userInThisClass,this.state.nextClass); //get user in section array for this specific class from DB 
+        this.navigationToPlayer(NextSectionsArr,this.userInHomeWorkData);  //get user in section array for this specific class from DB 
       }}
       />      
   </Card>
