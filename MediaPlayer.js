@@ -64,7 +64,7 @@ const FONT_SIZE = 14;
 const LOADING_STRING = '... loading ...';
 const BUFFERING_STRING = '...buffering...';
 const RATE_SCALE = 3.0;
-const VIDEO_CONTAINER_HEIGHT = DEVICE_HEIGHT * 2.0 / 5.0 - FONT_SIZE * 2;
+const VIDEO_CONTAINER_HEIGHT = 20;
 
 //** 
 //**Class StartTime Information
@@ -400,7 +400,7 @@ updateClassInDB = (theUserSectionDataPut) => {
               }))   
 }
 
-  navigateToAlert = ()=>{
+ navigateToAlert = ()=>{
     this.props.navigation.navigate(
       "stateOfMindAfter",
       {
@@ -706,11 +706,11 @@ updateClassInDB = (theUserSectionDataPut) => {
           />
         </View>
         {/*  *****************************************************/ }
-        <Image
+        {/* <Image
   source={{ uri:'https://images.performgroup.com/di/library/GOAL/15/8b/lionel-messi-barcelona-2018-19_e02kyh93iz8c1ag0irilngp6w.jpg?t=1966780634' }}
   style={{ width: 200, height: 200 ,position:'absolute',top:80,borderRadius:10}}
  
-/>
+/> */}
         <View
           style={[
             styles.playbackContainer,
@@ -745,37 +745,20 @@ updateClassInDB = (theUserSectionDataPut) => {
               opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
             },
           ]}>
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={this._onBackPressed}
-            disabled={this.state.isLoading}>
-            <Image style={styles.button} source={ICON_BACK_BUTTON.module} />
-          </TouchableHighlight>
+         
           <TouchableHighlight
             underlayColor={BACKGROUND_COLOR}
             style={styles.wrapper}
             onPress={this._onPlayPausePressed}
             disabled={this.state.isLoading}>
             <Image
-              style={styles.button}
+          resizeMode="contain"
+          style={styles.play_button}
               source={this.state.isPlaying ? ICON_PAUSE_BUTTON.module : ICON_PLAY_BUTTON.module}
             />
           </TouchableHighlight>
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={this._onStopPressed}
-            disabled={this.state.isLoading}>
-            <Image style={styles.button} source={ICON_STOP_BUTTON.module} />
-          </TouchableHighlight>
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={this._onForwardPressed}
-            disabled={this.state.isLoading}>
-            <Image style={styles.button} source={ICON_FORWARD_BUTTON.module} />
-          </TouchableHighlight>
+         
+         
         </View>
         <View style={[styles.buttonsContainerBase, styles.buttonsContainerMiddleRow]}>
           <View style={styles.volumeContainer}>
@@ -796,91 +779,27 @@ updateClassInDB = (theUserSectionDataPut) => {
               onValueChange={this._onVolumeSliderValueChange}
             />
           </View>
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={this._onLoopPressed}>
-            <Image
-              style={styles.button}
-              source={LOOPING_TYPE_ICONS[this.state.loopingType].module}
-            />
-          </TouchableHighlight>
+          
+        
         </View>
         <View style={[styles.buttonsContainerBase, styles.buttonsContainerBottomRow]}>
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={() => this._trySetRate(1.0, this.state.shouldCorrectPitch)}>
-            <View style={styles.button}>
-              <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>Rate:</Text>
-            </View>
-          </TouchableHighlight>
-          <Slider
-            style={styles.rateSlider}
-            trackImage={ICON_TRACK_1.module}
-            thumbImage={ICON_THUMB_1.module}
-            value={this.state.rate / RATE_SCALE}
-            onSlidingComplete={this._onRateSliderSlidingComplete}
-          />
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={this._onPitchCorrectionPressed}>
-            <View style={styles.button}>
-              <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
-                PC: {this.state.shouldCorrectPitch ? 'yes' : 'no'}
-              </Text>
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this._onSpeakerPressed} underlayColor={BACKGROUND_COLOR}>
-            <MaterialIcons
-              name={this.state.throughEarpiece ? ICON_THROUGH_EARPIECE : ICON_THROUGH_SPEAKER}
-              size={32}
-              color="black"
-            />
-          </TouchableHighlight>
+          
+          
         </View>
         <View />
         {this.state.showVideo ? (
           <View>
             <View style={[styles.buttonsContainerBase, styles.buttonsContainerTextRow]}>
               <View />
-              <TouchableHighlight
-                underlayColor={BACKGROUND_COLOR}
-                style={styles.wrapper}
-                onPress={this._onPosterPressed}>
-                <View style={styles.button}>
-                  <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
-                    Poster: {this.state.poster ? 'yes' : 'no'}
-                  </Text>
-                </View>
-              </TouchableHighlight>
+              
               <View />
-              <TouchableHighlight
-                underlayColor={BACKGROUND_COLOR}
-                style={styles.wrapper}
-                onPress={this._onFullscreenPressed}>
-                <View style={styles.button}>
-                  <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
-                    Fullscreen
-                  </Text>
-                </View>
-              </TouchableHighlight>
+             
               <View />
             </View>
             <View style={styles.space} />
             <View style={[styles.buttonsContainerBase, styles.buttonsContainerTextRow]}>
               <View />
-              <TouchableHighlight
-                underlayColor={BACKGROUND_COLOR}
-                style={styles.wrapper}
-                onPress={this._onUseNativeControlsPressed}>
-                <View style={styles.button}>
-                  <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
-                    Native Controls: {this.state.useNativeControls ? 'yes' : 'no'}
-                  </Text>
-                </View>
-              </TouchableHighlight>
+              
               <View />
             </View>
           </View>
@@ -897,7 +816,6 @@ updateClassInDB = (theUserSectionDataPut) => {
     }
     }
   }    
-
        
 const styles = StyleSheet.create({
   emptyContainer: {
@@ -957,8 +875,18 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     paddingRight: 20,
   },
+  play_button: {
+    
+    backgroundColor: BACKGROUND_COLOR,
+    height:220,
+    width:200,
+    alignSelf:'center',
+    justifyContent:'center'
+  },
   button: {
     backgroundColor: BACKGROUND_COLOR,
+  
+   
   },
   buttonsContainerBase: {
     flex: 1,

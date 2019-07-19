@@ -15,7 +15,7 @@ const loadIcon = require('./assets/images/Loading_2.gif');
 const userInClassFetch = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/GetUserInClassReact?userId=";
 
 const dayDictionary = ['יום ראשון ה: ','יום שני ה:','יום שלישי ה:','יום רביעי ה:','יום חמישי ה:','יום שישי ה:','יום שבת ה:'];
-const appPages = ['classlist','classpreview','nextclass','mediaplayer','stateofmind','alertComponent','alertComponentNoClasses','alertComponentCloseClass','Homework']
+const appPages = ['classlist','classpreview','nextclass','mediaplayer','stateofmind','alertComponent','alertComponentNoClasses','alertComponentCloseClass','Homework','GroupChat']
 
 const styles = StyleSheet.create({
   subtitleView: {
@@ -99,6 +99,8 @@ var oldClasses=[];//Previous classes-The user has already done these classes.
 var userFinishAllClasses=false;
 var classId = status; //if we found in the server that the classId is equal to -100 it's mean that all classes has finished
 var classVersion = status // the same reason like classId
+var userInChat = {Index:-1,Full_Name:"",UserId:-1,Group_Id:-1,Group_Version:-1,Content:"",SentDate:""}
+
 
 export default class Classlist extends React.Component{
 constructor(props){
@@ -156,6 +158,11 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
 //********************************* 
     updateStates =  (id,fullname,username,groupId,groupVersion,classesArr,nextlesson,oldClasses,userinclass,userFeedback,classId,classVersion) =>{
     userinclass.ShouldStart = moment(userinclass.ShouldStart).format("YYYY-MM-DD");
+    userInChat.Full_Name=fullname,
+    userInChat.UserId=id;
+    userInChat.Group_Id = groupId;
+    userInChat.Group_Version= groupVersion;
+    console.log(userInChat);
 
    this.setState({
   userId: id,
@@ -249,12 +256,10 @@ didBlurSubscription = this.props.navigation.addListener(
   payload => {
     console.log('willFocus', payload);
     let comeFrom=this.props.navigation.getParam("comeFrom");
-    debugger;
     if(typeof comeFrom == "undefined"){
       this.setState({changed:false});
       console.log(this.state.changed);
-    }
-    
+    }  
   }
 );
 didBlurSubscription = this.props.navigation.addListener(
@@ -358,6 +363,9 @@ SwitchPage = ()=>{
              />    
   
                <ListItem
+               onPress = {()=>{
+                this.props.navigation.navigate(appPages[9],{userInChat:userInChat})
+               }}
                 containerStyle = {styles.listItemStyle}
                 title = 'פורום קבוצתי'
                 subtitle = 'המקום שלך לדבר עם קבוצתך'

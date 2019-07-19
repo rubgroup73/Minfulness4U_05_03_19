@@ -18,7 +18,8 @@ import AlertComponentCloseClass from './alerts/AlertComponentCloseClass';
 import AlertComponentNoHomework from './alerts/AlertComponentNoHomework';
 import Homework from './Homework';
 import MediaPlayerHomework from './MediaPlayerHomework';
-import {createStackNavigator, createAppContainer,StackNavigator,NavigationActions} from 'react-navigation';
+import GroupChat from './GroupChat';
+import {createStackNavigator, createAppContainer} from 'react-navigation';
 
 
 
@@ -118,6 +119,9 @@ const AppNavigator = createStackNavigator
       navigationOptions:
       {headerLeft:null}
     },
+    GroupChat:{
+      screen:GroupChat,
+    },
     
   },
   {
@@ -208,6 +212,9 @@ const AppNavigatorLogged = createStackNavigator
       screen:MediaPlayerHomework,
       navigationOptions:
       {headerLeft:null}
+    },
+    GroupChat:{
+      screen:GroupChat,
     },
   },
   {

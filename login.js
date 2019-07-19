@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Alert, Button, TextInput, View, StyleSheet,AsyncStorage,Text,Dimensions } from 'react-native';
+import {TextInput, View, StyleSheet,AsyncStorage,Text,Dimensions } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import AwesomeButtonRick from 'react-native-really-awesome-button/src/themes/rick'; 
+// import registerForPushNotificationsAsync from './registerForPushNotificationsAsync.js';
+import { Permissions, Notifications } from 'expo';
 
 const ex={
   width: Dimensions.get('window').width,
@@ -55,6 +57,7 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.checkAuthentic= this.checkAuthentic.bind(this);
+    this.pushToken = null;
     this.state = {
       username: null,
       password: null,
@@ -62,12 +65,31 @@ class Login extends React.Component {
      
     };
   }
+  /*************************************************/
+  /*****Create New Token For Push Notification******/
+  /*************************************************/
+  createUserTokenForPush = async(user,token)=>{
+   let res;
+   let url = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/fetch/createToken?username=";
+   url += user.UserName;
+   url+= "&token="+token;
+   fetch(url)
+   .then((response) =>{
+     res = response.json();
+     console.log(res);
+   })
+  }
+    //  await registerForPushNotificationsAsync().then((tok)=>{
+      //     this.pushToken=tok;
+      //     this.createUserTokenForPush(personFromDBObj,this.pushToken)
+      //   })
    /*************************************************/
   /*Check if the User credentials are True or False*/
   /*************************************************/
  async checkAuthentic(){
     debugger;
         if(personFromDBObj.Credentials1 == true){
+
         try{
       await AsyncStorage.setItem("username",JSON.stringify(personFromDBObj.UserName));
       await AsyncStorage.setItem("password",JSON.stringify(personFromDBObj.Password));
@@ -77,7 +99,7 @@ class Login extends React.Component {
       await AsyncStorage.setItem("groupId",JSON.stringify(personFromDBObj.Group_Id));
       await AsyncStorage.setItem("groupVersion",JSON.stringify(personFromDBObj.Group_Version));
         }catch(error){console.log(error);}
-      
+        debugger;
       this.props.navigation.navigate(
         nextPage,
         {userFullName: personFromDBObj.FullName}
@@ -147,6 +169,52 @@ class Login extends React.Component {
       </View>
     );
   }
+}
+
+ async function registerForPushNotificationsAsync() {
+  const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+  );
+  let finalStatus = existingStatus;
+
+  // only ask if permissions have not already been determined, because
+  // iOS won't necessarily prompt the user a second time.
+  if (existingStatus !== 'granted') {
+      // Android remote notification permissions are granted during the app
+      // install, so this will only ask on iOS
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+  }
+
+  // Stop here if the user did not grant permissions
+  if (finalStatus !== 'granted') {
+      return;
+  }
+
+  // Get the token that uniquely identifies this device
+  let token = await Notifications.getExpoPushTokenAsync();
+  console.log(token);
+  console.log(finalStatus);
+  //alert(token);
+  // POST the token to your backend server from where you can retrieve it to send push notifications.
+  return (
+      token
+      // fetch(PUSH_ENDPOINT, {
+      //     method: 'POST',
+      //     headers: {
+      //         Accept: 'application/json',
+      //         'Content-Type': 'application/json',
+      //     },
+      //     body: JSON.stringify({
+      //         token: {
+      //             value: token,
+      //         },
+      //         user: {
+      //             username: 'Brent',
+      //         },
+      //     }),
+      // })
+  );
 }
 
 export default Login;
