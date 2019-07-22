@@ -75,13 +75,16 @@ export default class Homework extends React.Component {
           };
       } 
       GetNextSectionsArr =(res) =>{
+        
           if(res.Is_Finished==false){
             NextSectionsArr.push(res);
             PLAYLIST.push(new PlaylistItem(res.HomeWork_Name,res.HomeWork_Audio,false,res.Class_Id,res.HomeWorkId));
           }
+          
+       console.log(PLAYLIST);
         }
     
-    componentDidMount = async () =>{
+    componentWillMount = async () =>{
         console.log(this.state.userFullName);
         console.log(this.state.userId);
         console.log(this.state.currentDay);
@@ -95,6 +98,7 @@ export default class Homework extends React.Component {
                     if(response.IsHomeWork!=false) {   
                   console.log(response);
                   this.userInHomeWorkData = response;
+                  debugger;
                   this.GetNextSectionsArr(response);//one object of homework, sections not exists            
                     } 
                     else{
@@ -138,7 +142,8 @@ export default class Homework extends React.Component {
                   classVersion:this.props.navigation.state.params.classVersion,
                   userFullName:this.props.navigation.state.params.userFullName
                 }
-                ); 
+                );
+                debugger; 
             })
             .catch((error=>{
               console.log(error);
@@ -148,14 +153,12 @@ export default class Homework extends React.Component {
         return (            
       <ScrollView style={styles.outerContainer}>
   <Card containerStyle={styles.cardStyle}
-  title={<Text numberOfLines={3} style={styles.titleStyle2}></Text>}>
-  
-    {/* <Image
-    source={{ uri:this.state.userInThisClass.AppClass.Class_File_Path}}
+  title={<Text numberOfLines={2} style={styles.titleStyle2}>שיעורי בית</Text>}>
+    <Image
+    source={{ uri:'http://proj.ruppin.ac.il/bgroup73/test1/tar4/mediafiles/meditate2.jpg'}}
     style={styles.imageStyle}
     resizeMode="cover"
-    /> */}
-    
+    />
     <Button
      titleStyle={styles.titleStyle}
      buttonStyle={styles.buttonStyle}

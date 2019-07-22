@@ -22,18 +22,26 @@ import GroupChat from './GroupChat';
 import {createStackNavigator, createAppContainer} from 'react-navigation';
 
 
-
 const AppNavigator = createStackNavigator
 (
   { 
     loginPage:
     {
       screen:Login,
+    
       navigationOptions:
       {
         title:"מסך כניסה",
-        headerLeft:null
-      }
+        headerLeft:null,
+           headerStyle: {
+          backgroundColor:'#fff5dd'
+        },
+        headerTitleStyle: { 
+         textAlign:'center',
+          flex:1 },
+         
+        
+        }
     },
     classlist:
     {
@@ -46,19 +54,44 @@ const AppNavigator = createStackNavigator
     },
       classpreview:
     {
+      title:"מסך",
       screen:ClassPreview,
+      navigationOptions:
+      {    headerStyle: {
+        backgroundColor:'#fff5dd'
+      },
+      headerTitleStyle: { 
+       
+        flex:1 },
+        title:"שיעורים שביצעתי",
+       headerLeftColor:'#2e3747',
+      }
+    
       
     },
-    nextclass:
-    {
-      screen:NextClass,
-    }, 
+    nextclass:{screen:NextClass,
+      navigationOptions:
+     {    headerStyle: {
+       backgroundColor:'#fff5dd'
+     },
+     headerTitleStyle: { 
+      
+       flex:1 },
+       title:"השיעור הבא",
+      headerLeftColor:'#2e3747',
+     }}, 
     mediaplayer:
     {
       screen:MediaPlayer, 
+      navigationOptions:
+      {
+       
+        headerLeft:null
+      }
     },
     mediaPlayerOldClasses:{
       screen:MediaPlayerOldClasses, 
+      
     },
     stateofmind:
     {
@@ -108,7 +141,18 @@ const AppNavigator = createStackNavigator
     },
     Homework:{
       screen:Homework,
-    },
+      navigationOptions:
+      {    headerStyle: {
+        backgroundColor:'#fff5dd'
+      },
+      headerTitleStyle: { 
+       
+        flex:1 },
+        title:"שיעורי בית",
+       headerLeftColor:'#2e3747',
+      }
+    }
+    ,
     AlertComponentNoHomework:{
       screen:AlertComponentNoHomework,
       navigationOptions:
@@ -116,12 +160,21 @@ const AppNavigator = createStackNavigator
     },
     MediaPlayerHomework:{
       screen:MediaPlayerHomework,
-      navigationOptions:
-      {headerLeft:null}
+      
     },
     GroupChat:{
       screen:GroupChat,
-    },
+      navigationOptions:
+      {    headerStyle: {
+        backgroundColor:'#fff5dd'
+      },
+      headerTitleStyle: { 
+       
+        flex:1 },
+        title:"פורום קבוצתי",
+       headerLeftColor:'#2e3747',
+      }},
+    
     
   },
   {
@@ -138,8 +191,17 @@ const AppNavigatorLogged = createStackNavigator
       navigationOptions:
       {
         title:"מסך כניסה",
-        headerLeft:null
-      }
+        headerLeft:null,
+           headerStyle: {
+          backgroundColor:'#fff5dd'
+        },
+        headerTitleStyle: { 
+         textAlign:'center',
+          flex:1 },
+         
+        
+        }
+      
     },
     classlist:
     {
@@ -150,9 +212,37 @@ const AppNavigatorLogged = createStackNavigator
         headerLeft:null
       }
     },
-    classpreview:{screen:ClassPreview,},
-    nextclass:{screen:NextClass,}, 
-    mediaplayer:{screen:MediaPlayer,},
+    classpreview:
+    {
+      screen:ClassPreview,
+  
+      navigationOptions:
+      {    headerStyle: {
+        backgroundColor:'#fff5dd'
+      },
+      headerTitleStyle: { 
+       
+        flex:1 },
+        title:"שיעורים שביצעתי",
+       headerLeftColor:'#2e3747',
+      }
+    },
+    nextclass:{screen:NextClass,
+       navigationOptions:
+      {    headerStyle: {
+        backgroundColor:'#fff5dd'
+      },
+      headerTitleStyle: { 
+       
+        flex:1 },
+        title:"השיעור הבא",
+       headerLeftColor:'#2e3747',
+      }}, 
+    mediaplayer:{screen:MediaPlayer,navigationOptions:
+      {
+       
+        headerLeft:null
+      }},
     mediaPlayerOldClasses:{screen:MediaPlayerOldClasses,},
     stateofmind:
     {
@@ -202,7 +292,16 @@ const AppNavigatorLogged = createStackNavigator
     },
     Homework:{
       screen:Homework,
-    },
+      navigationOptions:
+      {    headerStyle: {
+        backgroundColor:'#fff5dd'
+      },
+      headerTitleStyle: { 
+       
+        flex:1 },
+        title:"שיעורי בית",
+       headerLeftColor:'#2e3747',
+      }},
     AlertComponentNoHomework:{
       screen:AlertComponentNoHomework,
       navigationOptions:
@@ -210,12 +309,20 @@ const AppNavigatorLogged = createStackNavigator
     },
     MediaPlayerHomework:{
       screen:MediaPlayerHomework,
-      navigationOptions:
-      {headerLeft:null}
+     
     },
     GroupChat:{
       screen:GroupChat,
-    },
+      navigationOptions:
+      {    headerStyle: {
+        backgroundColor:'#fff5dd'
+      },
+      headerTitleStyle: { 
+       
+        flex:1 },
+        title:"פורום קבוצתי",
+       headerLeftColor:'#2e3747',
+      }},
   },
   {
     initialRouteName:"classlist",  

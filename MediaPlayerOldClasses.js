@@ -51,11 +51,11 @@ const LOOPING_TYPE_ICONS = { 0: ICON_LOOP_ALL_BUTTON, 1: ICON_LOOP_ONE_BUTTON };
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 const BACKGROUND_COLOR = '#FFF8ED';
 const DISABLED_OPACITY = 0.5;
-const FONT_SIZE = 14;
+const FONT_SIZE = 25;
 const LOADING_STRING = '... loading ...';
 const BUFFERING_STRING = '...buffering...';
 const RATE_SCALE = 3.0;
-const VIDEO_CONTAINER_HEIGHT = DEVICE_HEIGHT * 2.0 / 5.0 - FONT_SIZE * 2;
+const VIDEO_CONTAINER_HEIGHT = 20;
 
 export default class MediaPlayerOldClasses extends React.Component {
   constructor(props) {
@@ -486,37 +486,19 @@ export default class MediaPlayerOldClasses extends React.Component {
               opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
             },
           ]}>
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={this._onBackPressed}
-            disabled={this.state.isLoading}>
-            <Image style={styles.button} source={ICON_BACK_BUTTON.module} />
-          </TouchableHighlight>
+         
           <TouchableHighlight
             underlayColor={BACKGROUND_COLOR}
             style={styles.wrapper}
             onPress={this._onPlayPausePressed}
             disabled={this.state.isLoading}>
             <Image
-              style={styles.button}
+              resizeMode="contain"
+              style={styles.play_button}
               source={this.state.isPlaying ? ICON_PAUSE_BUTTON.module : ICON_PLAY_BUTTON.module}
             />
           </TouchableHighlight>
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={this._onStopPressed}
-            disabled={this.state.isLoading}>
-            <Image style={styles.button} source={ICON_STOP_BUTTON.module} />
-          </TouchableHighlight>
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={this._onForwardPressed}
-            disabled={this.state.isLoading}>
-            <Image style={styles.button} source={ICON_FORWARD_BUTTON.module} />
-          </TouchableHighlight>
+         
         </View>
         <View style={[styles.buttonsContainerBase, styles.buttonsContainerMiddleRow]}>
           <View style={styles.volumeContainer}>
@@ -537,91 +519,25 @@ export default class MediaPlayerOldClasses extends React.Component {
               onValueChange={this._onVolumeSliderValueChange}
             />
           </View>
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={this._onLoopPressed}>
-            <Image
-              style={styles.button}
-              source={LOOPING_TYPE_ICONS[this.state.loopingType].module}
-            />
-          </TouchableHighlight>
+         
         </View>
         <View style={[styles.buttonsContainerBase, styles.buttonsContainerBottomRow]}>
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={() => this._trySetRate(1.0, this.state.shouldCorrectPitch)}>
-            <View style={styles.button}>
-              <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>Rate:</Text>
-            </View>
-          </TouchableHighlight>
-          <Slider
-            style={styles.rateSlider}
-            trackImage={ICON_TRACK_1.module}
-            thumbImage={ICON_THUMB_1.module}
-            value={this.state.rate / RATE_SCALE}
-            onSlidingComplete={this._onRateSliderSlidingComplete}
-          />
-          <TouchableHighlight
-            underlayColor={BACKGROUND_COLOR}
-            style={styles.wrapper}
-            onPress={this._onPitchCorrectionPressed}>
-            <View style={styles.button}>
-              <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
-                PC: {this.state.shouldCorrectPitch ? 'yes' : 'no'}
-              </Text>
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight onPress={this._onSpeakerPressed} underlayColor={BACKGROUND_COLOR}>
-            <MaterialIcons
-              name={this.state.throughEarpiece ? ICON_THROUGH_EARPIECE : ICON_THROUGH_SPEAKER}
-              size={32}
-              color="black"
-            />
-          </TouchableHighlight>
-        </View>
-        <View />
+       </View>
+
+       <View />
         {this.state.showVideo ? (
           <View>
             <View style={[styles.buttonsContainerBase, styles.buttonsContainerTextRow]}>
               <View />
-              <TouchableHighlight
-                underlayColor={BACKGROUND_COLOR}
-                style={styles.wrapper}
-                onPress={this._onPosterPressed}>
-                <View style={styles.button}>
-                  <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
-                    Poster: {this.state.poster ? 'yes' : 'no'}
-                  </Text>
-                </View>
-              </TouchableHighlight>
+              
               <View />
-              <TouchableHighlight
-                underlayColor={BACKGROUND_COLOR}
-                style={styles.wrapper}
-                onPress={this._onFullscreenPressed}>
-                <View style={styles.button}>
-                  <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
-                    Fullscreen
-                  </Text>
-                </View>
-              </TouchableHighlight>
+              
               <View />
             </View>
             <View style={styles.space} />
             <View style={[styles.buttonsContainerBase, styles.buttonsContainerTextRow]}>
               <View />
-              <TouchableHighlight
-                underlayColor={BACKGROUND_COLOR}
-                style={styles.wrapper}
-                onPress={this._onUseNativeControlsPressed}>
-                <View style={styles.button}>
-                  <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
-                    Native Controls: {this.state.useNativeControls ? 'yes' : 'no'}
-                  </Text>
-                </View>
-              </TouchableHighlight>
+              
               <View />
             </View>
           </View>
@@ -630,7 +546,6 @@ export default class MediaPlayerOldClasses extends React.Component {
     );
   }
 }
-
 const styles = StyleSheet.create({
   emptyContainer: {
     alignSelf: 'stretch',
@@ -652,7 +567,7 @@ const styles = StyleSheet.create({
     height: FONT_SIZE,
   },
   videoContainer: {
-    height: VIDEO_CONTAINER_HEIGHT,
+    height:0
   },
   video: {
     maxWidth: DEVICE_WIDTH,
@@ -663,31 +578,49 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     alignSelf: 'stretch',
-    minHeight: ICON_THUMB_1.height * 2.0,
-    maxHeight: ICON_THUMB_1.height * 2.0,
+    minHeight: ICON_THUMB_1.height * 3.0,
+    maxHeight: ICON_THUMB_1.height * 3.0,
   },
   playbackSlider: {
-    alignSelf: 'stretch',
+   
+    marginTop:-50,
+    height:20,
+    width:DEVICE_WIDTH*0.75,
+    alignSelf:'center',
+    justifyContent:'center'
   },
   timestampRow: {
+    
+    marginTop:20,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    alignSelf: 'stretch',
+    alignSelf: 'center',
     minHeight: FONT_SIZE,
   },
   text: {
+    color:'#2e3747',
+    textAlign:'center',
+    fontWeight:'600',
     fontSize: FONT_SIZE,
     minHeight: FONT_SIZE,
+    alignSelf: 'center',
+    justifyContent:'center',
   },
   buffering: {
     textAlign: 'left',
-    paddingLeft: 20,
+  
   },
   timestamp: {
-    textAlign: 'right',
-    paddingRight: 20,
+    paddingLeft:20,
+  },
+  play_button: {
+    backgroundColor: BACKGROUND_COLOR,
+    zIndex:10,
+    height:220,
+    width:220,
+    alignSelf:'center',
+    justifyContent:'center'
   },
   button: {
     backgroundColor: BACKGROUND_COLOR,
@@ -699,9 +632,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   buttonsContainerTopRow: {
+    marginTop:40,
     maxHeight: ICON_PLAY_BUTTON.height,
-    minWidth: DEVICE_WIDTH / 2.0,
-    maxWidth: DEVICE_WIDTH / 2.0,
+    height:200,
+    width:220,
   },
   buttonsContainerMiddleRow: {
     maxHeight: ICON_MUTED_BUTTON.height,
@@ -709,21 +643,24 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   volumeContainer: {
+    width:DEVICE_WIDTH,
+    marginTop:100,
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+
     minWidth: DEVICE_WIDTH / 2.0,
     maxWidth: DEVICE_WIDTH / 2.0,
   },
   volumeSlider: {
-    width: DEVICE_WIDTH / 2.0 - ICON_MUTED_BUTTON.width,
+    marginTop:20,
+    width: DEVICE_WIDTH /1.5- ICON_MUTED_BUTTON.width,
    
   },
   centerView:{
     textAlign:'center',
   },
   buttonsContainerBottomRow: {
+    marginTop:30,
     maxHeight: ICON_THUMB_1.height,
     alignSelf: 'stretch',
     paddingRight: 20,

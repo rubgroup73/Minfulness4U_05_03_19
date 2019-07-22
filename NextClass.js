@@ -187,7 +187,7 @@ export default class NextClass extends React.Component {
         return (            
       <ScrollView style={styles.outerContainer}>
   <Card containerStyle={styles.cardStyle}
-  title={<Text numberOfLines={3} style={styles.titleStyle2}>{this.state.nextClass.Title}</Text>}>
+  title={<Text numberOfLines={2} style={styles.titleStyle2}>{this.state.nextClass.Title}</Text>}>
   
     <Image
     source={{ uri:this.state.userInThisClass.AppClass.Class_File_Path}}

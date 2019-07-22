@@ -5,10 +5,10 @@ import LoadingLogo from './LoadingLogo';
 import moment from "moment";
 
 const classesPic =  require('./assets/images/classes.jpg');
-const finishClassesPic = require('./assets/images/finishedClasses.png');
+const finishClassesPic = require('./assets/images/oldclasses.jpg');
 const homeWorkPic = require('./assets/images/homework.jpg');
 const userFeelingPic = require('./assets/images/myFeeling.png');
-const chatPic = require('./assets/images/Chat_bubbles.png')
+const chatPic = require('./assets/images/chat3.jpg')
 const heightPic = 80;
 const widthPic = 100;
 const loadIcon = require('./assets/images/Loading_2.gif');
@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
       marginBottom:0,
       height:'100%',
       borderBottomWidth:20,
-      borderBottomColor:'#ffedc1',    
+      borderBottomColor:'#ffedc1',  
+
   },
   rightto:{
     textAlign:'right'
@@ -45,6 +46,7 @@ const styles = StyleSheet.create({
   
   },
   titleStyle:{
+   
     fontSize:18,
     fontWeight:'500',
     color:'#2e3747',
@@ -58,6 +60,7 @@ const styles = StyleSheet.create({
   userNameHead:{
     textAlign:'center',
     fontSize:20,
+    paddingTop:30 ,
 
     backgroundColor:'#2e3747',
     color:'white',
@@ -350,7 +353,8 @@ SwitchPage = ()=>{
                      currentDay:this.currentDay,
                      userFullName:JSON.parse(this.state.fullName)
                   }
-                    );}
+                    );
+                  debugger;}
               }
               containerStyle = {styles.listItemStyle}
               title = 'שיעורי בית'

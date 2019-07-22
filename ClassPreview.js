@@ -109,7 +109,7 @@ this.classesFromDB.map((l, i) => (
       {l.Description}
     </Text>
     <Button
-     onPress = {()=>{this.oldClassesPlayer(l);}}
+     onPress = {()=> {debugger; this.oldClassesPlayer(l);}}
      titleStyle={styles.titleStyle}
      buttonStyle={styles.buttonStyle}
      title='היכנס לשיעור' 

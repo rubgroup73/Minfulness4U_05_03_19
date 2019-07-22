@@ -60,7 +60,7 @@ const LOOPING_TYPE_ICONS = { 0: ICON_LOOP_ALL_BUTTON, 1: ICON_LOOP_ONE_BUTTON };
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window');
 const BACKGROUND_COLOR = '#FFF8ED';
 const DISABLED_OPACITY = 0.5;
-const FONT_SIZE = 14;
+const FONT_SIZE = 25;
 const LOADING_STRING = '... loading ...';
 const BUFFERING_STRING = '...buffering...';
 const RATE_SCALE = 3.0;
@@ -667,273 +667,286 @@ updateClassInDB = (theUserSectionDataPut) => {
 //** 
 //render the component
 //** 
-  render()
+render()
    
-  {
-    if(!this.shouldRender){
-      return ( <View style={styles.emptyContainer} />)
-    }
-    else if((this.state.fontLoaded==true)&&(this.shouldRender==true)){
-      return(  
-        <View style={styles.container}>
-        <View />
-        <View style={styles.nameContainer}>
-          <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
-            {this.state.playbackInstanceName}
-          </Text>
-        </View>
-        <View style={styles.space} />
-        <View style={styles.videoContainer}>
-          <Video
-            ref={this._mountVideo}
-            style={[
-              styles.video,
-              {
-                opacity: this.state.showVideo ? 1.0 : 0.0,
-                width: this.state.videoWidth,
-                height: this.state.videoHeight,
-              },
-            ]}
-     
-            resizeMode={Video.RESIZE_MODE_CONTAIN}
-            onPlaybackStatusUpdate={this._onPlaybackStatusUpdate}
-            onLoadStart={this._onLoadStart}
-            onLoad={this._onLoad}
-            onError={this._onError}
-            onFullscreenUpdate={this._onFullscreenUpdate}
-            onReadyForDisplay={this._onReadyForDisplay}
-            useNativeControls={this.state.useNativeControls}
-          />
-        </View>
-        {/*  *****************************************************/ }
-        {/* <Image
-  source={{ uri:'https://images.performgroup.com/di/library/GOAL/15/8b/lionel-messi-barcelona-2018-19_e02kyh93iz8c1ag0irilngp6w.jpg?t=1966780634' }}
-  style={{ width: 200, height: 200 ,position:'absolute',top:80,borderRadius:10}}
- 
-/> */}
-        <View
+{
+  if(!this.shouldRender){
+    return ( <View style={styles.emptyContainer} />)
+  }
+  else if((this.state.fontLoaded==true)&&(this.shouldRender==true)){
+    return(  
+      <View style={styles.container}>
+      <View />
+      <View style={styles.nameContainer}>
+        <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
+          {this.state.playbackInstanceName}
+        </Text>
+      </View>
+      <View style={styles.space} />
+      <View style={styles.videoContainer}>
+        <Video
+          ref={this._mountVideo}
           style={[
-            styles.playbackContainer,
+            styles.video,
             {
-              opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
+              opacity: this.state.showVideo ? 1.0 : 0.0,
+              width: this.state.videoWidth,
+              height: this.state.videoHeight,
             },
           ]}
-          >
-          <Slider
-            style={styles.playbackSlider}
-            trackImage={ICON_TRACK_1.module}
-            thumbImage={ICON_THUMB_1.module}
-            value={this._getSeekSliderPosition()}//Show the video progress each second.
-            onValueChange={this._onSeekSliderValueChange}
-            onSlidingComplete={this._onSeekSliderSlidingComplete}
-            disabled={this.state.isLoading}
-          />
-          <View style={styles.timestampRow}>
-            <Text style={[styles.text, styles.buffering, { fontFamily: 'cutive-mono-regular' }]}>
-              {this.state.isBuffering ? BUFFERING_STRING : ''}
-            </Text>
-            <Text style={[styles.text, styles.timestamp, { fontFamily: 'cutive-mono-regular' }]}>
-              {this._getTimestamp()}
-            </Text>
-          </View>
+   
+          resizeMode={Video.RESIZE_MODE_CONTAIN}
+          onPlaybackStatusUpdate={this._onPlaybackStatusUpdate}
+          onLoadStart={this._onLoadStart}
+          onLoad={this._onLoad}
+          onError={this._onError}
+          onFullscreenUpdate={this._onFullscreenUpdate}
+          onReadyForDisplay={this._onReadyForDisplay}
+          useNativeControls={this.state.useNativeControls}
+        />
+      </View>
+      {/*  *****************************************************/ }
+      {/* <Image
+source={{ uri:'https://images.performgroup.com/di/library/GOAL/15/8b/lionel-messi-barcelona-2018-19_e02kyh93iz8c1ag0irilngp6w.jpg?t=1966780634' }}
+style={{ width: 200, height: 200 ,position:'absolute',top:80,borderRadius:10}}
+
+/> */}
+      <View
+        style={[
+          styles.playbackContainer,
+          {
+            opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
+          },
+        ]}
+        >
+        <Slider
+        thumbTouchSize={{width:60, height: 60}}
+          style={styles.playbackSlider}
+          trackImage={ICON_TRACK_1.module}
+          thumbImage={ICON_THUMB_1.module}
+          value={this._getSeekSliderPosition()}//Show the video progress each second.
+          onValueChange={this._onSeekSliderValueChange}
+          onSlidingComplete={this._onSeekSliderSlidingComplete}
+          disabled={this.state.isLoading}
+        />
+        <View style={styles.timestampRow}>
+          <Text style={[styles.text, styles.buffering, { fontFamily: 'cutive-mono-regular' }]}>
+            {this.state.isBuffering ? BUFFERING_STRING : ''}
+          </Text>
+          <Text style={[styles.text, styles.timestamp, { fontFamily: 'cutive-mono-regular' }]}>
+            {this._getTimestamp()}
+          </Text>
         </View>
-        <View
-          style={[
-            styles.buttonsContainerBase,
-            styles.buttonsContainerTopRow,
-            {
-              opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
-            },
-          ]}>
-         
+      </View>
+      <View
+        style={[
+          styles.buttonsContainerBase,
+          styles.buttonsContainerTopRow,
+          {
+            opacity: this.state.isLoading ? DISABLED_OPACITY : 1.0,
+          },
+        ]}>
+       
+        <TouchableHighlight
+          underlayColor={BACKGROUND_COLOR}
+          style={styles.wrapper}
+          onPress={this._onPlayPausePressed}
+          disabled={this.state.isLoading}>
+          <Image
+        resizeMode="contain"
+        style={styles.play_button}
+            source={this.state.isPlaying ? ICON_PAUSE_BUTTON.module : ICON_PLAY_BUTTON.module}
+          />
+        </TouchableHighlight>
+       
+       
+      </View>
+      <View style={[styles.buttonsContainerBase, styles.buttonsContainerMiddleRow]}>
+        <View style={styles.volumeContainer}>
           <TouchableHighlight
             underlayColor={BACKGROUND_COLOR}
             style={styles.wrapper}
-            onPress={this._onPlayPausePressed}
-            disabled={this.state.isLoading}>
+            onPress={this._onMutePressed}>
             <Image
-          resizeMode="contain"
-          style={styles.play_button}
-              source={this.state.isPlaying ? ICON_PAUSE_BUTTON.module : ICON_PLAY_BUTTON.module}
+              style={styles.button}
+              source={this.state.muted ? ICON_MUTED_BUTTON.module : ICON_UNMUTED_BUTTON.module}
             />
           </TouchableHighlight>
-         
-         
+          <Slider
+            style={styles.volumeSlider}
+            trackImage={ICON_TRACK_1.module}
+            thumbImage={ICON_THUMB_2.module}
+            value={1}
+            onValueChange={this._onVolumeSliderValueChange}
+          />
         </View>
-        <View style={[styles.buttonsContainerBase, styles.buttonsContainerMiddleRow]}>
-          <View style={styles.volumeContainer}>
-            <TouchableHighlight
-              underlayColor={BACKGROUND_COLOR}
-              style={styles.wrapper}
-              onPress={this._onMutePressed}>
-              <Image
-                style={styles.button}
-                source={this.state.muted ? ICON_MUTED_BUTTON.module : ICON_UNMUTED_BUTTON.module}
-              />
-            </TouchableHighlight>
-            <Slider
-              style={styles.volumeSlider}
-              trackImage={ICON_TRACK_1.module}
-              thumbImage={ICON_THUMB_2.module}
-              value={1}
-              onValueChange={this._onVolumeSliderValueChange}
-            />
-          </View>
-          
         
-        </View>
-        <View style={[styles.buttonsContainerBase, styles.buttonsContainerBottomRow]}>
-          
-          
-        </View>
-        <View />
-        {this.state.showVideo ? (
-          <View>
-            <View style={[styles.buttonsContainerBase, styles.buttonsContainerTextRow]}>
-              <View />
-              
-              <View />
-             
-              <View />
-            </View>
-            <View style={styles.space} />
-            <View style={[styles.buttonsContainerBase, styles.buttonsContainerTextRow]}>
-              <View />
-              
-              <View />
-            </View>
+      
+      </View>
+      <View style={[styles.buttonsContainerBase, styles.buttonsContainerBottomRow]}>
+        
+        
+      </View>
+      <View />
+      {this.state.showVideo ? (
+        <View>
+          <View style={[styles.buttonsContainerBase, styles.buttonsContainerTextRow]}>
+            <View />
+            
+            <View />
+           
+            <View />
           </View>
-        ):null}
-         </View>
-        )
-      }
-         else if(this.state.fontLoaded==true){
-      return(
-        <View style={styles.loadIconStyle}>       
-              <Image source={require('./assets/images/Loading_2.gif')} />
-       </View> 
-       );
+          <View style={styles.space} />
+          <View style={[styles.buttonsContainerBase, styles.buttonsContainerTextRow]}>
+            <View />
+            
+            <View />
+          </View>
+        </View>
+      ):null}
+       </View>
+      )
     }
-    }
-  }    
-       
+       else if(this.state.fontLoaded==true){
+    return(
+      <View style={styles.loadIconStyle}>       
+            <Image source={require('./assets/images/Loading_2.gif')} />
+     </View> 
+     );
+  }
+  }
+}    
+     
 const styles = StyleSheet.create({
-  emptyContainer: {
-    alignSelf: 'stretch',
-    backgroundColor: BACKGROUND_COLOR,
-  },
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    backgroundColor: BACKGROUND_COLOR,
-  },
-  wrapper: {},
-  nameContainer: {
-    height: FONT_SIZE,
-  },
-  space: {
-    height: FONT_SIZE,
-  },
-  videoContainer: {
-    height: VIDEO_CONTAINER_HEIGHT,
-  },
-  video: {
-    maxWidth: DEVICE_WIDTH,
-  },
-  playbackContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    minHeight: ICON_THUMB_1.height * 2.0,
-    maxHeight: ICON_THUMB_1.height * 2.0,
-  },
-  playbackSlider: {
-    alignSelf: 'stretch',
-  },
-  timestampRow: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    alignSelf: 'stretch',
-    minHeight: FONT_SIZE,
-  },
-  text: {
-    fontSize: FONT_SIZE,
-    minHeight: FONT_SIZE,
-  },
-  buffering: {
-    textAlign: 'left',
-    paddingLeft: 20,
-  },
-  timestamp: {
-    textAlign: 'right',
-    paddingRight: 20,
-  },
-  play_button: {
-    
-    backgroundColor: BACKGROUND_COLOR,
-    height:220,
-    width:200,
-    alignSelf:'center',
-    justifyContent:'center'
-  },
-  button: {
-    backgroundColor: BACKGROUND_COLOR,
+emptyContainer: {
+  alignSelf: 'stretch',
+  backgroundColor: BACKGROUND_COLOR,
+},
+container: {
+  flex: 1,
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  alignSelf: 'stretch',
+  backgroundColor: BACKGROUND_COLOR,
+},
+wrapper: {},
+nameContainer: {
+  height: FONT_SIZE,
+},
+space: {
+  height: FONT_SIZE,
+},
+videoContainer: {
+  height:0
+},
+video: {
+  maxWidth: DEVICE_WIDTH,
+},
+playbackContainer: {
+  flex: 1,
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  alignSelf: 'stretch',
+  minHeight: ICON_THUMB_1.height * 3.0,
+  maxHeight: ICON_THUMB_1.height * 3.0,
+},
+playbackSlider: {
+ 
+  marginTop:-50,
+  height:20,
+  width:DEVICE_WIDTH*0.75,
+  alignSelf:'center',
+  justifyContent:'center'
+},
+timestampRow: {
   
-   
-  },
-  buttonsContainerBase: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  buttonsContainerTopRow: {
-    maxHeight: ICON_PLAY_BUTTON.height,
-    minWidth: DEVICE_WIDTH / 2.0,
-    maxWidth: DEVICE_WIDTH / 2.0,
-  },
-  buttonsContainerMiddleRow: {
-    maxHeight: ICON_MUTED_BUTTON.height,
-    alignSelf: 'stretch',
-    paddingRight: 20,
-  },
-  volumeContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    minWidth: DEVICE_WIDTH / 2.0,
-    maxWidth: DEVICE_WIDTH / 2.0,
-  },
-  volumeSlider: {
-    width: DEVICE_WIDTH / 2.0 - ICON_MUTED_BUTTON.width,
-   
-  },
-  centerView:{
-    textAlign:'center',
-  },
-  buttonsContainerBottomRow: {
-    maxHeight: ICON_THUMB_1.height,
-    alignSelf: 'stretch',
-    paddingRight: 20,
-    paddingLeft: 20,
-  },
-  rateSlider: {
-    width: DEVICE_WIDTH / 2.0,
-  },
-  buttonsContainerTextRow: {
-    maxHeight: FONT_SIZE,
-    alignItems: 'center',
-    paddingRight: 20,
-    paddingLeft: 20,
-    minWidth: DEVICE_WIDTH,
-    maxWidth: DEVICE_WIDTH,
-  },
+  marginTop:20,
+  flex: 1,
+  flexDirection: 'row',
+  alignItems: 'center',
+  alignSelf: 'center',
+  minHeight: FONT_SIZE,
+},
+text: {
+  color:'#2e3747',
+  textAlign:'center',
+  fontWeight:'600',
+  fontSize: FONT_SIZE,
+  minHeight: FONT_SIZE,
+  alignSelf: 'center',
+  justifyContent:'center',
+},
+buffering: {
+  textAlign: 'left',
+
+},
+timestamp: {
+  paddingLeft:20,
+},
+play_button: {
+  backgroundColor: BACKGROUND_COLOR,
+  zIndex:10,
+  height:220,
+  width:220,
+  alignSelf:'center',
+  justifyContent:'center'
+},
+button: {
+  backgroundColor: BACKGROUND_COLOR,
+},
+buttonsContainerBase: {
+  flex: 1,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+},
+buttonsContainerTopRow: {
+  marginTop:40,
+  maxHeight: ICON_PLAY_BUTTON.height,
+  height:200,
+  width:220,
+},
+buttonsContainerMiddleRow: {
+  maxHeight: ICON_MUTED_BUTTON.height,
+  alignSelf: 'stretch',
+  paddingRight: 20,
+},
+volumeContainer: {
+  width:DEVICE_WIDTH,
+  marginTop:100,
+  flex: 1,
+  flexDirection: 'row',
+
+  minWidth: DEVICE_WIDTH / 2.0,
+  maxWidth: DEVICE_WIDTH / 2.0,
+},
+volumeSlider: {
+  marginTop:20,
+  width: DEVICE_WIDTH /1.5- ICON_MUTED_BUTTON.width,
+ 
+},
+centerView:{
+  textAlign:'center',
+},
+buttonsContainerBottomRow: {
+  marginTop:30,
+  maxHeight: ICON_THUMB_1.height,
+  alignSelf: 'stretch',
+  paddingRight: 20,
+  paddingLeft: 20,
+},
+rateSlider: {
+  width: DEVICE_WIDTH / 2.0,
+},
+buttonsContainerTextRow: {
+  maxHeight: FONT_SIZE,
+  alignItems: 'center',
+  paddingRight: 20,
+  paddingLeft: 20,
+  minWidth: DEVICE_WIDTH,
+  maxWidth: DEVICE_WIDTH,
+},
 });

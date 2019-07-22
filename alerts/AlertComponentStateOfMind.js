@@ -27,7 +27,6 @@ export default class AlertComponentStateOfMind extends React.Component {
           
     )
   };
-
   render() {
     const {showAlert} = this.state;
 
@@ -45,7 +44,7 @@ export default class AlertComponentStateOfMind extends React.Component {
           showCancelButton={false}
           showConfirmButton={true}
           confirmText = 'אישור'
-          confirmButtonColor="#5ff424"
+          confirmButtonColor="#2e3747"
           confirmButtonStyle={styles.buttonStyle}
           messageStyle = {styles.messageStyle}
           titleStyle = {styles.titleStyle}
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#a8e0c1',
+    backgroundColor: '#2e3747',
     
   },
   button: {
@@ -73,13 +72,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 7,
     borderRadius: 5,
-    backgroundColor: "#AEDEF4",
+    backgroundColor: "#2e3747",
   },
   text: {
+    backgroundColor:'#fff5dd',
+    textAlign:'center',
     color: '#fff',
     fontSize: 15
   },
   boxStyle:{
+    
     flex:2,
     width:500,
     height:400
@@ -94,9 +96,13 @@ const styles = StyleSheet.create({
     fontSize:20
   },
   messageStyle:{
-    fontSize:20
+    
+    fontSize:20,
+   
   },
   titleStyle:{
-    fontSize:40
+  
+    fontSize:40,
+    textAlign:'center',
   }
 });

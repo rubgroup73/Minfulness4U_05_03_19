@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet, Text, Image,AsyncStorage } from 'react-native';
 import LoadingLogo from './LoadingLogo';
 import moment from "moment";
-
 import { GiftedChat } from 'react-native-gifted-chat';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
@@ -21,15 +20,16 @@ const styles = StyleSheet.create({
 export default class GroupChat extends Component {
     constructor(props){
         super(props);
-        this.id = this.props.navigation.state.params.userInChat.UserId;
         this.Full_Name = this.props.navigation.state.params.userInChat.Full_Name;
+        this.id = this.props.navigation.state.params.userInChat.UserId;
         this.userInChat;
         this.messagesDb;
         this.messageArr=[];
-    
+        
   this.state = {
     changed:false,
     messages: [],
+    userMessageId:null
   };
 }
   
@@ -151,13 +151,14 @@ export default class GroupChat extends Component {
                 console.log(error);
               }))
   }
+
   
   //  https://stackoverflow.com/a/54550286/1458375
   render() {
-    // if(!this.state.changed){
-    //     return( <LoadingLogo></LoadingLogo> );
-    //   }
-    //   else{
+    if(!this.state.changed){
+        return( <LoadingLogo></LoadingLogo> );
+      }
+      else{
 
     return (
       <>
@@ -180,13 +181,13 @@ export default class GroupChat extends Component {
       </View>
       )}
       <GiftedChat
-
+       showAvatarForEveryMessage={true}
        messages={this.state.messages}
        onSend={(messages) => this.onSend(messages)}
        renderCustomView={this.renderCustomView}
        user={{
-         _id: this.id,/*לפה שולחים דינאמית את היוזר אידי של המשתמש הנוכחי*/
-         name:this.Full_Name,//לפה להביא דינמית את שם המשתמש
+           _id:this.id,
+           name:this.Full_Name
        }}
        parsePatterns={linkStyle => [
           {
@@ -198,6 +199,7 @@ export default class GroupChat extends Component {
      />
      </>
     );
-    //   }
+      }
   }
 }
+
