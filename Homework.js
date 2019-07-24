@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View , Image,ScrollView,AsyncStorage,Dimensions} from 'react-native';
 import { Card, Button} from 'react-native-elements';
 import moment from "moment";
+import LoadingLogo from './LoadingLogo';
 
 const ex={
   width: Dimensions.get('window').width,
@@ -72,6 +73,7 @@ export default class Homework extends React.Component {
             classVersion:this.props.navigation.state.params.classVersion,
             userId:this.props.navigation.state.params.userId,
             currentDay:this.props.navigation.state.params.currentDay,
+            isLoad:false
           };
       } 
       GetNextSectionsArr =(res) =>{
@@ -80,7 +82,7 @@ export default class Homework extends React.Component {
             NextSectionsArr.push(res);
             PLAYLIST.push(new PlaylistItem(res.HomeWork_Name,res.HomeWork_Audio,false,res.Class_Id,res.HomeWorkId));
           }
-          
+       this.setState({isLoad:true})
        console.log(PLAYLIST);
         }
     
@@ -91,19 +93,18 @@ export default class Homework extends React.Component {
         console.log(this.state.classVersion);
         console.log(this.state.classId);
         ServerGetHomework = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/returnhomeworkforuser?userId="+this.state.userId;
-        debugger;
          fetch(ServerGetHomework)
                 .then(response => response.json())  // promise
                 .then(async (response) =>{
+                  debugger;
                     if(response.IsHomeWork!=false) {   
                   console.log(response);
                   this.userInHomeWorkData = response;
-                  debugger;
                   this.GetNextSectionsArr(response);//one object of homework, sections not exists            
                     } 
                     else{
                         console.log("No homework were found for this user in DB");
-                        this.props.navigation.navigate(AlertComponentNoHomework)
+                        this.props.navigation.navigate('alertComponentNoHomework');
                     }                 
                 })
                 .catch((error=>{
@@ -150,6 +151,10 @@ export default class Homework extends React.Component {
             }))   
     }
     render(props) {
+      if(!this.state.isLoad){
+        return( <LoadingLogo></LoadingLogo> );
+      }
+      else{
         return (            
       <ScrollView style={styles.outerContainer}>
   <Card containerStyle={styles.cardStyle}
@@ -170,7 +175,7 @@ export default class Homework extends React.Component {
   </Card>
   </ScrollView>
         
-      );
+      );}
     }
   
   

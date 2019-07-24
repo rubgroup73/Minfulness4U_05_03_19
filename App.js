@@ -153,7 +153,7 @@ const AppNavigator = createStackNavigator
       }
     }
     ,
-    AlertComponentNoHomework:{
+    alertComponentNoHomework:{
       screen:AlertComponentNoHomework,
       navigationOptions:
       {headerLeft:null}
@@ -174,12 +174,8 @@ const AppNavigator = createStackNavigator
         title:"פורום קבוצתי",
        headerLeftColor:'#2e3747',
       }},
-    
-    
   },
-  {
-    initialRouteName:"loginPage",  
-  }
+  {initialRouteName:"loginPage", }
 ) 
 
 const AppNavigatorLogged = createStackNavigator
@@ -198,30 +194,22 @@ const AppNavigatorLogged = createStackNavigator
         headerTitleStyle: { 
          textAlign:'center',
           flex:1 },
-         
-        
-        }
-      
+        } 
     },
     classlist:
     {
       screen:Classlist,
       navigationOptions:
-      {
-        title:"מסך ראשי",
-        headerLeft:null
-      }
+      { title:"מסך ראשי",
+        headerLeft:null}
     },
     classpreview:
-    {
-      screen:ClassPreview,
-  
+    {screen:ClassPreview,
       navigationOptions:
-      {    headerStyle: {
+      {headerStyle: {
         backgroundColor:'#fff5dd'
       },
-      headerTitleStyle: { 
-       
+      headerTitleStyle: {  
         flex:1 },
         title:"שיעורים שביצעתי",
        headerLeftColor:'#2e3747',
@@ -239,10 +227,7 @@ const AppNavigatorLogged = createStackNavigator
        headerLeftColor:'#2e3747',
       }}, 
     mediaplayer:{screen:MediaPlayer,navigationOptions:
-      {
-       
-        headerLeft:null
-      }},
+      { headerLeft:null}},
     mediaPlayerOldClasses:{screen:MediaPlayerOldClasses,},
     stateofmind:
     {
@@ -302,7 +287,7 @@ const AppNavigatorLogged = createStackNavigator
         title:"שיעורי בית",
        headerLeftColor:'#2e3747',
       }},
-    AlertComponentNoHomework:{
+      alertComponentNoHomework:{
       screen:AlertComponentNoHomework,
       navigationOptions:
       {headerLeft:null}

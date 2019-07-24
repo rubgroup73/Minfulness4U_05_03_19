@@ -32,7 +32,7 @@ export default class AlertComponentNoHomework extends React.Component {
           alertContainerStyle = {styles.boxStyle}
           show={showAlert}
           showProgress={false}
-          title="אין שיעורי בית "
+          title="אין שיעורי בית היום"
           message= "לחץ 'אישור'"
           closeOnTouchOutside={true}
           closeOnHardwareBackPress={false}
