@@ -678,7 +678,7 @@ render()
       <View style={styles.container}>
       <View />
       <View style={styles.nameContainer}>
-        <Text style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
+        <Text numberOfLines={2} style={[styles.text, { fontFamily: 'cutive-mono-regular' }]}>
           {this.state.playbackInstanceName}
         </Text>
       </View>
@@ -834,6 +834,7 @@ container: {
 wrapper: {},
 nameContainer: {
   height: FONT_SIZE,
+  maxWidth:DEVICE_WIDTH*0.9,
 },
 space: {
   height: FONT_SIZE,

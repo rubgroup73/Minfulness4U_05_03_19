@@ -132,8 +132,20 @@ constructor(props){
 static navigationOptions = {
   header: null
 }
-loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{   
-
+loadPreviousClassesFromDB = async(page,userInfo,allclasses) =>{   
+  debugger;
+  console.log(allclasses);
+     for(let i=0;i<allclasses.length;i++){
+       for(let j=0;j<allclasses[i].Sections.length;j++){
+        let index= allclasses[i].Sections[j].FilePath.lastIndexOf("\\")+1;
+        allclasses[i].Sections[j].FilePath="http://proj.ruppin.ac.il/bgroup73/test1/tar4/files/"+allclasses[i].Sections[j].FilePath.substring(index);
+        console.log( allclasses[i].Sections[j].FilePath);
+       }
+    let index= allclasses[i].Class_File_Path.lastIndexOf("\\")+1;
+    allclasses[i].Class_File_Path="http://proj.ruppin.ac.il/bgroup73/test1/tar4/files/"+allclasses[i].Class_File_Path.substring(index);
+    console.log(allclasses[i].Class_File_Path);
+  }
+  
   this.props.navigation.navigate(
     page,
     {userInfo:userInfo,
@@ -142,9 +154,13 @@ loadPreviousClassesFromDB =(page,userInfo,allclasses) =>{
     
     );
 }
-    loadClassesFromDB = (page,userInfo,nextclass) =>{   
+    loadClassesFromDB = async (page,userInfo,nextclass) =>{   
      
       if(nextclass != null){
+        debugger;
+    let index= await nextclass.Class_File_Path.lastIndexOf("\\")+1;
+    nextclass.Class_File_Path="http://proj.ruppin.ac.il/bgroup73/test1/tar4/files/"+nextclass.Class_File_Path.substring(index);
+    console.log(nextclass.Class_File_Path);
       this.props.navigation.navigate(
         page,
         {userInfo:userInfo,
@@ -277,7 +293,7 @@ didBlurSubscription = this.props.navigation.addListener(
   }
 );
 
-SwitchPage = ()=>{
+SwitchPage = async ()=>{
   if(this.currentDay>=this.state.userInThisClass.ShouldStart){
     this.loadClassesFromDB(appPages[2],this.state,this.state.nextLesson);
     if(userFinishAllClasses==true){
@@ -309,7 +325,6 @@ SwitchPage = ()=>{
       else{
         return (
             <ScrollView style = {styles.listStyle}>
-            {/* <NavigationEvents onDidFocus={()=> this.componentDidMountAsync()} /> */}
             <Text style={styles.userNameHead}>שלום {JSON.parse(this.state.fullName)}</Text>
             <ListItem
               onPress = {() => 

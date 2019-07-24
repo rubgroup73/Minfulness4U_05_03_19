@@ -79,6 +79,8 @@ export default class Homework extends React.Component {
       GetNextSectionsArr =(res) =>{
         
           if(res.Is_Finished==false){
+            let index= res.HomeWork_Audio.lastIndexOf("\\")+1;
+            res.HomeWork_Audio="http://proj.ruppin.ac.il/bgroup73/test1/tar4/files/"+res.HomeWork_Audio.substring(index);
             NextSectionsArr.push(res);
             PLAYLIST.push(new PlaylistItem(res.HomeWork_Name,res.HomeWork_Audio,false,res.Class_Id,res.HomeWorkId));
           }

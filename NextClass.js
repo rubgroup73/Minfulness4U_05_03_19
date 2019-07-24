@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   },
   imageStyle:{ 
     width: '100%',
-     height: ex.height*0.4 ,
+     height: ex.height*0.55 ,
      borderRadius:5
     },
     descriotion:{marginBottom: 10,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
      marginBottom: 0,
      backgroundColor:'#ffedc1',
      elevation:2},
-     titleStyle2:{fontSize:30,fontWeight:"700",height:150,textAlign:'center'}
+     titleStyle2:{fontSize:30,fontWeight:"700",maxHeight:100,textAlign:'center'}
   });
 
 
@@ -84,10 +84,14 @@ export default class NextClass extends React.Component {
       GetNextSectionsArr =(res) =>{
         for(var i=0; i<res.length;i++){
           if(res[i].Section_Is_Finished==false){
+            let index= res[i].File_Path.lastIndexOf("\\")+1;
+            res[i].File_Path="http://proj.ruppin.ac.il/bgroup73/test1/tar4/files/"+res[i].File_Path.substring(index);
             NextSectionsArr.push(res[i]);
             PLAYLIST.push(new PlaylistItem(res[i].Section_Title,res[i].File_Path,false,res[i].Class_Id,res[i].Section_Id));
           }
         }
+        debugger;
+        console.log(PLAYLIST);
       }
       NavigateToUserClass = async (NextSectionsArr,userInThisClass) =>{
         debugger;
@@ -145,6 +149,8 @@ export default class NextClass extends React.Component {
 
     componentDidMount = async ()=>
     {
+      debugger;
+      console.log(this.state.nextClass.Class_File_Path);
       try{await AsyncStorage.setItem("userInThisClass",JSON.stringify(this.props.navigation.state.params.userInfo.userInThisClass));}
       catch(error){console.log(error);}
     }
@@ -190,7 +196,7 @@ export default class NextClass extends React.Component {
   title={<Text numberOfLines={2} style={styles.titleStyle2}>{this.state.nextClass.Title}</Text>}>
   
     <Image
-    source={{ uri:this.state.userInThisClass.AppClass.Class_File_Path}}
+    source={{ uri:this.state.nextClass.Class_File_Path}}
     style={styles.imageStyle}
     resizeMode="cover"
     />

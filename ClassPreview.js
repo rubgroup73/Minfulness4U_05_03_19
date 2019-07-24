@@ -73,9 +73,10 @@ export default class ClassPreview extends React.Component {
         var PLAYLIST = [];
       }
       oldClassesPlayer = (classObject) =>{
-        debugger
+        
         classObject.Sections.map((res) => {
         PLAYLIST.push(new PlaylistItem(res.Title,res.FilePath,false,res.ClassId,res.Id));
+       
         })
         debugger;
        this.props.navigation.navigate('mediaPlayerOldClasses',
