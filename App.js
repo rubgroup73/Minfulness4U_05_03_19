@@ -342,9 +342,9 @@ export default class App extends React.Component {
       });
     }, 1000);
   
-    //  await AsyncStorage.getAllKeys()
-    //       .then(keys => AsyncStorage.multiRemove(keys))
-    //       .then(() => alert('success'));
+     await AsyncStorage.getAllKeys()
+     .then(keys => AsyncStorage.multiRemove(keys))
+    //  .then(() => alert('success'));
  
     let temp
     try{temp= await AsyncStorage.getItem("login");}

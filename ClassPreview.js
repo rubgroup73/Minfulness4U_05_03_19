@@ -66,21 +66,31 @@ export default class ClassPreview extends React.Component {
         this.state = {
             // We don't know the size of the content initially, and the probably won't instantly try to scroll, so set the initial content height to 0
             screenHeight: 0,
-            classList:this.props.navigation.state.params.userInfo
+            classList:this.props.navigation.state.params.userInfo,
           };
       }
        componentDidMountAsync = async () =>{
         var PLAYLIST = [];
+        console.log(this.classesFromDB);
+        console.log(this.state.classList);
+        // console.log(this.state.classesFromDB);
+        console.log("PLAYLIST");
+        console.log(PLAYLIST);
       }
       oldClassesPlayer = (classObject) =>{
-        
+        PLAYLIST = [];
         classObject.Sections.map((res) => {
         PLAYLIST.push(new PlaylistItem(res.Title,res.FilePath,false,res.ClassId,res.Id));
        
         })
-        debugger;
+        
        this.props.navigation.navigate('mediaPlayerOldClasses',
        {PLAYLIST:PLAYLIST});
+       console.log(this.classesFromDB);
+        console.log(this.state.classList);
+        // console.log(this.state.classesFromDB);
+        console.log(PLAYLIST);
+        debugger;
       }
 
       didBlurSubscription = this.props.navigation.addListener(

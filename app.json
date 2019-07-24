@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Mindfulness4U",
-    "slug": "M4U_App",
+    "slug": "mindfulness4u",
     "privacy": "public",
     "sdkVersion": "32.0.0",
     "platforms": [
@@ -24,6 +24,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "Mindfulness App for older adults.\nTo start to use the App, we need to provide you a username and a password."
   }
 }

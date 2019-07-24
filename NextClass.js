@@ -66,7 +66,7 @@ class PlaylistItem {
     this.Section_Id= Section_Id;
   }
 }
-const PLAYLIST = [];
+var PLAYLIST = [];
 
 export default class NextClass extends React.Component {
     constructor(props) {
@@ -82,6 +82,8 @@ export default class NextClass extends React.Component {
       } 
       
       GetNextSectionsArr =(res) =>{
+        debugger;
+        PLAYLIST = [];
         for(var i=0; i<res.length;i++){
           if(res[i].Section_Is_Finished==false){
             let index= res[i].File_Path.lastIndexOf("\\")+1;
@@ -90,8 +92,6 @@ export default class NextClass extends React.Component {
             PLAYLIST.push(new PlaylistItem(res[i].Section_Title,res[i].File_Path,false,res[i].Class_Id,res[i].Section_Id));
           }
         }
-        debugger;
-        console.log(PLAYLIST);
       }
       NavigateToUserClass = async (NextSectionsArr,userInThisClass) =>{
         debugger;
@@ -180,10 +180,8 @@ export default class NextClass extends React.Component {
   didBlurSubscription = this.props.navigation.addListener(
   'didFocus',
   payload => {
-    debugger;
     (async () =>{
     let firstClass = await AsyncStorage.getItem('firstClass');
-    console.log(firstClass);
     })(); 
   }
 );

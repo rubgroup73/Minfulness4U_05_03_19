@@ -60,7 +60,7 @@ class PlaylistItem {
     this.Section_Id= Section_Id;
   }
 }
-const PLAYLIST = [];
+var PLAYLIST = [];
 export default class Homework extends React.Component {
     constructor(props) {
         super(props);
@@ -79,6 +79,7 @@ export default class Homework extends React.Component {
       GetNextSectionsArr =(res) =>{
         
           if(res.Is_Finished==false){
+            PLAYLIST = [];
             let index= res.HomeWork_Audio.lastIndexOf("\\")+1;
             res.HomeWork_Audio="http://proj.ruppin.ac.il/bgroup73/test1/tar4/files/"+res.HomeWork_Audio.substring(index);
             NextSectionsArr.push(res);
@@ -89,18 +90,13 @@ export default class Homework extends React.Component {
         }
     
     componentWillMount = async () =>{
-        console.log(this.state.userFullName);
-        console.log(this.state.userId);
-        console.log(this.state.currentDay);
-        console.log(this.state.classVersion);
-        console.log(this.state.classId);
+      debugger;
         ServerGetHomework = "http://proj.ruppin.ac.il/bgroup73/test1/tar4/api/Fetch/returnhomeworkforuser?userId="+this.state.userId;
          fetch(ServerGetHomework)
                 .then(response => response.json())  // promise
                 .then(async (response) =>{
                   debugger;
                     if(response.IsHomeWork!=false) {   
-                  console.log(response);
                   this.userInHomeWorkData = response;
                   this.GetNextSectionsArr(response);//one object of homework, sections not exists            
                     } 
