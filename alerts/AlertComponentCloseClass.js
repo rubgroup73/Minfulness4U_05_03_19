@@ -23,8 +23,7 @@ export default class AlertComponentCloseClass extends React.Component {
 
   hideAlert = () => {
     this.props.navigation.navigate(
-      navigatePage,
-      {comeFrom: 'AlertComponentCloseClass'}
+      navigatePage
           
     )
   };

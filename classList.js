@@ -285,6 +285,7 @@ didBlurSubscription = this.props.navigation.addListener(
   'didFocus',
   payload => {
     let comeFrom=this.props.navigation.getParam("comeFrom");
+    debugger;
     if(typeof comeFrom == "undefined"){
       console.log('didFocus', payload);
       this.componentDidMountAsync();

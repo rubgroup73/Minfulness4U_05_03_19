@@ -17,8 +17,7 @@ export default class AlertComponentNoClasses extends React.Component {
 
   hideAlert = () => {
     this.props.navigation.navigate(
-      'classlist',
-      {comeFrom: 'AlertComponentNoClasses'}     
+      'classlist'    
     )
   };
 
